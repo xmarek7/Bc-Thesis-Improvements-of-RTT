@@ -111,31 +111,65 @@
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
 
-\chapter{Previous works}
-Rather quick description of batteries, RTT, RTT PY and why we want to improve them.
-\section{Randomness testing}
-Motivation for randomness testing in general.
-\section{Tests batteries}
-Mentioning Dieharder, NIST etc directly
-\section{RTT}
-\section{RTT PY}
+\chapter{Randomness testing}
+Explanations of principles, ideas, some figures are expected here.
+\section{Motivation}
+Why do we use this tests, some examples of usage
 
-\chapter{Theoretical part - how testing works}
-The theory behind the randomness testing - how the tests work, explanation of p-values and how to interpret the results.
+
 \section{First level testing}
-P-values, different probability distributions
+test statistics - what is it, why is it important, different distributions\\
+\\
+p-values - explanation - what does it mean, how to get them and how to interpret them
+
+  
 \section{Second level testing}
-KS-statistic, $\chi^2$-test etc.
+
+ Motivation why first-level testing is not enough\\
+ \\
+ basic principle how does it work - mentioning uniform distribution of first-level p-values\\
+ \\
+ explanations of at least KS-statistic and $\chi^2$-test
+
+\chapter{Available solutions}
 
 
-\chapter{Practical part - describing current status}
-Deeper description of both the RTT and RTT PY. How they work, their outputs etc... Maybe some of the individual tests batteries. 
+This chapter serves to describe various works and programs this thesis connects to. 
+
+\section{Statistical testing batteries}
+Might be moved to separate chapter.\\
+\\
+More or less deep description of each battery. Should contain information about test parameters/settings.\\
+\\
+If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder).
+\subsection{Dieharder}
+\subsection{NIST STS}
+\subsection{Test U01}
+\subsection{BoolTest}
+
+\section{Randomness Testing Toolkit}
+principles of work - separate execution of batteries
+
+\subsection{Settings and input}
+describing the format of at least configs
+
+\subsection{Disadvantages}
+The problems/weak points we want to improve with this thesis. Namely at least non machine-machine readable format, running only one battery at time, maybe re-calculation of results
+
+\section{Randomnes Testing Toolkit in Python}
+Roughly the same things as in RTT\\
+\\
+Disadvantages - less info in results (missing first-level p-values), creating better machine-readable format
 
 
-\chapter{Practical part - what was the plan and what was done}
-This part will definitely  be split into more chapters. Will depend on what and howexactly will be done. Some of the expected parts:
-\section{Changes done to RTT PY}
-\section{Tests for RTT PY}
+
+
+\chapter{Improvements of the rtt-py}
+This part will probably  be split into more chapters. Will depend on what and how exactly will be done. Some of the expected parts:
+\section{Changes done to rtt-py}
+\section{Tests for rtt-py}
+
+\chapter{Conclusion}
 
 
 
