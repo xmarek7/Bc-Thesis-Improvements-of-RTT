@@ -112,7 +112,8 @@
 \addcontentsline{toc}{chapter}{Introduction}
 
 \chapter{Randomness testing}
-Explanations of principles, ideas, some figures are expected here.
+Explanations of principles, ideas, some figures are expected here.\\
+Maybe accompanied with example on dice (or something like this)
 \section{Motivation}
 Why do we use this tests, some examples of usage
 
@@ -126,8 +127,8 @@ p-values - explanation - what does it mean, how to get them and how to interpret
 \section{Second level testing}
 
  Motivation why first-level testing is not enough\\
- \\
  basic principle how does it work - mentioning uniform distribution of first-level p-values\\
+ mention difference between ideal continuous and real discrete
  \\
  explanations of at least KS-statistic and $\chi^2$-test
 
@@ -141,13 +142,21 @@ Might be moved to separate chapter.\\
 \\
 More or less deep description of each battery. Should contain information about test parameters/settings.\\
 \\
-If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder).
+If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder). - Discuss colision with the paper
 \subsection{Dieharder}
+Explain p-samples, name tests with irregular read bytes
 \subsection{NIST STS}
+Explain stream-size and stream-count
+
 \subsection{Test U01}
-\subsection{BoolTest}
+List all batteries.
+Explain repetitions, --bit -nb -w -r -s, mention repeating tests with different parameters
+
 
 \section{Randomness Testing Toolkit}
+
+example out output on specific data\\
+\\
 principles of work - separate execution of batteries
 
 \subsection{Settings and input}
@@ -159,6 +168,9 @@ The problems/weak points we want to improve with this thesis. Namely at least no
 \section{Randomnes Testing Toolkit in Python}
 Roughly the same things as in RTT\\
 \\
+
+example out output on specific data\\
+\\
 Disadvantages - less info in results (missing first-level p-values), creating better machine-readable format
 
 
@@ -167,7 +179,12 @@ Disadvantages - less info in results (missing first-level p-values), creating be
 \chapter{Improvements of the rtt-py}
 This part will probably  be split into more chapters. Will depend on what and how exactly will be done. Some of the expected parts:
 \section{Changes done to rtt-py}
+nothing so far
 \section{Tests for rtt-py}
+\section{Configuration calculator}
+Motivation, usage, how it works
+\section{Proposed changes}
+included things: adding first-level p-values, 
 
 \chapter{Conclusion}
 
