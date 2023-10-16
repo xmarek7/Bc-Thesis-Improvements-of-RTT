@@ -114,56 +114,106 @@
 % RANDOMNESS TESTINS - 'theoretical' chapter
 
 \chapter{Randomness testing}
-Meeting: notes: < 10 pages, define all terms that are used later\\
-maybe mention also irreg length tests\\
-to define: null-hypothesis, alpha, p-value, statistic \\
-Explanations of principles, ideas, some figures are expected here.\\
-Maybe accompanied with example on dice, some stupid RNG\\
+TODO: SOMEWHERE A QUICK OVERVIEW?
 
-
-The goal of this chapter is to explain the mathematical background of randomness testing for users of the \emph{Randomness Testing Toolkit} and make deeper examination of the results easier for them.
+The goal of this chapter is to explain the mathematical background of randomness testing to the users of the \emph{Randomness Testing Toolkit} and make understanding of results and their deeper examination easier.
 
 \section{Motivation}
-Why do we use these tests, some examples of usage
-\\
 
+Randomness testing is a form of empirical statistical hypothesis testing. During the test a behaviour of a data set is tested under the prediction that the tested hypothesis stands. When randomness is tested, the hypothesis states that the data are random. This means that the data contain no patterns and thus each bit has exactly the same probability of being 1 or 0.
 
-Randomness testing is a form of empirical statistical testing. During the test a distribution of a data set is tested under the null hypothesis, that the data are random. This means that the data contain no patterns and thus each bit has exactly the same probability of being 1 or 0.
+The tested data are streams of bits usually acquired from output of various cryptographic primitives, where randomness of the output is required or expected. These are usually (pseudo-)random number generators or ciphers. The randomness testing is then used to assess the quality of the data - whether the data are random, or if the data contain patterns (i.e. are non-random).
 
-In cryptography, the data are usually acquired from output of various cryptographic primitives, where randomness of the output is required or expected. These are usually (pseudo-)random number generators or ciphers. The randomness testing is then used to assess the quality of the data - whether the data are random, or if the data contain patterns (i.e. are non-random).
-
-Each randomness test detects different set of patterns, therefore more tests are usually applied at the data at the same time. Groups of tests that are applied together are called test batteries. Some groups of test might also search for similar patterns in the data, therefore their results might be correlated. TODO: SOURCE In this case it is recommended to use more than only one group of tests.
+Each randomness test detects different set of patterns, therefore more tests are usually applied on the data at the same time. Groups of tests that are applied together are called test batteries. Some groups of test might also search for similar patterns in the data, therefore their results might be correlated. TODO: SOURCE In this case it is recommended to use more than only one group of tests.
 
 \section{Process of testing} \label{chap:rand-process}
 
-At the beginning of statistical testing, the \emph{null hypothesis}  ($H_0$) is set. In the case of randomness testing the null hypothesis states, that the data are \emph{random}. Associated with the null hypothesis is the \emph{alternative hypothesis} ($H_1$), which in this case states that the data are not random. Result of the test is that either we \emph{reject} the null hypothesis (i.e. some pattern in the data was found, the data are not random), or the we \emph{do not reject} the null hypothesis (i.e. no proof of non-randomness was found in the data). 
+At the beginning of statistical testing, the \emph{null hypothesis}  ($H_0$), which is to be tested, is set. In the case of randomness testing the null hypothesis states, that the data are \emph{random}. Associated with the null hypothesis is the \emph{alternative hypothesis} ($H_1$), which in the case of randomness testing states that the data are not random. MOVE TO OVERVIEW Result of the test is that either we \emph{reject} the null hypothesis (i.e. some proof of non-randomness/pattern in the data was found, the data are not random), or the we \emph{do not reject} the null hypothesis (i.e. no proof of non-randomness was found in the data). 
 
-Another step before we start the test is choosing the \emph{significance level} (often denoted as $\alpha$). The usual values TODO: SOURCE is to choose $\alpha$ = 0.05 or $\alpha$ = 0.01. The lower is the significance level, the more sure we can be when we reject the null hypothesis. 
+Another step before we start the test is choosing the \emph{significance level} (often denoted as $\alpha$). The chosen significance level is the probability of rejecting the null hypothesis in spite of the null hypothesis being true. The usual chosen values are $\alpha$ = 0.05 or $\alpha$ = 0.01 TODO: SOURCE. 
 
-The next step choosing the statistic (i.e. function) of the data used for testing. This statistic determines which kind of patterns are searched for in the current test.
+The next step is choosing the \emph{test statistic} (i.e. function) of the data used for testing. This test statistic determines which kind of patterns are searched for in the current test. When choosing the test statistic, its distribution on random data must be known. Each test statistic may be a function of data of different size. TODO: SOMEWHERE MENTION THAT WE LOOK FOR TOO EXTREME SAMPLES
+
+MAYBE MOVE TO ANALYSIS CHAPTER?
+We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process. 
+
+Once all of the previous have been chosen, the testing process begins. The process is started by obtaining data. During randomness testing these are taken from some source of randomness and are further viewed as a sequence of bits. Based on the test statistic, sequence with the required length is extracted and the rest of the data is discarded. Then the value of test statistic is computed, which is used to acquite the resulting \emph{p-value}. For some distributions (e.g. for the standard distribution) precomputed tables are available, for the remaining distributions the p-value must be computed.
+
+The \emph{p-value} of the observed test statistic value is the probability of drawing a value of the test statistic that is at least as extreme as the observed result. In other words, the p-value is sum of probabilities of test statistic values that have the probability of occurring equal to or lower than the observed value.
+
+The p-value can also be calculated as area under the probability density function of given distribution within interval of values that are at least as extreme as the observed value. The interval consists of two parts. The first part is from the observed value towards infinity or negative infinity, depending on the way we gain more extreme values. TODO: SECOND PART of the interval - ask Syso
+
+At Figure \ref{fig:p_value} of one such calculation can be seen. In this case, the value 2 was drawn from a standard distribution. The more extreme values are found towards the infinity (the probability distribution function is lowering), therefore the first interval is $<2, \infty>$. TODO: SECOND INTERVAL The p-value is then equal to the area under the curve of the function within the given intervals (in red).
+
+\begin{figure}
+  \begin{center}
+    %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
+    %% The optimum is about 250 pixels per 1 centimeter 
+    \includegraphics[width=13cm]{figures/p-value.png}
+  \end{center}
+  \caption{Visual interpretation of p-value }
+  \label{fig:p_value}
+\end{figure}
+
+TODO: formula, figure
+
+\section{Results interpretation} \label{chap:rand-interpretation}
+
+The resulting p-value is then used for interpretation of the test result. If the p-value is smaller than the in advance chosen critical level, we consider the sample to come from a different distribution than is implied by the null-hypothesis. In other words, the probability of drawing this sample, given that the null-hypothesis stands, is so low, that it must have come from a different distribution. The distribution is unknown, but the probability of obtaining this sample is at reasonable level in this distribution.
+
+TODO: SOME FIGURE WITH TWO OVVERLAPPING DISTRIBUTION
+
+Therefore the null-hypothesis is  \emph{rejected} and we consider the tested data to be \emph{non-random}. Otherwise, no proof of the data being non-random was found and we \emph{do not reject} the null-hypothesis and consider the data to be \emph{random}.
 
 
 
-\section{First level testing}
+However, the interpretation of results can be more than black and white only. In general, p-values close to the critical level can be considered \emph{suspicious}. Further analysis might then be in place. 
 
-p-values - explanation - what does it mean, how to get them and how to interpret them\\
+It is important to note that this is only a \emph{statistical} testing. Therefore it is possible that the rejected (i.e. too extreme) sample was drawn only 'by chance'. Given that the data were in fact random, the probability of this happening is equal to the chosen \emph{critical value}.
 
+\section{Two level testing}
 
-\section{Second level testing}
-
- Motivation why first-level testing is not enough\\
- basic principle how does it work - mentioning uniform distribution of first-level p-values\\
+TODO: mention expected fails of of first levels, figure with schema
 
 
 Second level testing is used for a further examination of the data and can yield more information than using a first level testing only. For example when we examine the sequence 
 \[\epsilon = 0000 0000 0011 0011 0111 1111 1111\]
-it will pass the first level test without raising any raising any suspicions of non-randomness with p-value = TODO. However this sequence clearly contains a pattern and therefore there is a low chance that it was generated by a random source. 
+it will pass the first level test without raising any raising any suspicions of non-randomness with p-value = TODO. However this sequence clearly contains a pattern and is not random. 
 
-To perform a second-level test, we split the original sequence into $n$ equal length non-overlapping sequences. Then we perform a standard statistical test as described in Section \ref{chap:rand-process} on each of these sequences in separate and collect all of the p-values they generated. These tests are then called first-level tests and their respective p-values are called first-level p-values.
-\\
+To perform a two level test, we split the original sequence into $n$ equal length non-overlapping sequences. Then we perform a standard statistical test as described in Section \ref{chap:rand-process} on each of these sequences in separate and collect all of the p-values they generated. These tests are then called first-level tests and their respective p-values are called first-level p-values.
+
+The first-level p-values are treated as data in second round of testing, where goodness of fit test are used - the second-level test. The goodness-of-fit tests are used to determine how well the observed data fit expected distribution. The most notable examples of tests from this category are the Kolmogorov-Smirnov test and the $\chi^2$ test. For the first-level p-values a uniform distribution with interval $<0,1>$ is expected. The second-level test yields one second-level p-value, this is interpreted the same way a one level test p-value would be (as described in Subsection \ref{chap:rand-interpretation}). 
+
+% KS - description
+\subsection{Kolmogorov-Smirnov test}
+There are two variants of the Kolmogorov-Smirnov test (KS test). Two-sample test is used for comparing distributions of two data samples (to check if the data samples share the same distribution). The second variant, which is used in randomness testing, is the one-sample test. The one-sample test is used to compare a data sample against a theoretical distribution. In randomness testing, the observed distribution of first-level p-values is compared to the expected (uniform) distribution.
+
+The Kolmogorov-Smirnov test is based on comparing the cumulative distribution function (CDF) of the expected distribution and the empirical distribution function (EDF) of the observed samples. The Kolmogorov-Smirnov ($D$) statistic is the maximal absolute difference (distance) between the expected CDF and observed EDF (as can be seen in Figure \ref{fig:ks_d}. In some variants of the Kolmogorov-Smirnov test two statistics are measured - the maximal positive difference ($D^+$) and the minimal negative difference ($D^-$) of CDF and EDF. Once the statistic is obtained, the second-level p-value is computed. TODO: FORMULA AND FIGURE
+
+\begin{figure}
+  \begin{center}
+    %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
+    %% The optimum is about 250 pixels per 1 centimeter 
+    \includegraphics[width=8cm]{figures/ks_d.png}
+  \end{center}
+  \caption{Kolmogorov-Smirnov test D statisic}
+  \label{fig:ks_d}
+\end{figure}
+
+
+% $\chi^2$ description
+\subsection{$\chi^2$ test}
+$\chi^2$ tests are a group of several statistical tests used for comparing two sets of categorical data. The main one is the Pearson's $\chi^2$ test, that is used to determine existence of statistically significant difference in frequencies of categories in two sets of data. In randomness testing, one data set are the observed first-level p-values, that are divided into $n$ equal-width categories and their respective frequencies are counted. The second data set are the expected frequencies for each category. Because the expected distribution of p-values is uniform, the expected frequencies are equal in each category. 
+ 
+The test is based on computing differences in frequencies for each category between both sets of data. For data with $k$ categories the test statistic is defined as \[\chi^2 = \sum_{n=1}^{k} \dfrac{(x_i - m_i)^2}{m_i} \]
+where $x_i$ is the observed frequency in $i$-th category and $m_i$ is the expected frequency in $i$-th category. The p-value can be either computed or looked up in precomputed tables.
+
+TODO: figure, mention some requirements for sample size.
+
+
+ 
  mention difference between ideal continuous and real discrete\\
- explanations of at least KS-statistic and $\chi^2$-test\\
-
+ 
 
 %AVAILABLE SOLUTIONS
 
@@ -247,7 +297,7 @@ There are two most notable disadvantages of the \emph{RTT}. The first one is tha
 The Randomness Testing Toolkit in Python (\emph{rtt-py}) was created by Patrik Vaverčák. It is supposed to be a better version of \emph{RTT}~\cite[p.~24]{vavercak} and it was written in Python. However there are still some functional differences between \emph{RTT} and \emph{rtt-py}. The most notable difference is in the output format and supported batteries.
 
 \subsection{Settings}
-The settings of \emph{rtt-py} are very similar to the original \emph{RTT}. According to Vaverčák, the general settings from the \emph{RTT} should be compatible with \emph{rtt-py}, but in reality there is problem with settings for the NIST STS's experiments directory. Also, no database connection is implemented in \emph{rtt-py}, therefore the \emph{mysql-db} attribute is ignored. \cite{rtt-py-github2}
+The settings of \emph{rtt-py} are very similar to the original \emph{RTT}. According to Vaverčák, the general settings from the \emph{RTT} should be compatible with \emph{rtt-py}, but in reality there is problem with settings for the NIST STS's experiments directory. Also, no database connection is implemented in \emph{rtt-py}, therefore the \emph{mysql-db} attribute is ignored. \cite{rtt-py-github}
 
 
 The second part of user settings are tests configurations. They use exactly the same format as those used in \emph{RTT} (as mentioned in \ref{rtt-settings}) and are interchangeable.~\cite[p.~25]{vavercak} The user has to keep in mind that the \emph{rtt-py} uses FIPS\footnote{Federal Information Processing Standards} and BSI\footnote{Bundesamt für Sicherheit in der Informationstechnik} batteries, which are not used in \emph{RTT}.
