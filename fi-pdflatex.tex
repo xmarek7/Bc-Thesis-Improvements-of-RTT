@@ -114,81 +114,131 @@
 % RANDOMNESS TESTINS - 'theoretical' chapter
 
 \chapter{Randomness testing}
-TODO: SOMEWHERE A QUICK OVERVIEW?
 
 The goal of this chapter is to explain the mathematical background of randomness testing to the users of the \emph{Randomness Testing Toolkit} and make understanding of results and their deeper examination easier.
 
+In the beginning, the motivation for randomness testing is presented. This is followed by overview of statistical testing process alongside the specifics of randomness testing. At the end, the two-level testing and use of goodness-of-fit tests are explained. Both of the explanations are accompanied by example execution of one test from practice. 
+
 \section{Motivation}
 
-Randomness testing is a form of empirical statistical hypothesis testing. During the test a behaviour of a data set is tested under the prediction that the tested hypothesis stands. When randomness is tested, the hypothesis states that the data are random. This means that the data contain no patterns and thus each bit has exactly the same probability of being 1 or 0.
+Randomness testing is a form of empirical statistical hypothesis testing. During the test we want to find a proof supporting (or in the case of failure contradicting) the tested hypothesis. This is achieved by testing behaviour of the data set under the prediction that the tested hypothesis is true. When randomness is tested, the hypothesis states that the data are \emph{random}. This means that the data contain no patterns and thus each bit has exactly the same probability of being 1 or 0. The result of the test is either the acceptation of the hypothesis, or its rejection.
 
 The tested data are streams of bits usually acquired from output of various cryptographic primitives, where randomness of the output is required or expected. These are usually (pseudo-)random number generators or ciphers. The randomness testing is then used to assess the quality of the data - whether the data are random, or if the data contain patterns (i.e. are non-random).
 
-Each randomness test detects different set of patterns, therefore more tests are usually applied on the data at the same time. Groups of tests that are applied together are called test batteries. Some groups of test might also search for similar patterns in the data, therefore their results might be correlated. TODO: SOURCE In this case it is recommended to use more than only one group of tests.
+Each randomness test detects different set of patterns, therefore more tests are usually applied on the data at the same time. Groups of tests that are applied together are called test batteries. Some groups of test might also search for similar patterns in the data, therefore their results might be correlated. \cite[p. 2]{bad_day} TODO: MOVE TO RESULTS? In this case it is recommended to use more than only one group of tests.
 
 \section{Process of testing} \label{chap:rand-process}
 
-At the beginning of statistical testing, the \emph{null hypothesis}  ($H_0$), which is to be tested, is set. In the case of randomness testing the null hypothesis states, that the data are \emph{random}. Associated with the null hypothesis is the \emph{alternative hypothesis} ($H_1$), which in the case of randomness testing states that the data are not random. MOVE TO OVERVIEW Result of the test is that either we \emph{reject} the null hypothesis (i.e. some proof of non-randomness/pattern in the data was found, the data are not random), or the we \emph{do not reject} the null hypothesis (i.e. no proof of non-randomness was found in the data). 
+At the beginning of statistical testing, the tested \emph{null hypothesis}  ($H_0$) is set. Associated with the null hypothesis is the \emph{alternative hypothesis} ($H_1$) - the hypothesis we consider to be true in case the null hypothesis is rejected. In the case of randomness testing the null hypothesis states that the data are \emph{random} and the alternative hypothesis states that the data are not random.
 
-Another step before we start the test is choosing the \emph{significance level} (often denoted as $\alpha$). The chosen significance level is the probability of rejecting the null hypothesis in spite of the null hypothesis being true. The usual chosen values are $\alpha$ = 0.05 or $\alpha$ = 0.01 TODO: SOURCE. 
+Second step before we start the test is choosing the \emph{significance level} (usually denoted as $\alpha$). The chosen significance level is the probability of rejecting the null hypothesis in spite of the null hypothesis being true. The usual chosen values are $\alpha$ = 0.05 or $\alpha$ = 0.01. TODO: SOURCE, MAYBE ABOUT ALPHA ADJUSTMENTS
 
-The next step is choosing the \emph{test statistic} (i.e. function) of the data used for testing. This test statistic determines which kind of patterns are searched for in the current test. When choosing the test statistic, its distribution on random data must be known. Each test statistic may be a function of data of different size. TODO: SOMEWHERE MENTION THAT WE LOOK FOR TOO EXTREME SAMPLES
+The last step is choosing the \emph{test statistic} (i.e. function of the data). This test statistic determines which kind of patterns are searched for in the current test. The test statistics vary in many different ways. There are test statistics based on simple sums of bits, but also statistics based on complicated transformations or statistics based on games. When choosing the test statistic, its distribution on random data must be known. TODO: SOMEWHERE MENTION THAT WE LOOK FOR TOO EXTREME SAMPLES
 
-MAYBE MOVE TO ANALYSIS CHAPTER?
-We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process. 
+Once all of the previous have been chosen, the testing process begins. The process is started by obtaining data. During randomness testing these are taken from some source of randomness and are further viewed as a sequence of bits. Based on the test statistic, sequence with the required length is extracted and the rest of the data is discarded. Then the value of test statistic is computed and used to acquire the resulting \emph{p-value}. For more common distributions precomputed tables are available, for the remaining distributions the p-value must be computed.
 
-Once all of the previous have been chosen, the testing process begins. The process is started by obtaining data. During randomness testing these are taken from some source of randomness and are further viewed as a sequence of bits. Based on the test statistic, sequence with the required length is extracted and the rest of the data is discarded. Then the value of test statistic is computed, which is used to acquite the resulting \emph{p-value}. For some distributions (e.g. for the standard distribution) precomputed tables are available, for the remaining distributions the p-value must be computed.
+The \emph{p-value} of the observed test statistic is the probability of drawing a test statistic value that is at least as extreme as the observed result. In other words, the p-value is sum of probabilities of test statistic values that are considered more extreme. The p-value can also be calculated as area under the probability density function (definite integral of this function) on interval of at least as extreme values.
 
-The \emph{p-value} of the observed test statistic value is the probability of drawing a value of the test statistic that is at least as extreme as the observed result. In other words, the p-value is sum of probabilities of test statistic values that have the probability of occurring equal to or lower than the observed value.
+There are three ways to determine what \emph{more extreme} value means. The first one is \emph{left (lower) tailed test}. In this case, more extreme values are all values lower than then observed value. The second one is the \emph{right (upper) tailed test}, where more extreme values are considered values greater than the observed values. Both of these variants are referred to as one-tailed tests.
 
-The p-value can also be calculated as area under the probability density function of given distribution within interval of values that are at least as extreme as the observed value. The interval consists of two parts. The first part is from the observed value towards infinity or negative infinity, depending on the way we gain more extreme values. TODO: SECOND PART of the interval - ask Syso
+The third way is the \emph{two-tailed test}, where more extreme values are found in both tails and the p-value therefore consists of two parts. The 'closer' tail is determined and then the fist part of p-value is computed as in one-tailed test. Then the second interval of more extreme values is established. This interval begins in the opposite tail and the area under the probability density function is equal to the first part of the p-value. Therefore it is not necessary to establish the second interval, because the second part of the p-value is equal to the first part. The p-value is either computed as sum of both of the parts or as double of the first part. 
 
-At Figure \ref{fig:p_value} of one such calculation can be seen. In this case, the value 2 was drawn from a standard distribution. The more extreme values are found towards the infinity (the probability distribution function is lowering), therefore the first interval is $<2, \infty>$. TODO: SECOND INTERVAL The p-value is then equal to the area under the curve of the function within the given intervals (in red).
+The used approach depends on the executed test. For some test it is possible to use more than one approach only. At Figure \ref{fig:p_value} a visualization of all three approaches can be seen. In all cases, the value 2 was drawn from a standard distribution.
 
 \begin{figure}
   \begin{center}
     %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
     %% The optimum is about 250 pixels per 1 centimeter 
-    \includegraphics[width=13cm]{figures/p-value.png}
+    \includegraphics[width=12.5cm]{figures/p-value.png}
   \end{center}
   \caption{Visual interpretation of p-value }
   \label{fig:p_value}
 \end{figure}
 
-TODO: formula, figure
-
 \section{Results interpretation} \label{chap:rand-interpretation}
-
-The resulting p-value is then used for interpretation of the test result. If the p-value is smaller than the in advance chosen critical level, we consider the sample to come from a different distribution than is implied by the null-hypothesis. In other words, the probability of drawing this sample, given that the null-hypothesis stands, is so low, that it must have come from a different distribution. The distribution is unknown, but the probability of obtaining this sample is at reasonable level in this distribution.
-
 TODO: SOME FIGURE WITH TWO OVVERLAPPING DISTRIBUTION
 
-Therefore the null-hypothesis is  \emph{rejected} and we consider the tested data to be \emph{non-random}. Otherwise, no proof of the data being non-random was found and we \emph{do not reject} the null-hypothesis and consider the data to be \emph{random}.
+The test p-value is then used for interpretation of the test. If the p-value is less than the in advance chosen critical level, we consider the sample to come from a different distribution than is implied by the null hypothesis. In other words, the probability of drawing this sample in the distribution implied by the null hypothesis is so low, that it  we assume it must have come from a different distribution. Therefore, the null-hypothesis is \emph{rejected} and we consider the tested data to be \emph{non-random}.
+
+If the \emph{p-value} is greater than the \emph{significance level}, no proof of the data being non-random was found and we \emph{accept} the null-hypothesis and consider the data to be \emph{random}.
 
 
 
 However, the interpretation of results can be more than black and white only. In general, p-values close to the critical level can be considered \emph{suspicious}. Further analysis might then be in place. 
 
-It is important to note that this is only a \emph{statistical} testing. Therefore it is possible that the rejected (i.e. too extreme) sample was drawn only 'by chance'. Given that the data were in fact random, the probability of this happening is equal to the chosen \emph{critical value}.
+It is important to note that randomness testing is a \emph{statistical} testing. Therefore it is possible that the rejected (i.e. too extreme) sample was drawn only 'by chance'. Given that the null hypothesis stands, the probability of this happening is equal to the chosen \emph{significance level}.
 
-\section{Two level testing}
-
-TODO: mention expected fails of of first levels, figure with schema
+\section{Example} \label{chap:rand-example}
 
 
-Second level testing is used for a further examination of the data and can yield more information than using a first level testing only. For example when we examine the sequence 
-\[\epsilon = 0000 0000 0011 0011 0111 1111 1111\]
-it will pass the first level test without raising any raising any suspicions of non-randomness with p-value = TODO. However this sequence clearly contains a pattern and is not random. 
+To demonstrate how a single randomness test is made, the Frequency (Monobit) Test from NIST STS battery was chosen. \cite[p. 2-2]{nist_special} This is the simplest possible test, as it is based on testing the fraction of zeroes and ones within the sequence. For a random sequence $\epsilon$ with length $n$ the  count of ones is expected to be $n/2$ and is equal to expected count of zeroes.
 
-To perform a two level test, we split the original sequence into $n$ equal length non-overlapping sequences. Then we perform a standard statistical test as described in Section \ref{chap:rand-process} on each of these sequences in separate and collect all of the p-values they generated. These tests are then called first-level tests and their respective p-values are called first-level p-values.
 
-The first-level p-values are treated as data in second round of testing, where goodness of fit test are used - the second-level test. The goodness-of-fit tests are used to determine how well the observed data fit expected distribution. The most notable examples of tests from this category are the Kolmogorov-Smirnov test and the $\chi^2$ test. For the first-level p-values a uniform distribution with interval $<0,1>$ is expected. The second-level test yields one second-level p-value, this is interpreted the same way a one level test p-value would be (as described in Subsection \ref{chap:rand-interpretation}). 
+It is easy to see that with one of the counts increasing (and the second one therefore decreasing), the sequence is getting less random. The probability of the bit being zero or one shifts from both being equal in favor of the more frequent bit.
+
+For the Monobit, it is recommended that the tested sequence ($\epsilon$) has at least 100 bits. The test statistic of the Monobit test is defined as \[S_{obs} = \dfrac{|\#_1 - \#_0|}{\sqrt{n}}\] where $\#_1$ is count of ones in sequence $\epsilon$ (similarly for zeroes) and $n$ is length of of the sequence $\epsilon$. Under the null hypothesis, the reference distribution is half normal (for large $n$). The p-value is computed as \[ p = \int_{S_{obs}}^{\infty} F(x) \,dx = erfc(\dfrac{S_{obs}}{\sqrt{2}}) \] The $F(x) = \dfrac{\sqrt{2}\cdot e^{\frac{-x^2}{2}}}{\sqrt{\pi}}$ is the half normal distribution probability density function and $erfc$ is the \emph{complementary error function}.
+
+ Let
+\[\begin{split}
+    \epsilon = 10011001010010000010001001011001101100001101000111\\10101001010010010011100111001100110010010100111011
+\end{split}\]
+ be the tested sequence. The test statistic for this sequence is 
+
+ \[S_{obs} = \dfrac{|46 - 54|}{\sqrt{100}}\ = \dfrac{|-8|}{10} = 0.8\]
+ and the p-value (visualised at Figure \ref{fig:example}) is 
+ \[p = erfc(\dfrac{S_{obs}}{\sqrt{2}}) \doteq 0.423\]
+
+At the end, we compare the computed \emph{p-value} to the chosen $\alpha$. Since the $\emph{p-value} \doteq 0.423$ is greater than both usual $\alpha = 0.05$ and $\alpha = 0.01$, we accept the null hypothesis for both \emph{significance levels}. Therefore, the sequence $\epsilon$ is considered random.
+
+\begin{figure}
+  \begin{center}
+    %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
+    %% The optimum is about 250 pixels per 1 centimeter 
+    \includegraphics[width=8cm]{figures/test_example.png}
+  \end{center}
+  \caption{Visualization of example p-value}
+  \label{fig:example}
+\end{figure}
+
+ 
+
+
+
+\section{Two level testing} \label{chap:rand-two_level}
+
+TODO: mention expected fails of of first levels, figure with schema, mention remaining GOF tests
+
+
+Two-level testing is used for a further examination of the data and can yield stronger information than using a one-level testing only. For example when we examine the sequence 
+\[\begin{split}
+    \epsilon =\:15\: &* (100\:consecutitive\:zeroes) + \\
+    15\:&*\:(100\:alternating\:ones\:and\:zeroes) + \\
+    5\:&*\:(55\:zeroes\:and\:45\:ones)\:+\:\\
+    15\:&*\:(100\:consecutive\:ones)
+\end{split}\]
+it will pass the Monobit test (as used in Section \ref{chap:rand-example}) without raising suspicions of non-randomness with p-value $\doteq$ 0.479. However this sequence clearly contains a pattern and is not random. 
+
+To perform a two level test, we split the original sequence into $n$ equal length non-overlapping sequences. Then we perform a standard statistical test as described in Section \ref{chap:rand-process} on each of these sequences in separate and collect all of the p-values they generated. These tests are then called first-level tests and their respective p-values are called first-level p-values. 
+
+Note that the first-level p-values are not interpreted at this moment. It is in fact expected that some first-level p-values will be lower than the chosen \emph{significance level} (these would usually be considered failed). Given that the null hypothesis is true, the number of 'failed' first-level tests is expected to be $\alpha\cdot100\%$ of the total number of first-level p-values.
+
+The first-level p-values are only treated as data in second round of testing, where goodness of fit tests are used - the second-level test. The goodness-of-fit tests are used to determine how well the observed data fit expected distribution. The most notable examples of tests from this category are the Kolmogorov-Smirnov test and the $\chi^2$ test, another examples are Cramér-von Mises test and Anderson-Darling test. 
+
+For the first-level p-values a uniform distribution with interval $<0,1>$ is expected. The second-level test yields one second-level p-value, which is interpreted the same way a one-level test p-value would be (as described in Subsection \ref{chap:rand-interpretation}). Several goodness of fit tests can be applied at the same set of first-level p-values at once, because each test examines different uniformity properties of the data.
+
+TODO: DIG DEEPER INTO DIFFERENCES BETWEEN GOF TESTS
 
 % KS - description
 \subsection{Kolmogorov-Smirnov test}
-There are two variants of the Kolmogorov-Smirnov test (KS test). Two-sample test is used for comparing distributions of two data samples (to check if the data samples share the same distribution). The second variant, which is used in randomness testing, is the one-sample test. The one-sample test is used to compare a data sample against a theoretical distribution. In randomness testing, the observed distribution of first-level p-values is compared to the expected (uniform) distribution.
+There are two variants of the Kolmogorov-Smirnov test (KS test). Two-sample test is used for comparing distributions of two data samples (to check if the data samples share the same distribution). The second variant, which is used in randomness testing, is the one-sample test. The one-sample test is used to compare a data sample against a theoretical distribution.
 
-The Kolmogorov-Smirnov test is based on comparing the cumulative distribution function (CDF) of the expected distribution and the empirical distribution function (EDF) of the observed samples. The Kolmogorov-Smirnov ($D$) statistic is the maximal absolute difference (distance) between the expected CDF and observed EDF (as can be seen in Figure \ref{fig:ks_d}. In some variants of the Kolmogorov-Smirnov test two statistics are measured - the maximal positive difference ($D^+$) and the minimal negative difference ($D^-$) of CDF and EDF. Once the statistic is obtained, the second-level p-value is computed. TODO: FORMULA AND FIGURE
+The Kolmogorov-Smirnov test is based on comparing the cumulative distribution function (CDF) of the expected distribution and the empirical cumulative distribution function (eCDF) of the observed samples. The Kolmogorov-Smirnov ($D$) statistic is the maximal absolute difference (vertical distance) between the expected CDF and observed eCDF (as can be seen in Figure \ref{fig:ks_d}). In some variants of the Kolmogorov-Smirnov test two statistics are measured - the maximal distance above the CDF ($D^+$) and the maximal distance below the CDF ($D^-$). Once the statistic is obtained, the second-level p-value is computed. Formally, the test statistics are defined as
+\[\begin{split}
+    &D^+ = sup_x\{F_n(x) - F(x)\}\\
+    &D^- = sup_x\{F(x) - F_n(x)\}\\
+    &D \:\:\:= sup_x\{|F_n(x) - F(x)|\} = max(D^+, D^-)
+\end{split}
+\] where $F(x)$ is the CDF and $F_n(x)$ is the  eCDF \cite[p. 100]{GOF-techniques}.
 
 \begin{figure}
   \begin{center}
@@ -196,24 +246,55 @@ The Kolmogorov-Smirnov test is based on comparing the cumulative distribution fu
     %% The optimum is about 250 pixels per 1 centimeter 
     \includegraphics[width=8cm]{figures/ks_d.png}
   \end{center}
-  \caption{Kolmogorov-Smirnov test D statisic}
+  \caption{Kolmogorov-Smirnov test statistics}
   \label{fig:ks_d}
 \end{figure}
 
 
 % $\chi^2$ description
 \subsection{$\chi^2$ test}
-$\chi^2$ tests are a group of several statistical tests used for comparing two sets of categorical data. The main one is the Pearson's $\chi^2$ test, that is used to determine existence of statistically significant difference in frequencies of categories in two sets of data. In randomness testing, one data set are the observed first-level p-values, that are divided into $n$ equal-width categories and their respective frequencies are counted. The second data set are the expected frequencies for each category. Because the expected distribution of p-values is uniform, the expected frequencies are equal in each category. 
+$\chi^2$ tests are a group of several statistical tests used for comparing two sets of categorical data. The main one is the Pearson's $\chi^2$ test, that is used to determine existence of statistically significant difference in frequencies of categories in data sets. In randomness testing, one data set are the observed first-level p-values that are divided into $n$ equal-width categories and their respective frequencies are counted. The second data set are the expected frequencies for each category. Because the expected distribution of p-values is uniform, the expected frequencies are equal in each category. 
  
-The test is based on computing differences in frequencies for each category between both sets of data. For data with $k$ categories the test statistic is defined as \[\chi^2 = \sum_{n=1}^{k} \dfrac{(x_i - m_i)^2}{m_i} \]
-where $x_i$ is the observed frequency in $i$-th category and $m_i$ is the expected frequency in $i$-th category. The p-value can be either computed or looked up in precomputed tables.
-
-TODO: figure, mention some requirements for sample size.
-
-
+The test is based on summing squared differences in frequencies for each category between both sets of data. For data with $k$ categories the test statistic is defined as \[\chi^2 = \sum_{i=1}^{k} \dfrac{(x_i - m_i)^2}{m_i} \]
+where $x_i$ is the observed frequency in $i$-th category and $m_i$ is the expected frequency in $i$-th category. The test statistic follows the $\chi^2$ distribution with $k-1$ degrees of freedom. The expected frequency in each category must be at least five. \cite[p. 171]{stat-procedures}
  
- mention difference between ideal continuous and real discrete\\
- 
+\subsection{Example}
+\begin{table}
+  \begin{tabularx}{0.4\textwidth}{ll}
+    \toprule
+    p-value & occurrences  \\
+    \midrule
+    $1.52 \cdot 10^{-23}$ & $30$\\
+    $0.31$ & $5$\\
+    $1.0$ & $15$\\
+    \bottomrule
+  \end{tabularx}
+  \caption{First-level p-values produced by Monobit test}
+  \label{tab:first_pvalues}
+\end{table}
+
+
+
+I will demonstrate the two-level test at example from the beginning of Section \ref{chap:rand-two_level}. As a first level test the Monobit \cite[p. 2-2]{nist_special} will be used to process subsequences with length of 100 bits. Because the length of sequence $\epsilon$ is 5000 bits, the first-level test will be run 50 times.
+
+The sequence $\epsilon$ is now divided into 50 non-overlapping subseqeunces. The Monobit test is then applied to each subsequence  and its p-value is stored (for the obtained p-values see Table \ref{tab:first_pvalues}). It easy to see that these values are not uniformly distributed.
+
+Next step is to apply one or more goodness of fit tests. The first one I will apply is the Pearson's $\chi^2$ test. I will choose $k=10$ (number of categories), the expected frequency of p-values in each category is then five. The statistic of the test is
+\[\chi^2 = \sum_{i=1}^{10} \dfrac{(x_i - 5)^2}{5} = 180 \]
+and the p-value of this test is $p\doteq5.06\cdot10^{-34}$. The null hypothesis is rejected for both $\alpha = 0.01$ and $\alpha = 0.05$. 
+
+As next example, I will apply the Kolmogorov-Smirnov test. First, the eCDF is calculated and then the D statistic is computed. The statistic is $D = 0.6$ and results in p-value $\doteq$ $9.63\cdot10^{-18}$. Again, the null-hypothesis is rejected for both $\alpha = 0.01$ and $\alpha = 0.05$. 
+
+
+\begin{figure}
+  \begin{center}
+    %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
+    %% The optimum is about 250 pixels per 1 centimeter 
+    \includegraphics[width=13cm]{figures/two_example.png}
+  \end{center}
+  \caption{Visualisations for GOF tests example}
+  \label{fig:two_example}
+\end{figure}
 
 %AVAILABLE SOLUTIONS
 
@@ -345,6 +426,7 @@ Compared to the \emph{RTT} the reports created by \emph{rtt-py} contain less inf
 
 
 % TEST ANALYSIS
+We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process. 
 \chapter{Tests Analysis}
 \section{Data Consumption}
 \section{Time Consumption ??}
