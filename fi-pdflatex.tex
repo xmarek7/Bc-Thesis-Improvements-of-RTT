@@ -126,10 +126,11 @@ During a randomness test a \emph{random sequence} is tested. In this document, a
 Null/alternative hypothesis (tu01paper - 3, možná učebnice)
 Randomness testing as statistical testing (tu01guide - 2)
 
-Randomness test is a form of \emph{empirical statistical test}, where we test our assumption about the tested data - the \emph{null-hypothesis} ($H_0$). During the randomness test it states that the sequence is \emph{random}. Associated with the null-hypothesis is the \emph{alternative hypothesis} ($H_1$), which states that the sequence is \emph{nonrandom}. Goal of the test is to search for evidence against the null-hypothesis. \cite[p. 2]{tu01_guide}
+Randomness test is a form of \emph{empirical statistical test}, where we test our assumption about the tested data - the \emph{null hypothesis} ($H_0$). During the randomness test it states that the sequence is \emph{random}. Associated with the null-hypothesis is the \emph{alternative hypothesis} ($H_1$), which states that the sequence is \emph{nonrandom}. Goal of the test is to search for evidence against the null-hypothesis. \cite[p. 2]{tu01_guide}
 
 Idea of testing – extremeness of a sample ? (nistspecial - 1-3+)
 
+The evidence is found by examining the probability of obtaining the tested sample under the null hypothesis. If the probability is low, gain evidence against the null hypothesis.
 result (accept, reject, Type I/II error) (nistspecial - 1-3+, učebnice 416)
 
 The result of the test is either that we \emph{accept} the null hypothesis (the sequence is random), or that we \emph{reject} the null-hypothesis (and accept the alternative hypothesis - the sequence is nonrandom). We reject the null hypothesis when the evidence found against the null-hypothesis is strong, otherwise we accept it. Based on the true status of the sequence, four situations depicted in Table \ref{tab:type_errors} may occur.
@@ -148,10 +149,23 @@ The result of the test is either that we \emph{accept} the null hypothesis (the 
   \label{tab:type_errors}
 \end{table}
 
-
-
-
 \section{One-level testing}
+
+significance level (tu01 paper 5-8, nist_special 1-3+, rec for stat testing 5, učebnice)
+
+The \emph{significance level} ($\alpha$) from interval $(0,1)$ must be set for the test. The $\alpha$ is equal to probability of Type I Error. Usual values are $\alpha = 0.05$ or $\alpha = 0.01$ TODO: CITE, for use in testing cryptographic random number generators even lower values may be chosen. \cite[p. 1-4]{nist_special} The lower is $\alpha$, the stronger the found evidence has to be to reject the null hypothesis. (cite? derived from nist_special 1-4)
+
+Test statistic (= function, known distribution), sample (tu01 paper 4+)
+
+The randomness test is defined by a \emph{test statistic} $Y$, which is a function of the finite bit sequence. Distribution of its values under the null hypothesis must be known (at least approximately). The value $y$ of the test statistic is computed for the tested random sequence. Each test statistic searches for presence or absence of some "pattern" in the sequence, which would show the nonrandomness of the sequence. There is infinite number of possible test statistics. \cite[p. 4]{tu01_paper}
+
+p-value (one, two tailed, how extremeness is set) (nist_opt 5, nist_special 1-4,rec for stat testing 5)
+
+interpratation (učebnice 380-400)
+
+example
+
+
 
 \section{Two-level testing}
 
