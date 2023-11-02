@@ -150,7 +150,7 @@ The result of the test is either that we \emph{accept} the null hypothesis (the 
   \label{tab:type_errors}
 \end{table}
 
-\section{One-level testing}
+\section{Single-level testing}
 
 %significance level (tu01 paper 5-8, nistspecial 1-3+, rec for stat testing 5, učebnice)
 
@@ -183,20 +183,18 @@ The p-values close to $\alpha$ can be considered \emph{suspicious}, because they
 \subsection{Example} \label{chap:rand-example}
 
 
-To demonstrate how a single randomness test is made, the Frequency (Monobit) Test from NIST STS battery was chosen. \cite[p. 2-2]{nist_special} This test is based on testing the fraction of zeroes and ones within the sequence. For a random sequence with length $n$ the  count of ones (and zeroes) is expected to be around $n/2$ (i.e. the most probable values are close to $n/2$). 
+To demonstrate how a single randomness test is made, the Frequency (Monobit) Test from NIST STS battery was chosen. \cite[p. 2-2]{nist_special} This test is based on testing the fraction of zeroes and ones within the sequence. For a random sequence with length $n$ the  count of ones (and zeroes) is expected to be around $n/2$ (the most probable values are close to $n/2$). 
 
+% CUT OUT
 It is easy to see that with one of the counts increasing (and the second one therefore decreasing), the sequence is getting less random. The probability of the bit being zero or one shifts from both being equal in favor of the more frequent bit.
 
-For the Monobit test it is recommended for the tested sequence to have at least 100 bits. The test statistic $S_{obs}$ of the Monobit test is defined as \[S_{obs} = \dfrac{|\#_1 - \#_0|}{\sqrt{n}}\] where $\#_1$ is count of ones in the tested sequence (similarly for zeroes) and $n$ is length of of the tested sequence. Under the null hypothesis, the reference distribution of $S_{obs}$ is half normal (for large $n$). 
-
-The p-value is computed as \[ p = erfc(\dfrac{S_{obs}}{\sqrt{2}}) \] where $erfc$ is the \emph{complementary error function} used to calculate probabilities in normal distribution.
+For the Monobit test it is recommended for the tested sequence to have at least 100 bits. The test statistic $S_{obs}$ of the Monobit test is defined as \[S_{obs} = \dfrac{|\#_1 - \#_0|}{\sqrt{n}}\] where $\#_1$ is count of ones in the tested sequence (similarly for zeroes) and $n$ is length of of the tested sequence. Under the null hypothesis, the reference distribution of $S_{obs}$ is half normal (for large $n$). The p-vaue is computed as \[ p = erfc(\dfrac{S_{obs}}{\sqrt{2}}) \] where $erfc$ is the \emph{complementary error function} used to calculate probabilities in normal distribution.
 
  Let
 \[\begin{split}
     \epsilon = 10011001010010000010001001011001101100001101000111\\10101001010010010011100111001100110010010100111011
 \end{split}\]
  be the tested sequence. The test statistic for this sequence is 
-
  \[S_{obs} = \dfrac{|46 - 54|}{\sqrt{100}}\ = \dfrac{|-8|}{10} = 0.8\]
  and the p-value (visualised at Figure \ref{fig:example}) is 
  \[p = erfc\biggl(\dfrac{0.8}{\sqrt{2}}\biggr) \approx 0.423\]
@@ -209,32 +207,29 @@ To interpret the test, we compare the computed \emph{p-value} to the chosen $\al
     %% The optimum is about 250 pixels per 1 centimeter 
     \includegraphics[width=8cm]{figures/test_example.png}
   \end{center}
-  \caption{Visualization of example p-value}
+  \caption{Visualization of example p-value for test statistic value $y = 0.8$}
   \label{fig:example}
 \end{figure}
 
- 
-
-
-
+% two-level (tu01guide 88, tu01paper 5-8, correcting_dieharder 14)
 \section{Two level testing} \label{chap:rand-two_level}
 
 TODO: mention expected fails of of first levels, figure with schema, mention remaining GOF tests
 
+The two-level test is done by splitting the tested sequence into $n$ equal-length disjunct subsequences. The same single-level test is applied to each of the subequences (as described in Section \ref{chap:rand-process}) and its \emph{p-values} are collected, resulting in set of $n$ \emph{p-values}\footnote{Note that the p-values are not subject to accept/reject decision.}. The tests are called \emph{first-level tests} and the p-values are called \emph{first-level p-values}. Under the null-hypothesis, the first-level p-values of a given test statistic should be uniformly distributed over the interval $(0,1]$  \cite[p. 14]{bad_day} 
 
-Two-level testing is used for a further examination of the data and can yield stronger information than using a one-level testing only. . 
+MENTION $\alpha$ HERE AS WELL?
 
-To perform a two level test, we split the original sequence into $n$ equal length non-overlapping sequences. Then we perform a standard statistical test as described in Section \ref{chap:rand-process} on each of these sequences in separate and collect all of the p-values they generated. These tests are then called first-level tests and their respective p-values are called first-level p-values. 
+% GOF  - 1
+The crucial part of two-level test is examining the distribution of \emph{observed first-level p-values}. 
+Usually, the \emph{goodness-of-fit} (GOF) tests are applied - the \emph{second-level test}. \cite[p. 6]{tu01_paper} GOF tests are a family of methods used for examining how well a data sample fits given distribution. \cite[p. 1]{gof-techniques} The most used GOF tests in randomness testing are the $\Chi^2$ (chi-squared) and Kolmogorov-Smirnov test, another notable tests are the Anderson-Darling and Cramér-von-Mises test. \cite[p. 14]{bad_day}
 
-Note that the first-level p-values are not interpreted at this moment. It is in fact expected that some first-level p-values will be lower than the chosen \emph{significance level} (these would usually be considered failed). Given that the null hypothesis is true, the number of 'failed' first-level tests is expected to be $\alpha\cdot100\%$ of the total number of first-level p-values.
+The second-level test is defined by a test statistic $Y$, which is a function of the first-level p-values. Test statistic value ($y$) is calculated from the observed \emph{first-level p-values} and then the \emph{second-level p-value} is calculated from $y$. The p-value is then interpreted as described in Subsection \ref{chap:rand-interpretation}. Note that more GOF tests can be applied on the same set of first-level p-values, as each GOF test examines different property of the uniform distribution.
 
-The first-level p-values are only treated as data in second round of testing, where goodness of fit tests are used - the second-level test. The goodness-of-fit tests are used to determine how well the observed data fit expected distribution. The most notable examples of tests from this category are the Kolmogorov-Smirnov test and the $\chi^2$ test, another examples are Cramér-von Mises test and Anderson-Darling test. 
-
-For the first-level p-values a uniform distribution with interval $<0,1>$ is expected. The second-level test yields one second-level p-value, which is interpreted the same way a one-level test p-value would be (as described in Subsection \ref{chap:rand-interpretation}). Several goodness of fit tests can be applied at the same set of first-level p-values at once, because each test examines different uniformity properties of the data.
 
 TODO: DIG DEEPER INTO DIFFERENCES BETWEEN GOF TESTS
 
-% KS - description
+% KS - description - (para and non para - 171)
 \subsection{Kolmogorov-Smirnov test}
 There are two variants of the Kolmogorov-Smirnov test (KS test). Two-sample test is used for comparing distributions of two data samples (to check if the data samples share the same distribution). The second variant, which is used in randomness testing, is the one-sample test. The one-sample test is used to compare a data sample against a theoretical distribution.
 
@@ -257,7 +252,7 @@ The Kolmogorov-Smirnov test is based on comparing the cumulative distribution fu
 \end{figure}
 
 
-% $\chi^2$ description
+% $\chi^2$ description (GOF - 100)
 \subsection{$\chi^2$ test}
 $\chi^2$ tests are a group of several statistical tests used for comparing two sets of categorical data. The main one is the Pearson's $\chi^2$ test, that is used to determine existence of statistically significant difference in frequencies of categories in data sets. In randomness testing, one data set are the observed first-level p-values that are divided into $n$ equal-width categories and their respective frequencies are counted. The second data set are the expected frequencies for each category. Because the expected distribution of p-values is uniform, the expected frequencies are equal in each category. 
  
