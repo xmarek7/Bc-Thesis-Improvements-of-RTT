@@ -49,6 +49,8 @@
 %% For non-Latin scripts, it may be necessary to load additional
 %% fonts:
 \usepackage{paratype}
+\usepackage{todonotes}
+\setuptodonotes{inline}
 \def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
 %%
 %% The following section sets up the metadata of the thesis.
@@ -176,16 +178,146 @@ The p-values close to $\alpha$ can be considered \emph{suspicious}, because they
 
 
 
+\todo{REWRITE}
 %example
+\subsection{Example} \label{chap:rand-example}
+
+
+To demonstrate how a single randomness test is made, the Frequency (Monobit) Test from NIST STS battery was chosen. \cite[p. 2-2]{nist_special} This test is based on testing the fraction of zeroes and ones within the sequence. For a random sequence with length $n$ the  count of ones (and zeroes) is expected to be around $n/2$ (i.e. the most probable values are close to $n/2$). 
+
+It is easy to see that with one of the counts increasing (and the second one therefore decreasing), the sequence is getting less random. The probability of the bit being zero or one shifts from both being equal in favor of the more frequent bit.
+
+For the Monobit test it is recommended for the tested sequence to have at least 100 bits. The test statistic $S_{obs}$ of the Monobit test is defined as \[S_{obs} = \dfrac{|\#_1 - \#_0|}{\sqrt{n}}\] where $\#_1$ is count of ones in the tested sequence (similarly for zeroes) and $n$ is length of of the tested sequence. Under the null hypothesis, the reference distribution of $S_{obs}$ is half normal (for large $n$). 
+
+The p-value is computed as \[ p = erfc(\dfrac{S_{obs}}{\sqrt{2}}) \] where $erfc$ is the \emph{complementary error function} used to calculate probabilities in normal distribution.
+
+ Let
+\[\begin{split}
+    \epsilon = 10011001010010000010001001011001101100001101000111\\10101001010010010011100111001100110010010100111011
+\end{split}\]
+ be the tested sequence. The test statistic for this sequence is 
+
+ \[S_{obs} = \dfrac{|46 - 54|}{\sqrt{100}}\ = \dfrac{|-8|}{10} = 0.8\]
+ and the p-value (visualised at Figure \ref{fig:example}) is 
+ \[p = erfc\biggl(\dfrac{0.8}{\sqrt{2}}\biggr) \approx 0.423\]
+
+To interpret the test, we compare the computed \emph{p-value} to the chosen $\alpha$. Since the $\emph{p-value} \approx 0.423$ is greater than both usual $\alpha = 0.05$ and $\alpha = 0.01$, we accept the null hypothesis for both \emph{significance levels}. Therefore, the sequence $\epsilon$ is considered random.
+
+\begin{figure}
+  \begin{center}
+    %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
+    %% The optimum is about 250 pixels per 1 centimeter 
+    \includegraphics[width=8cm]{figures/test_example.png}
+  \end{center}
+  \caption{Visualization of example p-value}
+  \label{fig:example}
+\end{figure}
+
+ 
+
+
+
+\section{Two level testing} \label{chap:rand-two_level}
+
+TODO: mention expected fails of of first levels, figure with schema, mention remaining GOF tests
+
+
+Two-level testing is used for a further examination of the data and can yield stronger information than using a one-level testing only. . 
+
+To perform a two level test, we split the original sequence into $n$ equal length non-overlapping sequences. Then we perform a standard statistical test as described in Section \ref{chap:rand-process} on each of these sequences in separate and collect all of the p-values they generated. These tests are then called first-level tests and their respective p-values are called first-level p-values. 
+
+Note that the first-level p-values are not interpreted at this moment. It is in fact expected that some first-level p-values will be lower than the chosen \emph{significance level} (these would usually be considered failed). Given that the null hypothesis is true, the number of 'failed' first-level tests is expected to be $\alpha\cdot100\%$ of the total number of first-level p-values.
+
+The first-level p-values are only treated as data in second round of testing, where goodness of fit tests are used - the second-level test. The goodness-of-fit tests are used to determine how well the observed data fit expected distribution. The most notable examples of tests from this category are the Kolmogorov-Smirnov test and the $\chi^2$ test, another examples are Cramér-von Mises test and Anderson-Darling test. 
+
+For the first-level p-values a uniform distribution with interval $<0,1>$ is expected. The second-level test yields one second-level p-value, which is interpreted the same way a one-level test p-value would be (as described in Subsection \ref{chap:rand-interpretation}). Several goodness of fit tests can be applied at the same set of first-level p-values at once, because each test examines different uniformity properties of the data.
+
+TODO: DIG DEEPER INTO DIFFERENCES BETWEEN GOF TESTS
+
+% KS - description
+\subsection{Kolmogorov-Smirnov test}
+There are two variants of the Kolmogorov-Smirnov test (KS test). Two-sample test is used for comparing distributions of two data samples (to check if the data samples share the same distribution). The second variant, which is used in randomness testing, is the one-sample test. The one-sample test is used to compare a data sample against a theoretical distribution.
+
+The Kolmogorov-Smirnov test is based on comparing the cumulative distribution function (CDF) of the expected distribution and the empirical cumulative distribution function (eCDF) of the observed samples. The Kolmogorov-Smirnov ($D$) statistic is the maximal absolute difference (vertical distance) between the expected CDF and observed eCDF (as can be seen in Figure \ref{fig:ks_d}). In some variants of the Kolmogorov-Smirnov test two statistics are measured - the maximal distance above the CDF ($D^+$) and the maximal distance below the CDF ($D^-$). Once the statistic is obtained, the second-level p-value is computed. Formally, the test statistics are defined as
+\[\begin{split}
+    &D^+ = sup_x\{F_n(x) - F(x)\}\\
+    &D^- = sup_x\{F(x) - F_n(x)\}\\
+    &D \:\:\:= sup_x\{|F_n(x) - F(x)|\} = max(D^+, D^-)
+\end{split}
+\] where $F(x)$ is the CDF and $F_n(x)$ is the  eCDF \cite[p. 100]{GOF-techniques}.
+
+\begin{figure}
+  \begin{center}
+    %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
+    %% The optimum is about 250 pixels per 1 centimeter 
+    \includegraphics[width=8cm]{figures/ks_d.png}
+  \end{center}
+  \caption{Kolmogorov-Smirnov test statistics}
+  \label{fig:ks_d}
+\end{figure}
+
+
+% $\chi^2$ description
+\subsection{$\chi^2$ test}
+$\chi^2$ tests are a group of several statistical tests used for comparing two sets of categorical data. The main one is the Pearson's $\chi^2$ test, that is used to determine existence of statistically significant difference in frequencies of categories in data sets. In randomness testing, one data set are the observed first-level p-values that are divided into $n$ equal-width categories and their respective frequencies are counted. The second data set are the expected frequencies for each category. Because the expected distribution of p-values is uniform, the expected frequencies are equal in each category. 
+ 
+The test is based on summing squared differences in frequencies for each category between both sets of data. For data with $k$ categories the test statistic is defined as \[\chi^2 = \sum_{i=1}^{k} \dfrac{(x_i - m_i)^2}{m_i} \]
+where $x_i$ is the observed frequency in $i$-th category and $m_i$ is the expected frequency in $i$-th category. The test statistic follows the $\chi^2$ distribution with $k-1$ degrees of freedom. The expected frequency in each category must be at least five. \cite[p. 171]{stat-procedures}
+
+% Two-level example
 \subsection{Example}
+In this example, I will test one sequence demonstrating the difference between one and two-level testing. First, the sequence is tested using the one-level Frequency (Monobit) test from NIST STS battery.\cite[p. 2-2]{nist_special} Then the same sequence is assessed by the two-level test using Frequency test as the first level test. Let
+\[\begin{split}
+    \epsilon =\:15\: &* (100\:consecutitive\:zeroes) + \\
+    15\:&*\:(100\:alternating\:ones\:and\:zeroes) + \\
+    5\:&*\:(55\:zeroes\:and\:45\:ones)\:+\:\\
+    15\:&*\:(100\:consecutive\:ones)
+\end{split}\]
+be the tested sequence. 
+
+Result of the one-level Frequency test for the sequence $\epsilon$ is p-value $\approx$ 0.479. The null hypothesis is accepted for both $\alpha = 0.01$ and $\alpha = 0.05$ and the sequence $\epsilon$ is considered random. This sequence however clearly contains a pattern, therefore the probability of it being generated by a perfect random number generator is low.
 
 
 
-\section{Two-level testing}
 
+I will demonstrate the two-level test at example from the beginning of Section \ref{chap:rand-two_level}. As a first level test the Monobit \cite[p. 2-2]{nist_special} will be used to process subsequences with length of 100 bits. Because the length of sequence $\epsilon$ is 5000 bits, the first-level test will be run 50 times.
+
+The sequence $\epsilon$ is now divided into 50 non-overlapping subseqeunces. The Monobit test is then applied to each subsequence  and its p-value is stored (for the obtained p-values see Table \ref{tab:first_pvalues}). It easy to see that these values are not uniformly distributed.
+
+\begin{table}
+  \begin{tabularx}{0.4\textwidth}{ll}
+    \toprule
+    p-value & occurrences  \\
+    \midrule
+    $1.52 \cdot 10^{-23}$ & $30$\\
+    $0.31$ & $5$\\
+    $1.0$ & $15$\\
+    \bottomrule
+  \end{tabularx}
+  \caption{First-level p-values produced by Monobit test}
+  \label{tab:first_pvalues}
+\end{table}
+
+Next step is to apply one or more goodness of fit tests. The first one I will apply is the Pearson's $\chi^2$ test. I will choose $k=10$ (number of categories), the expected frequency of p-values in each category is then five. The statistic of the test is
+\[\chi^2 = \sum_{i=1}^{10} \dfrac{(x_i - 5)^2}{5} = 180 \]
+and the p-value of this test is $p\doteq5.06\cdot10^{-34}$. The null hypothesis is rejected for both $\alpha = 0.01$ and $\alpha = 0.05$. 
+
+As next example, I will apply the Kolmogorov-Smirnov test. First, the eCDF is calculated and then the D statistic is computed. The statistic is $D = 0.6$ and results in p-value $\doteq$ $9.63\cdot10^{-18}$. Again, the null-hypothesis is rejected for both $\alpha = 0.01$ and $\alpha = 0.05$. 
+
+
+\begin{figure}
+  \begin{center}
+    %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
+    %% The optimum is about 250 pixels per 1 centimeter 
+    \includegraphics[width=13cm]{figures/two_example.png}
+  \end{center}
+  \caption{Visualisations for GOF tests example}
+  \label{fig:two_example}
+\end{figure}
 
 
 % Old Chapter
+\todo{DO NOT READ, WILL BE REMOVED}
 \chapter{Randomness testing - old}
 
 The goal of this chapter is to explain the mathematical background of randomness testing to the users of the \emph{Randomness Testing Toolkit} and make understanding of results and their deeper examination easier.
