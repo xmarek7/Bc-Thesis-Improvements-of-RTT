@@ -314,8 +314,7 @@ This chapter serves to describe various works and programs this thesis connects 
 
 
 \section{Statistical testing batteries}
-Testing battery is a group of randomness tests. Usually the tests are available together in one program and the random sequence is examined by all of the tests.
-
+battery, individual test - mapping to test statistic\\
 command on how to run battery\\
 Mention overflow detection\\
 If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder). - Discuss collision with the paper\\
@@ -327,9 +326,16 @@ describe output / image\\
 General description of battery - set of tests, choose test by ID, set tested file \\
 individual test - smallest executable part, possibly more test statistics, setting of the test(ntup, bitw...), data consumption (fixed vs set by user), number of first levels, return-first level pvalues, second-level p-value,
 
-In practice, randomness testing batteries are used. Randomness testing battery is a set of randomness tests that are usually applied all at once.
 
-\emph{Individual test} is the smallest executable unit and applies two-level test on the tested random sequence. Some individual tests apply more than one two-level test. For example, the Diehard Craps Test plays 200~000 games of craps, the test statistics are based on number of wins and number of throws needed to end the game TODO: cite dieharder.
+% (Obratil 2, tu01 guide 5)
+
+Randomness testing battery (suite) is a group of individual randomness tests with predefined parameters that allows the user to convinietly test a given rng. The user does not have to bother with choosing 'suitable' tests nor with choosing the right parameters for their tests, which can be tricky.
+
+% TODO: data consumption of tests
+\emph{Individual test} is the smallest separately executable unit. Usually it applies one two-level test on the tested random sequence and yields one two-level p-value. Some individual tests consist of two or more \emph{subtests}. Each subtest correspond to one first-level test statistic and applies a two-level test and yields a second-level p-value. When executing an individual test, all subtests are executed as well. The individual test may have variants. %For example, the Diehard Craps Test plays 200~000 games of craps, the test statistics are based on number of wins and number of throws needed to end the game TODO: cite dieharder.
+
+Some individual tests may be parametrized to search for a slightly modified pattern in the data. Each of runs of the same individual test with different parameters is called \emph{variant of the test}.
+
 
 Usually, the following settings are required for each \emph{individual test}.
 \begin{markdown*}{%
@@ -345,12 +351,16 @@ Usually, the following settings are required for each \emph{individual test}.
   tableCaptions,
 }
 
-* number of first-level tests
-* test statistic settings
-* size of first-level sequence (if applicable)
-
+* number of first-level tests - sets how many times the first-level test is repeated
+* size of first-level sequence (if applicable) - Sets how long are the first-level subsequences. In some batteries this setting cannot be changed.
+* choose variant (if applicable) - 
+* test id
+* path to tested file
 
 \end{markdown*}
+
+%(Obratil 3), cite rewind problem (maybe rtt git?)
+Originally, the testing batteries were created to test the random number generators by generating the data as needed. However, the RTT was created to test \emph{files containing} binary data. The tested file acts as a dummy random number generator and before each individual test it is rewound to the file begin. Because unlike random number generators the files have limited size, it is up to user to set the tests to not need more data than are available in the file. Otherwise, the file is rewound back to the beginning and read again. In this case, the test results might be biased.
 
 \subsection{Dieharder}
 Explain p-samples, name tests with irregular read bytes, tsample
