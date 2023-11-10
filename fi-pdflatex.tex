@@ -314,11 +314,11 @@ This chapter serves to describe various works and programs this thesis connects 
 
 
 \section{Statistical testing batteries}
-More or less deep description of each battery. Should contain information about test parameters/settings.\\
-\\
+Testing battery is a group of randomness tests. Usually the tests are available together in one program and the random sequence is examined by all of the tests.
+
 command on how to run battery\\
 Mention overflow detection\\
-If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder). - Discuss colision with the paper\\
+If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder). - Discuss collision with the paper\\
 how batteries interpret results (first/second level, more statistics)\\
 strong and weak things \\
 describe output / image\\
@@ -327,9 +327,9 @@ describe output / image\\
 General description of battery - set of tests, choose test by ID, set tested file \\
 individual test - smallest executable part, possibly more test statistics, setting of the test(ntup, bitw...), data consumption (fixed vs set by user), number of first levels, return-first level pvalues, second-level p-value,
 
-Randomness testing battery is a set of randomness tests
+In practice, randomness testing batteries are used. Randomness testing battery is a set of randomness tests that are usually applied all at once.
 
-\emph{Individual test} is the smallest executable unit and applies one two-level test on the tested sequence. Some individual tests apply more than one two-level test. For example, the Diehard Craps Test plays 200~000 games of craps, the test statistics are based on number of wins and number of throws needed to end the game TODO: cite dieharder.
+\emph{Individual test} is the smallest executable unit and applies two-level test on the tested random sequence. Some individual tests apply more than one two-level test. For example, the Diehard Craps Test plays 200~000 games of craps, the test statistics are based on number of wins and number of throws needed to end the game TODO: cite dieharder.
 
 Usually, the following settings are required for each \emph{individual test}.
 \begin{markdown*}{%
@@ -353,7 +353,7 @@ Usually, the following settings are required for each \emph{individual test}.
 \end{markdown*}
 
 \subsection{Dieharder}
-Explain p-samples, name tests with irregular read bytes
+Explain p-samples, name tests with irregular read bytes, tsample
 \subsection{NIST STS}
 Explain stream-size and stream-count\\
 Results - in experiments directory
