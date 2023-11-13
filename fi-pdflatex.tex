@@ -314,22 +314,21 @@ This chapter serves to describe various works and programs this thesis connects 
 
 
 \section{Statistical testing batteries}
-battery, individual test - mapping to test statistic\\
-command on how to run battery\\
-Mention overflow detection\\
-If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder). - Discuss collision with the paper\\
-how batteries interpret results (first/second level, more statistics)\\
-strong and weak things \\
-describe output / image\\
-\\
-
-General description of battery - set of tests, choose test by ID, set tested file \\
-individual test - smallest executable part, possibly more test statistics, setting of the test(ntup, bitw...), data consumption (fixed vs set by user), number of first levels, return-first level pvalues, second-level p-value,
+%battery, individual test - mapping to test statistic
+%Mention overflow detection
+%If there are any problems with the battery (e.g. tests which read different amount of data from DieHarder). -
+%how batteries interpret results (first/second level, more statistics)
+%strong and weak things 
+%describe output / image
+%General description of battery - set of tests, choose test by ID, set tested file \\
+%individual test - smallest executable part, possibly more test statistics, setting of the test(ntup, bitw...), data consumption (fixed vs set by user), number of first levels, return-first level pvalues, second-level p-value,
 
 
 % (Obratil 2, tu01 guide 5)
 
-Randomness testing battery (suite) is a group of individual randomness tests with predefined parameters that allows the user to conveniently test a given random number generator. The user does not have to bother with choosing 'suitable' tests nor with choosing the right parameters for their tests, which can be tricky.
+Statistical test battery (suite) is a set of randomness tests with predefined parameters that allows the user to conveniently apply sets of tests. The user does not have to bother with choosing 'suitable' tests nor with choosing the right parameters for their tests, which can be tricky. The most used batteries in practice are the \emph{Dierharder, NIST STS} and the TestU01's \emph{Crush} family of batteries, \emph{Rabbit, Alphabit} and \emph{BlockAlphabit}, which are described in this section.
+
+Because all of the batteries share significant similarities, an \emph{abstract battery} is presented to demonstrate the principles. Then, each battery is presented in more detail, mapping its features to the \emph{abstract battery}.
 
 % TODO: data consumption of tests
 \emph{Individual test} is the smallest separately executable unit. Usually it applies one two-level test on the tested random sequence and yields one two-level p-value. Some individual tests consist of more \emph{subtests}. Each subtest corresponds to one first-level test statistic and applies a two-level test and yields a second-level p-value. When executing an individual test, all subtests are executed as well. Individual tests inside one battery are distinguished by \emph{test IDs}. The individual test may have variants. %For example, the Diehard Craps Test plays 200~000 games of craps, the test statistics are based on number of wins and number of throws needed to end the game TODO: cite dieharder.
@@ -360,7 +359,7 @@ When running a battery, the test(s) to run must be specified along the path to t
 %(Obratil 3), cite rewind problem (maybe rtt git?)
 Originally, the testing batteries were created to test the random number generators by generating the data as needed. However, the RTT was created to test \emph{files containing} binary data. The tested file is rewound to the beginning before each individual test. Because unlike random number generators the files have limited size, it is up to user to set the tests to not need more data than are available in the file. Otherwise, when all data from the file have been read but the test need more, the file is rewound back to the beginning and read again. In this case, the test results might be biased. The needed data size is calculated as \emph{number of first-level tests} $\cdot$ \emph{size of first-level sequence}.
 
-\subsection{Dieharder}
+\subsection{Dieharder} \label{chap:sols-dieharder}
 %Explain p-samples, name tests with irregular read bytes, tsample
 The \emph{Dieharder} battery was developed atop an older \emph{diehard} battery. The \emph{diehard} battery is extended by adding new tests and improving functional features. The \emph{Dieharder} is available from \cite{dieharder_orig} or as package in some Unix distributions. The \emph{RTT} uses a modified version of \emph{Dieharder} available from \cite{rtt-batteries}.
 
@@ -390,7 +389,7 @@ Results of the \emph{Dieharder} are printed to standard output. First, informati
 
 The \emph{file rewinds} are detected by Dieharder automatically. In this case the message '\verb|# The file file_input_raw was rewound n times|' is printed to error output, where $n$ is the number of times file was rewound back to the beginning. Alternatively, by using dedicated output flag, the amount of used data and this message are printed to standard output after each test.
 
-\subsection{NIST STS} 
+\subsection{NIST STS} \label{chap:sols-nist}
 % Second-level p-value x^2, 10 categories (nist_special 4-2)
 
 % NIST overview
@@ -410,8 +409,8 @@ Original NIST STS is available from \cite{nist_site}, however the implementation
   pipeTables,
   tableCaptions,
 }
-* \emph{streamcount} argument notes the number of first-level tests and must be set by the user. For a statistically meaningful result of second-level test should be at least 55. 
-* \emph{streamsize} argument sets the length of first-level subsequences in \emph{bits} and must be set by the user. The tests have various recommendations for minimal size.
+* \emph{Stream count} argument notes the number of first-level tests and must be set by the user. For a statistically meaningful result of second-level test should be at least 55. 
+* \emph{Stream size} argument sets the length of first-level subsequences in \emph{bits} and must be set by the user. The tests have various recommendations for minimal size.
 \end{markdown*}
 
 The second-level p-value is computed using the $\chi^2$ test after dividing the first-level p-values into $k=10$ categories. No accept/reject decision is made by the program and has to be done by the user. The NIST STS also calculates the proportion of subsequences passing the first-level test. \cite[p. 4-1]{nist_special}.
@@ -423,7 +422,7 @@ First-level p-values for each test are stored in corresponding folders. In file 
 The file overflow is detected automatically by the battery. In such case, message '\verb|READ ERROR:  Insufficient data in file.|' is printed to standard output.
 
 
-\subsection{Test U01}
+\subsection{Test U01} \label{chap:sols-testu01}
 %TODO: no second level assessment
 %TODO: output format
 
@@ -450,7 +449,11 @@ Each battery in TestU01 allows for a different set of user settings. General ove
 Unlike other batteries, the TestU01 batteries do not employ the \emph{second-level test}. The assessment  of first-level p-values uniformity is up to the user. 
 
 % output format
-The output format is same of all of TestU01 batteries.
+The output format is same of all of TestU01 batteries and is printed to stanard output. For each executed first-level test the test name and all test parameters are printed. Then, for each subtest, test statics values and their corresponding p-values are printed. After each first-level test, a \emph{generator state} is printed, containing information about how many data were used in all first-level tests so far. And the end of the individual test report, all list of all first-level p-values is printed.
+
+% overflow detection - reading 10MB blocks
+File rewind detection is done partially by the batteries using the \emph{generator state} information, however it is up to the user to interpret it. User has to find the last \emph{generator state} info for a given individual test, which contains three fields - \emph{bytes need for testing} (number of bytes that were indeed used for testing), \emph{bytes read from file} (number of bytes that were read from tested file) and \emph{total number of file rewinds}. Because the data are read from file in blocks of 10MB size, it may happen that number of file rewinds will be nonzero, but the number of \emph{bytes needed for testing} will be lower than the actual file size (raising a false alarm). It is up to the user to manually check for this situation. % TODO check crush family error detection
+
 
 %crush family
 \subsubsection{SmallCrush, Crush, BigCrush}
@@ -472,9 +475,7 @@ JUST COPIED FROM WORK TO ACADEMIC WRITING COURSE, TO BE USED AND CHANGED LATER.\
 
 TODO: MENTION INSTALATION
 
-
-
-In the previous chapter different randomness testing batteries were described. The typical user, however, uses more than one battery, which means installing and running each testing battery individually. Also it is strongly recommended (sometimes even needed) to set up parameters for each test from the battery individually based on tested file and to run this test manually.
+In the previous section different randomness testing batteries were described. The typical user, however, uses more than one battery, which means installing and running each testing battery individually. Also it is strongly recommended (sometimes even needed) to set up parameters for each test from the battery individually based on tested file and to run this test manually.
 
 Since this approach is not convenient, Ľubomír Obrátil from Center for Research on Cryptography and Security (CRoCS) at FI MU created the Randomness Testing Toolkit (\emph{RTT}). This toolkit allows users to run and configure three test batteries by a single command.
 
@@ -484,27 +485,26 @@ This work was followed by Patrik Vaverčák from Faculty of Electrical Engineeri
 
 \emph{RTT} was created in 2017 and its main idea was to combine \emph{Dieharder}, \emph{NIST STS}\footnote{National Institute of Standards and Technology - Statistical Test Suite} and \emph{Test U01} statistical test batteries into one program. It was written in C++. 
 
-The concept of \emph{RTT} is that it acts only as a unified interface of the batteries. Each test battery is executed by \emph{RTT} as a separate program. The \emph{RTT} then collects the output and processes in into a unified format.~\cite[p.~8]{rtt-obratil}
+The concept is that \emph{RTT} acts only as a unified interface of the batteries. Each test battery is executed by \emph{RTT} as a separate program. The \emph{RTT} then collects the output and processes it into a unified format.~\cite[p.~8]{rtt-obratil}
 
 However some problems in the processing of the output were found; these are addressed in chapter \ref{improvements}.
 
 \subsection{Settings}\label{rtt-settings} 
 TODO: MORE RIGID DESCRIPTION
-The \emph{RTT} needs to be set up by the user before running. The first part of user settings contains general settings made for the \emph{RTT}, the second part contains configuration for individual test batteries. Each of these parts is stored in its own JSON\footnote{JavaScript Object Notation} file. The original setup description is from
+The \emph{RTT} needs to be set up by the user before running. The first part of user settings contains general settings made for the \emph{RTT}, the second part contains individual configuration for test batteries. Each of these parts is stored in its own JSON\footnote{JavaScript Object Notation} file. 
 
-The general settings are stored in \emph{rtt-settings.json} file, which has to be located in the working directory of the \emph{RTT}~\cite[p.~10]{rtt-obratil} . These settings are usually not changed between runs.
-The most important setting from the general part are paths to the executable binaries of individual statistical test batteries. This is the only setting that has to be manually filled by the user.
+The \emph{general settings} are stored in \emph{rtt-settings.json} file, which has to be located in the working directory of the \emph{RTT}~\cite[p.~10]{rtt-obratil} . These settings are usually not changed between runs.
+The most important setting from the general part are paths to the executable binaries of individual statistical test batteries. This is the only setting that has to be manually filled in by the user.
 
 The storage database can also be filled in by the user, but this functionality is often unused. The following general settings have implicit values and do no need to be changed unless the user wishes to. They are paths to storage directories for results and logs of individual runs and execution options (test timeout and maximal number of parallel executions of tests). 
 
- The battery configurations are dependant on the size of the tested file, therefore the file with the battery configuration is specified for each run of the \emph{RTT}. These configurations are different for each battery (see sections \ref{dieharder}, \ref{nist} and \ref{tu01}), but settings for all of the batteries can be stored together in a single file.~\cite[p.~11]{rtt-obratil}  The \emph{RTT} contains several prepared battery configurations for various sizes of tested file.
-
-
+ The battery configurations are dependant on the size of the tested file, therefore the file with the battery configuration is specified for each run of the \emph{RTT} as one of its arguments. These configurations are different for each battery (see Subsections \ref{chap:sols-dieharder}, \ref{chap:sols-nist} and \ref{chap:sols-testu01}), but settings for all of the batteries are stored together in a single file.~\cite[p.~11]{rtt-obratil}  The \emph{RTT} contains several prepared battery configurations for various sizes of tested file.
 
 \subsection{Output}
 The output of \emph{RTT} is in a plain text format. The most important part of the output is the direct report, which is saved in the results directory. At the beginning of the report are general information -- the name of the tested file, the name of the used battery, ratio of passed and failed tests and battery errors and warnings in case there were any.
 
-After the general information is a list of results of individual test runs in a unified format. The fist part of the single test report contains the name of the test and user settings (\emph{e.g. P-sample count in Dieharder battery or Stream size and count in NIST STS battery}). The second part of the single test report are the resulting second-level P-values alongside the names of statistic used (usually Kolmogorov-Smirnov statistic or Chi-Square test). At the end of the single test report is a list of first-level P-values produced by the test. Example of the output can be seen in Figure \ref{fig:rtt_output_example}.
+% terminology - single x individual test
+After the general information is a list of results of individual test runs in a unified format. The fist part of the single test report contains the name of the test and user settings (\emph{e.g. p-sample in Dieharder battery or Stream size and count in NIST STS battery}). The second part of the single test report are the resulting second-level P-values alongside the names of statistic used (usually Kolmogorov-Smirnov or $\chi^2$ statistic). At the end of the single test report is a list of first-level p-values produced by the test. Example of the output can be seen in Figure \ref{fig:rtt_output_example}.
 
 \begin{figure}
   \begin{center}
@@ -524,21 +524,19 @@ There are two most notable disadvantages of the \emph{RTT}. The first one is tha
 
 
 \section{Randomness Testing Toolking in Python}
-The Randomness Testing Toolkit in Python (\emph{rtt-py}) was created by Patrik Vaverčák. It is supposed to be a better version of \emph{RTT}~\cite[p.~24]{vavercak} and it was written in Python. However there are still some functional differences between \emph{RTT} and \emph{rtt-py}. The most notable difference is in the output format and supported batteries.
+The Randomness Testing Toolkit in Python (\emph{rtt-py}) was created by Patrik Vaverčák. It is supposed to be an improved version of \emph{RTT}~\cite[p.~24]{vavercak} and it was written in Python. However there are still some functional differences between \emph{RTT} and \emph{rtt-py}. The most notable difference is in the output format and supported batteries.
 
 \subsection{Settings}
 The settings of \emph{rtt-py} are very similar to the original \emph{RTT}. According to Vaverčák, the general settings from the \emph{RTT} should be compatible with \emph{rtt-py}, but in reality there is problem with settings for the NIST STS's experiments directory. Also, no database connection is implemented in \emph{rtt-py}, therefore the \emph{mysql-db} attribute is ignored. \cite{rtt-py-github}
 
 
-The second part of user settings are tests configurations. They use exactly the same format as those used in \emph{RTT} (as mentioned in \ref{rtt-settings}) and are interchangeable.~\cite[p.~25]{vavercak} The user has to keep in mind that the \emph{rtt-py} uses FIPS\footnote{Federal Information Processing Standards} and BSI\footnote{Bundesamt für Sicherheit in der Informationstechnik} batteries, which are not used in \emph{RTT}.
+The second part of user settings are the battery configurations. They use the same format as those used in \emph{RTT} (as mentioned in \ref{rtt-settings}) and are interchangeable.~\cite[p.~25]{vavercak} The user has to keep in mind that the \emph{rtt-py} uses FIPS\footnote{Federal Information Processing Standards} and BSI\footnote{Bundesamt für Sicherheit in der Informationstechnik} batteries, which are not used in \emph{RTT}. Some of the field that are \emph{optional} in this \emph{RTT} are \emph{requiered} in the \emph{rtt-py}.
 
 \subsection{Output}
-There is a significant difference in the output format between \emph{RTT} and \emph{rtt-py}. The \emph{rtt-py} creates output in two formats -- \emph{CSV}\footnote{Comma-separated values} and \emph{HTML}\footnote{Hypertext Markup Language}. Both of these report formats contain overview table. Each row from the table represents results of one particular test. The first column contains the name of the test and the name of the battery it belongs to.
+There is a significant difference in the output format between \emph{RTT} and \emph{rtt-py}. The \emph{rtt-py} creates output in two formats -- \emph{CSV}\footnote{Comma-separated values} and \emph{HTML}\footnote{Hypertext Markup Language}. Both of these report formats contain overview table. Each row from the table represents results of one particular test. The first column contains the name of the test and the name of the battery it belongs to.The second column contains \emph{failure rate} - ratio of sequences not passing the first-level test.
 
-The second column contains \emph{failure rate} - ratio representing how many instances of this particular test failed compared to number of executed instances on \emph{all} files with data.
-
-
-Each of the following columns is named after one tested file. The record contains either P-value reported by the test, or number of failed runs -- this depends on the battery. Example of this table can be seen at figure \ref{fig:rtt_py_table}.
+%TODO - mention testing more files at once
+Each of the following columns is named after one tested file. The record contains either p-value reported by the test, or number of failed runs -- this depends on the battery. Example of this table can be seen at figure \ref{fig:rtt_py_table}.
 \begin{figure}
   \begin{center}
     %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
@@ -552,8 +550,7 @@ Each of the following columns is named after one tested file. The record contain
 
 The output in the HTML format contains more information compared to the output in the CSV format. For each battery and for each tested file an HTML file with reports is generated.
 
-
-In each report file there is a list of reports for each executed test from the given battery. The single test report contains the result of the test (either reported P-value, or number of failed runs) and it may contain additional information such as settings of the test or other information connected to the result. The contained information depends on the battery and on the executed test. Example of the  report can be seen in figure \ref{fig:rtt_py_html}
+In each report file there is a list of reports for each executed test from the given battery. The single test report contains the result of the test (either reported p-value, or number of failed runs) and it may contain additional information such as settings of the test or other information connected to the result. The contained information depends on the battery and on the executed test. Example of the  report can be seen in figure \ref{fig:rtt_py_html}
 \begin{figure}
   \begin{center}
     %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
