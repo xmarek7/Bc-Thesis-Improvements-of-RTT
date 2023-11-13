@@ -329,15 +329,14 @@ individual test - smallest executable part, possibly more test statistics, setti
 
 % (Obratil 2, tu01 guide 5)
 
-Randomness testing battery (suite) is a group of individual randomness tests with predefined parameters that allows the user to convinietly test a given rng. The user does not have to bother with choosing 'suitable' tests nor with choosing the right parameters for their tests, which can be tricky.
+Randomness testing battery (suite) is a group of individual randomness tests with predefined parameters that allows the user to conveniently test a given random number generator. The user does not have to bother with choosing 'suitable' tests nor with choosing the right parameters for their tests, which can be tricky.
 
 % TODO: data consumption of tests
-\emph{Individual test} is the smallest separately executable unit. Usually it applies one two-level test on the tested random sequence and yields one two-level p-value. Some individual tests consist of two or more \emph{subtests}. Each subtest correspond to one first-level test statistic and applies a two-level test and yields a second-level p-value. When executing an individual test, all subtests are executed as well. The individual test may have variants. %For example, the Diehard Craps Test plays 200~000 games of craps, the test statistics are based on number of wins and number of throws needed to end the game TODO: cite dieharder.
+\emph{Individual test} is the smallest separately executable unit. Usually it applies one two-level test on the tested random sequence and yields one two-level p-value. Some individual tests consist of more \emph{subtests}. Each subtest corresponds to one first-level test statistic and applies a two-level test and yields a second-level p-value. When executing an individual test, all subtests are executed as well. Individual tests inside one battery are distinguished by \emph{test IDs}. The individual test may have variants. %For example, the Diehard Craps Test plays 200~000 games of craps, the test statistics are based on number of wins and number of throws needed to end the game TODO: cite dieharder.
 
-Some individual tests may be parametrized to search for a slightly modified pattern in the data. Each of runs of the same individual test with different parameters is called \emph{variant of the test}.
+Some individual tests may be parametrized to search for a slightly modified pattern in the data. Each of runs of the same individual test with different parameters is called \emph{variant of the test}. Usually, all of the variants of the are executed.
 
-
-Usually, the following settings are required for each \emph{individual test}.
+When running a battery, the test(s) to run must be specified along the path to the file containing the tested binary data. Usually, the following settings are required for each \emph{individual test}:
 \begin{markdown*}{%
   hybrid,
   definitionLists,
@@ -351,27 +350,122 @@ Usually, the following settings are required for each \emph{individual test}.
   tableCaptions,
 }
 
-* number of first-level tests - sets how many times the first-level test is repeated
-* size of first-level sequence (if applicable) - Sets how long are the first-level subsequences. In some batteries this setting cannot be changed.
-* choose variant (if applicable) - 
-* test id
-* path to tested file
+* number of first-level tests - Sets how many times the first-level test is repeated.
+* size of first-level sequence - Sets how long are the first-level subsequences. This value might be different for each individual test in the battery.
+* choose variant (if applicable for given test) 
+
 
 \end{markdown*}
 
 %(Obratil 3), cite rewind problem (maybe rtt git?)
-Originally, the testing batteries were created to test the random number generators by generating the data as needed. However, the RTT was created to test \emph{files containing} binary data. The tested file acts as a dummy random number generator and before each individual test it is rewound to the file begin. Because unlike random number generators the files have limited size, it is up to user to set the tests to not need more data than are available in the file. Otherwise, the file is rewound back to the beginning and read again. In this case, the test results might be biased.
+Originally, the testing batteries were created to test the random number generators by generating the data as needed. However, the RTT was created to test \emph{files containing} binary data. The tested file is rewound to the beginning before each individual test. Because unlike random number generators the files have limited size, it is up to user to set the tests to not need more data than are available in the file. Otherwise, when all data from the file have been read but the test need more, the file is rewound back to the beginning and read again. In this case, the test results might be biased. The needed data size is calculated as \emph{number of first-level tests} $\cdot$ \emph{size of first-level sequence}.
 
 \subsection{Dieharder}
-Explain p-samples, name tests with irregular read bytes, tsample
-\subsection{NIST STS}
-Explain stream-size and stream-count\\
-Results - in experiments directory
+%Explain p-samples, name tests with irregular read bytes, tsample
+The \emph{Dieharder} battery was developed atop an older \emph{diehard} battery. The \emph{diehard} battery is extended by adding new tests and improving functional features. The \emph{Dieharder} is available from \cite{dieharder_orig} or as package in some Unix distributions. The \emph{RTT} uses a modified version of \emph{Dieharder} available from \cite{rtt-batteries}.
+
+The \emph{Dieharder} battery contains 31 individual tests. However, four of them are marked as 'Suspect' or 'Do Not Use' and should not be used. Test variants are possible in four tests.
+
+The \emph{Dieharder} allows all settings as described in the \emph{general battery}.
+\begin{markdown*}{%
+  hybrid,
+  definitionLists,
+  footnotes,
+  inlineFootnotes,
+  hashEnumerators,
+  fencedCode,
+  citations,
+  citationNbsps,
+  pipeTables,
+  tableCaptions,
+}
+* \emph{psamples} argument sets the number of first-level tests. Default value is 100.
+* \emph{tsamples} arguments sets the length of first-level subsequence. The units are \emph{random entities}, which are different size for each test. The default of value \emph{tsamples} is 10~000, some test have different default value. Some tests ignore this argument.
+* \emph{ntup} argument chooses ntuple length for relevant tests and thus chooses \emph{test variant}.
+
+\end{markdown*}
+
+% result table description
+Results of the \emph{Dieharder} are printed to standard output. First, information about the tested random number generator or file is printed, the table of test results follows. Each row contains results of one (sub)test. The table contains \emph{test name}, value of \emph{ntup} argument if applicable (zero otherwise, some tests may take different values or use \emph{ntup} to differentiate between subtest), \emph{tsample} and \emph{psamples} values. Last two columns are the \emph{second-level p-value} of the test and \emph{assessment} (passed/failed corresponding to accept/reject null hypothesis) of the p-value. The default \emph{significance level} is $\alpha=0.000001$. Example of Dieharder output can be found in Appendix \ref{append:dieharder-output}. Dieharder allows the user to modify the output using \emph{output flags}, including the possibility to print all of first-level p-values.
+
+The \emph{file rewinds} are detected by Dieharder automatically. In this case the message '\verb|# The file file_input_raw was rewound n times|' is printed to error output, where $n$ is the number of times file was rewound back to the beginning. Alternatively, by using dedicated output flag, the amount of used data and this message are printed to standard output after each test.
+
+\subsection{NIST STS} 
+% Second-level p-value x^2, 10 categories (nist_special 4-2)
+
+% NIST overview
+Original NIST STS is available from \cite{nist_site}, however the implementation is slow. Therefore, optimized version was used in RTT, available from \cite{rtt-batteries}.
+% todo cite nist_optimization?
+
+\emph{NIST STS} allows all setting except for the variants setting.
+\begin{markdown*}{%
+  hybrid,
+  definitionLists,
+  footnotes,
+  inlineFootnotes,
+  hashEnumerators,
+  fencedCode,
+  citations,
+  citationNbsps,
+  pipeTables,
+  tableCaptions,
+}
+* \emph{streamcount} argument notes the number of first-level tests and must be set by the user. For a statistically meaningful result of second-level test should be at least 55. 
+* \emph{streamsize} argument sets the length of first-level subsequences in \emph{bits} and must be set by the user. The tests have various recommendations for minimal size.
+\end{markdown*}
+
+The second-level p-value is computed using the $\chi^2$ test after dividing the first-level p-values into $k=10$ categories. No accept/reject decision is made by the program and has to be done by the user. The NIST STS also calculates the proportion of subsequences passing the first-level test. \cite[p. 4-1]{nist_special}.
+
+Tests results are stored in files inside \emph{experiments/AlgorithmTesting} folder. Table with overview of results is in file \emph{finalAnalysisReport.txt}. Each row contains one subset. First 10 columns are observed frequencies of first-level p-values in given category. The second-level p-value, proportion of subsequences passing the first-level test and test name follow. 
+
+First-level p-values for each test are stored in corresponding folders. In file \emph{stats.txt} the first-level p-values, test statistics and other computational information are stored. In file \emph{results.txt}, only the first level p-values are stored. Example of output is available in Appendix \ref{append:nist-output}.
+
+The file overflow is detected automatically by the battery. In such case, message '\verb|READ ERROR:  Insufficient data in file.|' is printed to standard output.
+
 
 \subsection{Test U01}
-List all batteries.
-Explain repetitions, --bit -nb -w -r -s, mention repeating tests with different parameters
+%TODO: no second level assessment
+%TODO: output format
 
+TestU01 is a software library oriented on testing of random number generators available from \cite{tu01_site}. It contains several batteries, notable are the \emph{SmallCrush, Crush, BigCrush, Rabbit, Alphabit} and \emph{BlockAlphabit}. Because TestU01 is only a software library, custom command-line interface was created for use in RTT, available from \cite{rtt-batteries}.
+
+Each battery in TestU01 allows for a different set of user settings. General overview of parameters available in TestU01 parameters is given, deeper description for each battery follows.
+\begin{markdown*}{%
+  hybrid,
+  definitionLists,
+  footnotes,
+  inlineFootnotes,
+  hashEnumerators,
+  fencedCode,
+  citations,
+  citationNbsps,
+  pipeTables,
+  tableCaptions,
+}
+
+* \emph{repetitions} argument sets the number of first-level tests
+* \emph{bit\textunderscore nb} argument sets the length of first-level subsequences in \emph{bits},  rounded down to closest multiple of 32. Applicable only for Rabbit, Alphabit and BlockAlphabit batteries, but must be set in such case.
+* \emph{bit\textunderscore w} argument is used to choose test variant. Only applicable for \emph{BlockAlphabit} battery.
+\end{markdown*}
+Unlike other batteries, the TestU01 batteries do not employ the \emph{second-level test}. The assessment  of first-level p-values uniformity is up to the user. 
+
+% output format
+The output format is same of all of TestU01 batteries.
+
+%crush family
+\subsubsection{SmallCrush, Crush, BigCrush}
+Batteries from the \emph{Crush} family were created to test general use random number generator. The batteries contain 10, 96 and 106 tests with increasing demand for data size and runtime. The intended use is to apply SmallCrush for a quick assessment. If the the sequence is accepted, more stringent Crush and BigCrush batteries are applied. \cite[p. 242]{tu01_guide} The size of data needed for test run cannot be changed.
+
+%rabbit
+\subsubsection{Rabbit}
+The Rabbit battery contains 26 individual tests. When running this battery, the \emph{bit\textunderscore nb} argument must be set by the user to a value of at least 500. This argument says how many bits \emph{at most} will be used for testing. \cite[p. 152]{tu01_guide} However, several tests require significantly more than 500 bits to run. Also, some tests use significantly less data than specified by the \emph{bit\textunderscore nb} argument.
+
+\subsubsection{Alphabit and BlockAlphabit}
+Both Alphabit and BlockAlphabit batteries contain the same nine individual test. However, in the BlockAlphabit battery, the tested data are reordered to deploy \emph{test variants}. The test variant is chosen by the \emph{bit\textunderscore w} argument taking value from set \{1, 2, 4, 8, 16, 32\}. \cite[p. 155]{tu01_guide} Size of the first-level sequences will be \emph{at most} the size set by \emph{bit\textunderscore nb} argument.
+
+
+
+\subsection{BSI, FIPS}
 
 \section{Testing toolkits}\label{analysis}
 JUST COPIED FROM WORK TO ACADEMIC WRITING COURSE, TO BE USED AND CHANGED LATER.\\
@@ -482,12 +576,15 @@ Compared to the \emph{RTT} the reports created by \emph{rtt-py} contain less inf
 
 % TEST ANALYSIS
 
-\chapter{Tests Analysis}
-We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process. 
-\section{Data Consumption}
+\chapter{Tests Analysis} 
+We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process.
+
+% Data consumption
+\section{Data Consumption} \label{chap:analysis-data}
 several big tables, mention exact parameters the tests  were run with
 
-\section{Time Consumption}
+% Time consumption
+\section{Time Consumption} 
 again some big tables, choose one test as a reference and the rest will be relative. mention exact parameters, maybe add throughput?
 \section{Configuration Calculator}
 goal of the config calc, description, usage etc...
@@ -512,13 +609,12 @@ included things: adding first-level p-values,
 
 \chapter{Conclusion}
 
+%% Start the appendices.
+\appendix 
 
-
-
-
-
-\appendix %% Start the appendices.
-\chapter{An appendix}
+\chapter{Dieharder output} \label{append:dieharder-output}
 Here you can insert the appendices of your thesis.
+
+\chapter{NIST STS output} \label{append:nist-output}
 
 \end{document}
