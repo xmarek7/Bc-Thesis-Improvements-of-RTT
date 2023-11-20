@@ -631,7 +631,17 @@ In each report file there is a list of reports for each individual test or subte
 \chapter{Tests Analysis} 
 We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process.
 
+%%%%%%%%%%%%%%%%%%%
 % DATA CONSUMPTION
+%%%%%%%%%%%%%%%%%%%
+%Dieharder X
+%Nist - Omit
+%Rabbit - to finish
+%SmallCrush
+%Crush - X
+%Block(Alphabit)
+
+
 \section{Data Consumption} \label{chap:analysis-data}
 %several big tables, mention exact parameters the tests  were run with
 
@@ -639,7 +649,7 @@ We can choose from various test statistics. Most of the test statistics in widel
 % variable x constant
 
 % TODO: fix size for tests
-As mentioned in Subsection \ref{chap:sols-batteries}, import part of preventing \emph{file rewinds} is correct configuration of the tests. This is a hard task, because the user has to know size of first-level subsequences. To help with this task, I performed analysis of sizes of first-level subsequences for Dieharder, SmallCrush, Crush, Rabbit, Alphabit and BlockAlphabit batteries.  % TODO why the rest was omitted
+As mentioned in Subsection \ref{chap:sols-batteries}, import part of preventing \emph{file rewinds} is correct configuration of the tests. This is a complicated task, because the user has to know size of first-level subsequences. To help with this task, I performed analysis of sizes of first-level subsequences for Dieharder, SmallCrush, Crush and Rabbit batteries.  % TODO why the rest was omitted
 
 % INTRODUCTION
 \subsection{Introduction} \label{chap:analysis-data-intro}
@@ -658,7 +668,7 @@ To examine how long are the first-level sequences of tests with variable size, I
 
 %args
 % "../../../rtt-statistical-batteries-master/dieharder", "-f", input_file, "-S 0 -s 1", "-g 201", "-D 131180","-d {}".format(test_id), "-p 25" if test_id in {13, 16} else "-p 5"
-In Dieharder both tests with configurable and fixed size are present. All tests with configurable size have a default setting for first-level sequence size, which is usually used. Therefore all tests from this battery are viewed as tests with fixed size.
+In Dieharder both tests with configurable and fixed size are present. All tests with configurable size have a default setting for first-level sequence size, which is usually used. Therefore all tests from this battery are viewed as tests with fixed size. The subsequence sizes are presented in three tables. Table \ref{tab:analysis_dieharder_variable} contains tests with \emph{variabe sizes}. The tests with \emph{constant} sizes are split in two tables. In Table \ref{tab:analysis_dieharder}, the tests with \emph{no variants} are shown, the tests \emph{with varints} are shown in Table \ref{tab:analysis_dieharder_variants}.
 
 \begin{table}[h]
   \begin{tabularx}{0.7\textwidth}{c|r|c|c}
@@ -797,7 +807,7 @@ In Dieharder both tests with configurable and fixed size are present. All tests 
 
 
 \subsection{TestU01 SmallCrush and Crush}
-In the SmallCrush and Crush batteries, all tests have fixed size.
+In the SmallCrush and Crush batteries, only tests with fixed size are present.
 
 \begin{table}[h]
   \begin{tabularx}{0.75\textwidth}{c|r|r|r}
@@ -938,9 +948,9 @@ In the SmallCrush and Crush batteries, all tests have fixed size.
 \end{table}
 
 
-% several table, at least table for minims
+% several tables, at least table for minims
 \subsection{TestU01 Rabbit}
-All tests in the Rabbit battery are with configurable size. The size is configured using the \emph{bit\textunderscore nb} argument, where the desired size is entered in \emph{bits} and for use is rounded down to closest multiple of 32. The \emph{bit\textunderscore nb} has no default value, must be at least 500 and \emph{at most} \emph{bit\textunderscore nb} bits will be read from the file. \cite[p. 152]{tu01_guide} However, almost half of tests require bigger \emph{bit\textunderscore nb} and will not run otherwise. These tests and their required sizes are in Table \ref{tab:analysis_rabbit_minims}. The minims were found and verified experimentally.
+All tests in the Rabbit battery are with configurable size. The size is configured using the \emph{bit\textunderscore nb} argument, where the desired size is entered in \emph{bits} and for use is rounded down to closest multiple of 32. The \emph{bit\textunderscore nb} has no default value, must be at least 500 and \emph{at most} \emph{bit\textunderscore nb} bits will be read from the file. \cite[p. 152]{tu01_guide} However, almost half of the tests require bigger \emph{bit\textunderscore nb} and will not run otherwise. These tests and their required sizes are in Table \ref{tab:analysis_rabbit_minims}. The minims were found and verified experimentally.
 
 \begin{table}[h]
   \begin{tabularx}{0.4\textwidth}{c|r}
@@ -960,11 +970,11 @@ All tests in the Rabbit battery are with configurable size. The size is configur
     25& 30,720\\
     26& 300,480\\
   \end{tabularx}
-  \caption{Minimal values of \emph{bit\textunderscore nb} argument needed to run tests from \emph{Rabbit} battery.}
+  \caption{Minimal values of \emph{bit\textunderscore nb} argument other than default needed to run tests from \emph{Rabbit} battery.}
   \label{tab:analysis_rabbit_minims}
 \end{table}
 
-Tests 6, 7 and 8 read only data with size $2^k, k \in \mathbb{N}$. The possible values of $k$ are different for each test and shown in Table \ref{tab:analysis_rabbit_two_powers}. \cite[p. 124-126]{tu01_guide} If the \emph{bit\textunderscore nb} is not power of two, closest lower applicable power of 2 is used. The \emph{bit\textunderscore nb} still has to be at least 500, even though smaller amount of bits may be read.
+Tests 6, 7 and 8 read only data with size $2^k, k \in \mathbb{N}$. The possible values of $k$ are different for each test and shown in Table \ref{tab:analysis_rabbit_two_powers}. \cite[p. 124-126]{tu01_guide} If the \emph{bit\textunderscore nb} is not power of two, closest lower applicable power of 2 is used. The \emph{bit\textunderscore nb} still has to be at least 500, even though smaller amount of bits may be used.
 
 \begin{table}[h]
   \begin{tabularx}{0.33\textwidth}{c|c}
@@ -980,9 +990,11 @@ Tests 6, 7 and 8 read only data with size $2^k, k \in \mathbb{N}$. The possible 
   \label{tab:analysis_rabbit_two_powers}
 \end{table}
 
-The only test with \emph{variable} size from Rabbit battery is 20. It uses around TODO \% of data size specified by \emph{bit\textunderscore nb} argument. Test 5 
+The only test with \emph{variable} size from Rabbit battery is 20. It uses around TODO \% of data size specified by \emph{bit\textunderscore nb} argument. Test 5 reads only significantly small amount of data. When the \emph{bit\textunderscore nb} arguments specified that the test should use 10MB of data, the tests uses only  3,536 \emph{bytes}. When the test should use 100MB of data, it uses only 8,488 \emph{bytes}.
 
-For the following analysis of used first-level subseqeunce sizes the \emph{bit\textunderscore nb} argument was fixed to value 52,428,800. This is the lowest value for which all tests from Rabbit, Alphabit and BlockAlphabit will run (all batteries from TestU01 using \emph{bit\textunderscore nb} argument).
+For the following analysis of first-level subseqeunce sizes the \emph{bit\textunderscore nb} argument was fixed to value 52,428,800. This is the lowest value for which all tests from Rabbit, Alphabit and BlockAlphabit will run (all batteries from TestU01 using \emph{bit\textunderscore nb} argument).
+
+%TODO: maximal sizes
 
 %%%%%%%%%%%%%%%%%%%
 % Time consumption
@@ -996,7 +1008,15 @@ For the following analysis of used first-level subseqeunce sizes the \emph{bit\t
 % Alphabit X
 
 \section{Time Consumption} 
-again some big tables, choose one test as a reference and the rest will be relative. mention exact parameters, maybe add throughput?
+%again some big tables, choose one test as a reference and the rest will be relative. mention exact parameters, maybe add throughput?
+
+Another used way to analyse tests was to examine they runtimes. This may be used to \emph{exempt} tests that would take \emph{unreasonable} long time to execute or to detect problems with test runs (for example when the test begins to cycle on non-random data).
+
+Because the runtimes highly depend on used machine, they are presented in \emph{relative} form compared to runtime of Diehard 3d Sphere (Minimum Distance) Test from Dieharder battery.\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows 10 this test took 0.021 seconds.} The used implementations of batteries are the ones used in RTT and were taken from \cite{rtt-batteries}.
+
+The batteries were run directly (i.e. not using RTT) and each individual test was executed in separate. Each individual test was executed at least one hundred times and average runtime over these runs was taken.
+
+
 
 \subsection{Dieharder}
 
