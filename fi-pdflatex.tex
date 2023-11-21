@@ -369,9 +369,9 @@ Testing files leads to need of \emph{file rewind} detection. File rewind occurs 
 
 \subsection{Dieharder} \label{chap:sols-dieharder}
 %Explain p-samples, name tests with irregular read bytes, tsample
-The \emph{Dieharder} battery was developed as an extension to an older \emph{Diehard} battery. The \emph{Dieharder} is available from \cite{dieharder_orig} or as package in some Unix distributions. Both \emph{RTT} and \emph{rtt-py} use a version of \emph{Dieharder} with modified output format available from \cite{rtt-batteries}.
+The \emph{Dieharder} battery was developed by Robert G. Brown at Duke University as an extension to an older \emph{Diehard} battery (created by George Marsaglia). \cite{dieharder_orig} The \emph{Dieharder} is available from \cite{dieharder-git} maintained by Dirk Eddelbuettel or as package in some Unix distributions.
 
-31 individual tests are contained in the Dieharder. However, four of them are marked as 'Suspect' or 'Do Not Use' and should not be used. Test variants are possible in four tests.
+In the Dieharder 31 individual tests are contained. However, four of them are marked as 'Suspect' or 'Do Not Use' and should not be used. Test variants are possible in four tests.
 
 The \emph{Dieharder} allows all settings as described in the \emph{abstract battery}. They are:
 \begin{markdown*}{%
@@ -403,7 +403,7 @@ The \emph{file rewinds} are detected by Dieharder automatically. In such case me
 % Second-level p-value x^2, 10 categories (nist_special 4-2)
 
 % NIST overview
-Original NIST STS\footnote{National Institute of Standards and Technology - Statistical Test Suite} implementation is available from \cite{nist_site}. Optimized version developed by CRoCS FI MU \cite{nist_special} is used in RTT, available from \cite{rtt-batteries} \emph{NIST STS} contains 15 individual tests with no variants. Allowed settings are:
+The NIST STS\footnote{National Institute of Standards and Technology - Statistical Test Suite} was implemented by NIST \cite{nist_special} and is available from \cite{nist_site}. Due to the original implementation being slow, optimized version was developed by CRoCS FI MU \cite{nist_special} available from \cite{nist-opt}. \emph{NIST STS} contains 15 individual tests with no variants. Allowed settings are:
 \begin{markdown*}{%
   hybrid,
   definitionLists,
@@ -433,7 +433,9 @@ The file rewind is detected automatically by the battery. In such case, message 
 %TODO: no second level assessment
 %TODO: output format
 
-TestU01 was developed to be a state-of-the-art software library oriented on testing of random number generators and is available from \cite{tu01_site}. It contains several batteries, used in \emph{RTT} and \emph{rtt-py} are the \emph{SmallCrush, Crush, BigCrush, Rabbit, Alphabit} and \emph{BlockAlphabit}. Because TestU01 is a software library only, custom command-line interface was created for use in RTT (also used in \emph{rtt-py}), available from \cite{rtt-batteries}. The TestU01 does not apply a two-level test, it only allows to repeat the single-level test. In this battery, the \emph{individual test} maps to the repeated \emph{single-level test}. If the user wishes to apply the second-level test, they have to examine the distribution of single-level tests on their own.
+TestU01 was developed by Université de Montrél to be a state-of-the-art software library oriented on testing of random number generators \cite{tu01_paper} and is available from \cite{tu01_site}. It contains several batteries, used in \emph{RTT} and \emph{rtt-py} are the \emph{SmallCrush, Crush, BigCrush, Rabbit, Alphabit} and \emph{BlockAlphabit}. Because TestU01 is a software library only, custom command-line interface was created by Ľubomír Obrátil available from \cite{rtt-batteries}, which is describred.
+
+The TestU01 does not apply a two-level test, it only allows to repeat the single-level test. In this battery, the \emph{individual test} maps to the repeated \emph{single-level test}. If the user wishes to apply the second-level test, they have to examine the distribution of single-level tests on their own.
 
 Each battery in TestU01 allows for a different set of user settings. All possible arguments in TestU01 are:
 \begin{markdown*}{%
@@ -478,7 +480,7 @@ Both Alphabit and BlockAlphabit batteries contain the same nine individual test.
 
 % FIPS
 \subsection{FIPS Battery} \label{chap:sols-fips}
-The FIPS\footnote{Federal Information Processing Standards} battery contains five tests and is based on FIPS 140-2 standard. Custom command-line interface of the battery was created for \emph{rtt-py} available from \cite{rtt-py-batteries}. The interface is based on implementation taken from \cite{fips-site}. No test variants are available and the length of first-level sequence is set to 2500 bytes and cannot be changed \cite[p. 20]{vavercak}. Only one arguments is available:
+The FIPS\footnote{Federal Information Processing Standards} battery contains five tests and is based on FIPS 140-2 standard. \cite{fips_stand} Custom command-line interface of the battery was created by Patrik Vaverčák available from \cite{rtt-py-batteries}. The interface is based on implementation taken from \cite{fips-site}. No test variants are available and the length of first-level sequence is set to 2500 bytes and cannot be changed \cite[p. 20]{vavercak}. Only one arguments is available:
 \begin{markdown*}{%
   hybrid,
   definitionLists,
@@ -500,7 +502,7 @@ File rewinds are detected automatically by the battery. In such case, the batter
 
 % BSI
 \subsection{BSI battery} \label{chap:sols-bsi}
-The BSI\footnote{Bundesamt für Sicherheit in der Informationstechnik} battery contains nine test and is based on series of standards released by BSI. \cite[p. 3]{vavercak} For use in \emph{rtt-py} a custom command-line interface was created, available from \cite{rtt-py-batteries}. The tests implementations were extracted from the ParanoYa application. \cite[p. 16]{vavercak}
+The BSI\footnote{Bundesamt für Sicherheit in der Informationstechnik} battery contains nine test and is based on series of standards released by BSI. \cite{bsi_stand} Custom command-line interface was created by Patrik Vaverčák, available from \cite{rtt-py-batteries}. The tests implementations were extracted from the ParanoYa application. \cite[p. 16]{vavercak}
 
 No test variants are available in the BSI battery. Each test has its own preset \emph{first-level subsequence size}, which cannot be changed. One argument is available for the battery:
 \begin{markdown*}{%
@@ -628,8 +630,11 @@ In each report file there is a list of reports for each individual test or subte
 
 % TEST ANALYSIS
 
-\chapter{Tests Analysis} 
-We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process.
+\chapter{Tests Analysis} \label{chap: analysis}
+%We can choose from various test statistics. Most of the test statistics in widely used test batteries work with data of fixed length. TODO: REF ANALYSIS CHAPTER However, in some tests data with varying length are tested. These statistics further split into two categories. In the first category, the length of tested data is preset by user. These can be further viewed as fixed-length tests. In the second category, the length of tested data is determined during the testing process.
+
+This chapter aims to provide more information about the tests from the practical point of view. First, I analysed how much data the tests use to help with configurations of the batteries. As next, I measured how much time each test from the batteries takes to run. Data from both parts were used to create a program for automatic creation of test configurations for \emph{RTT} and \emph{rtt-py} - the \emph{Configuration Calculator}. Last section will done? % is aimed at finding tests with problematic (non-uniform) distributions.
+
 
 %%%%%%%%%%%%%%%%%%%
 % DATA CONSUMPTION
@@ -637,9 +642,9 @@ We can choose from various test statistics. Most of the test statistics in widel
 %Dieharder X
 %Nist - Omit
 %Rabbit - to finish
-%SmallCrush
+%SmallCrush - X
 %Crush - X
-%Block(Alphabit)
+%Block(Alphabit) - omit
 
 
 \section{Data Consumption} \label{chap:analysis-data}
@@ -651,26 +656,33 @@ We can choose from various test statistics. Most of the test statistics in widel
 % TODO: fix size for tests
 As mentioned in Subsection \ref{chap:sols-batteries}, import part of preventing \emph{file rewinds} is correct configuration of the tests. This is a complicated task, because the user has to know size of first-level subsequences. To help with this task, I performed analysis of sizes of first-level subsequences for Dieharder, SmallCrush, Crush and Rabbit batteries.  % TODO why the rest was omitted
 
+The NIST STS, Alphabit and BlockAlphabit batteries are not shown because all of their tests are with \emph{configurable} size. Unlike in Rabbit battery, the tests from mentioned batteries were observed to use the amount of data specified by their arguments. The BigCrush battery was skipped because its first-level subsequence are larger than the currently intended use of RTT.
+
+
 % INTRODUCTION
 \subsection{Introduction} \label{chap:analysis-data-intro}
 
-The idea was to run all tests from the batteries and calculate how many bytes were used for each individual test or test varint. Based on this information, a table for each battery containing this information was created.
+The idea was to run all tests from the batteries and calculate how many bytes were used for each individual test or test variant. Based on this information, a table for each battery containing this information was created.
 
 The tests can be split into two cattegories based on users influence on the first-level subseqeunce size. In the subsequent text, I use the following terminology. \emph{Tests with configurable size} are the tests where the size of first-level subsequence can be set by the user. The tests with predefined and unchangable first-level subsequence size are called \emph{tests with fixed size}.
 
-During the analysis another way to split tests into two categories was found. This takes into account if all runs of the individual test with \emph{the same settings} have the same first-level subseqeunce size, or if each reads data of different size. The first case is called \emph{tests with constant size}, the second is called \emph{tests with variable size}. 
+During the analysis another way to split tests into two categories was found. This takes into account if all runs of the individual test have the same first-level subseqeunce size, or if each run has a different size. The first case is called \emph{tests with constant size}, the second is called \emph{tests with variable size}. 
 
-The size of the first-level subseqeunce in the tests with variable size is based on the \emph{content} of the sequence. TODO: EXAMPLE FROM DIEHARDER. For an \emph{individual} test from this category and for random content of the sequence, the \emph{real} size of the first-level sequence is close to \emph{some} value. Behaviour of the test on \emph{extremely non-random} sequence (for example all zeroes or ones) is different for each test. Some tests read only an extremely small part of the tested data, some tests will cycle.
+The size of the first-level subseqeunce in the tests with variable size is determined by \emph{content} of the sequence. TODO: EXAMPLE FROM DIEHARDER. For an \emph{individual} test from this category and for random content of the sequence, the \emph{real} size of the first-level sequence is close to \emph{some} value. Behaviour of the test on \emph{extremely non-random} sequence (for example all zeroes or ones) is different for each test. Some tests read an extremely small subsequence only, some tests will cycle.
 
-To examine how long are the first-level sequences of tests with variable size, I run each test from this category at least 100 times on different \emph{random} data (taken from /dev/random). Tests from this category are presented in their own tables. To verify that tests with constant size are indeed constant, I run them several times with different number of first-level sequences.
+To examine how long are the first-level sequences of tests with variable size, I run each test from this category at least 100 times on different \emph{random} data (taken from /dev/random). Tests from this category are presented in their own tables containing mean length of the subsequence and differences between mean and lowest and highest observed amount.
+
+To verify that tests with constant size are indeed constant, I run them several times with different number of first-level sequences. The table for them contains only length of the subsequence.
+
+
 
 \subsection{Dieharder}
 
 %args
 % "../../../rtt-statistical-batteries-master/dieharder", "-f", input_file, "-S 0 -s 1", "-g 201", "-D 131180","-d {}".format(test_id), "-p 25" if test_id in {13, 16} else "-p 5"
-In Dieharder both tests with configurable and fixed size are present. All tests with configurable size have a default setting for first-level sequence size, which is usually used. Therefore all tests from this battery are viewed as tests with fixed size. The subsequence sizes are presented in three tables. Table \ref{tab:analysis_dieharder_variable} contains tests with \emph{variabe sizes}. The tests with \emph{constant} sizes are split in two tables. In Table \ref{tab:analysis_dieharder}, the tests with \emph{no variants} are shown, the tests \emph{with varints} are shown in Table \ref{tab:analysis_dieharder_variants}.
+In Dieharder both tests with configurable and fixed size are present. All tests with configurable size have a default setting for first-level sequence size, which is usually used. Therefore all tests from this battery are in the analysis viewed as tests with fixed size. The subsequence sizes are presented in three tables. Table \ref{tab:analysis_dieharder_variable} contains tests with \emph{variable sizes}. The tests with \emph{constant} sizes are split in two tables. In Table \ref{tab:analysis_dieharder}, the tests with \emph{no variants} are shown, the tests \emph{with varints} are shown in Table \ref{tab:analysis_dieharder_variants}.
 
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabularx}{0.7\textwidth}{c|r|c|c}
     %\toprule
     Test ID & average & $\Delta$ min & $\Delta$ max\\
@@ -681,57 +693,14 @@ In Dieharder both tests with configurable and fixed size are present. All tests 
     208 & 116,881,517 & 0.047\% & 0.014\%\\
  
   \end{tabularx}
-  \caption{First-level subseqeunces sizes for Dieharder tests with \emph{variable} sizes.}
+  \caption{First-level subseqeunce sizes for Dieharder tests with \emph{variable} sizes.}
   \label{tab:analysis_dieharder_variable}
 \end{table}
 
-\begin{table}[h]
-  \begin{tabularx}{0.65\textwidth}{lcr}
-    {\begin{tabularx}{0.25\textwidth}{l|r}
-        ID &  bytes\\
-        \midrule
-        0 & 153,600\\
-        1 & 4,000,020\\
-        2 & 5,120,000\\
-        3 & 2,400,000\\
-        4 & 1,048,584\\
-        5 & 8,388,608\\
-        6 & 5,592,416\\
-        7 & 2,621,484\\
-        8 & 256,004\\
-        9 & 5,120,000\\
-        10 & 96,000\\
-        11 & 64,000\\
-    \end{tabularx}} 
-    
-    {\begin{tabularx}{0.1\textwidth}{cc}
-      & \\
-    \end{tabularx}} 
-
-    {\begin{tabularx}{0.3\textwidth}{l|r}
-        ID & bytes\\
-        \midrule
-        12 & 48,000\\
-        14 & 796\\
-        15 & 400,000\\
-        17 & 80,000,000\\
-        100 & 400,000\\
-        101 & 400,000\\
-        102 & 400,000\\
-        204 & 40,000 \\
-        205 & 614,400,000 \\ 
-        206 & 51,200,000 \\
-        209 & 260,000,000 \\ 
-        &
-        
-    \end{tabularx}} 
-  \end{tabularx}
-  \caption{First-level subseqeunces sizes for Dieharder tests with \emph{constant} sizes and no variants.}
-  \label{tab:analysis_dieharder}
-\end{table}
 
 
-\begin{table}[h]
+
+\begin{table}[H]
   \begin{tabularx}{\textwidth}{lcr}
     {\begin{tabularx}{0.35\textwidth}{lr|r}
         ID & ntup & bytes\\
@@ -800,16 +769,91 @@ In Dieharder both tests with configurable and fixed size are present. All tests 
             &    &
     \end{tabularx}} 
   \end{tabularx}
-  \caption{First-level subseqeunces sizes for Dieharder tests with \emph{constant} sizes and test variants.}
+  \caption{First-level subseqeunce sizes for Dieharder tests with \emph{constant} sizes and test variants.}
   \label{tab:analysis_dieharder_variants}
 \end{table}
 
+\begin{table}[H]
+  \begin{tabularx}{0.65\textwidth}{lcr}
+    {\begin{tabularx}{0.25\textwidth}{l|r}
+        ID &  bytes\\
+        \midrule
+        0 & 153,600\\
+        1 & 4,000,020\\
+        2 & 5,120,000\\
+        3 & 2,400,000\\
+        4 & 1,048,584\\
+        5 & 8,388,608\\
+        6 & 5,592,416\\
+        7 & 2,621,484\\
+        8 & 256,004\\
+        9 & 5,120,000\\
+        10 & 96,000\\
+        11 & 64,000\\
+    \end{tabularx}} 
+    
+    {\begin{tabularx}{0.1\textwidth}{cc}
+      & \\
+    \end{tabularx}} 
+
+    {\begin{tabularx}{0.3\textwidth}{l|r}
+        ID & bytes\\
+        \midrule
+        12 & 48,000\\
+        14 & 796\\
+        15 & 400,000\\
+        17 & 80,000,000\\
+        100 & 400,000\\
+        101 & 400,000\\
+        102 & 400,000\\
+        204 & 40,000 \\
+        205 & 614,400,000 \\ 
+        206 & 51,200,000 \\
+        209 & 260,000,000 \\ 
+        &
+        
+    \end{tabularx}} 
+  \end{tabularx}
+  \caption{First-level subseqeunces sizes for Dieharder tests with \emph{constant} sizes and no variants.}
+  \label{tab:analysis_dieharder}
+\end{table}
 
 
 \subsection{TestU01 SmallCrush and Crush}
-In the SmallCrush and Crush batteries, only tests with fixed size are present.
+In the SmallCrush and Crush batteries, only tests with \emph{fixed} size are present. Both batteries contain tests with \emph{variable} size, which are shown in Table \ref{tab:analysis_smallcrush_variable} for SmallCrush and in Table \ref{tab:analysis_crush_variable} for Crush. The tests with \emph{constant} sizes from SmallCrush are in Table \ref{tab:analysis_smallcrush}, from Crush in  Table \ref{tab:analysis_crush}.
 
-\begin{table}[h]
+
+\begin{table}[H]
+  \begin{tabularx}{0.75\textwidth}{c|r|r|r}
+    %\toprule
+    Test ID & average & $\Delta$ min & $\Delta$ max\\
+    \midrule
+    3 & 204,733,510 & 0.563\% & 0.725\% \\
+    5 & 98,731,035 & 0.095\% & 0.087\% \\
+  \end{tabularx}
+  \caption{First-level subseqeunce sizes for \emph{SmallCrush} tests with \emph{variable} sizes.}
+  \label{tab:analysis_smallcrush_variable}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabularx}{0.4\textwidth}{c|r}
+  Test ID & bytes \\
+  \midrule
+    1 & 40,000,000 \\
+    2 & 40,000,000 \\
+    4 & 102,400,000 \\
+    6 & 48,000,000 \\
+    7 & 204,800,000 \\
+    8 & 28,800,000 \\
+    9 & 120,000,000 \\
+    10 & 20,000,000 \\
+
+  \end{tabularx}
+  \caption{First-level subseqeunce sizes for \emph{SmallCrush} tests with \emph{constant} sizes.}
+  \label{tab:analysis_smallcrush}
+\end{table}
+
+\begin{table}[H]
   \begin{tabularx}{0.75\textwidth}{c|r|r|r}
     %\toprule
     Test ID & average & $\Delta$ min & $\Delta$ max\\
@@ -828,12 +872,12 @@ In the SmallCrush and Crush batteries, only tests with fixed size are present.
     92&1,599,996,811&0.0049\%&0.0043\%\\
 
   \end{tabularx}
-  \caption{First-level subseqeunces sizes for \emph{Crush} tests with \emph{variable} sizes.}
+  \caption{First-level subseqeunce sizes for \emph{Crush} tests with \emph{variable} sizes.}
   \label{tab:analysis_crush_variable}
 \end{table}
 
 
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabularx}{\textwidth}{lcr}
     {\begin{tabularx}{0.30\textwidth}{l|r}
         ID & bytes\\
@@ -943,16 +987,20 @@ In the SmallCrush and Crush batteries, only tests with fixed size are present.
 
     \end{tabularx}} 
   \end{tabularx}
-  \caption{First-level subseqeunces sizes for \emph{Crush} tests with \emph{constant} sizes.}
+  \caption{First-level subseqeunce sizes for \emph{Crush} tests with \emph{constant} sizes.}
   \label{tab:analysis_crush}
 \end{table}
 
 
-% several tables, at least table for minims
-\subsection{TestU01 Rabbit}
-All tests in the Rabbit battery are with configurable size. The size is configured using the \emph{bit\textunderscore nb} argument, where the desired size is entered in \emph{bits} and for use is rounded down to closest multiple of 32. The \emph{bit\textunderscore nb} has no default value, must be at least 500 and \emph{at most} \emph{bit\textunderscore nb} bits will be read from the file. \cite[p. 152]{tu01_guide} However, almost half of the tests require bigger \emph{bit\textunderscore nb} and will not run otherwise. These tests and their required sizes are in Table \ref{tab:analysis_rabbit_minims}. The minims were found and verified experimentally.
 
-\begin{table}[h]
+
+
+
+% several tables, at least table for minims
+\subsection{TestU01 Rabbit} \label{chap:analysis-data-rabbit}
+All tests in the Rabbit battery are with \emph{configurable} size. The size is configured using the \emph{bit\textunderscore nb} argument, where the desired size is entered in \emph{bits} and for use is rounded down to closest multiple of 32. The \emph{bit\textunderscore nb} has no default value, must be at least 500 and \emph{at most} \emph{bit\textunderscore nb} bits will be read from the file. \cite[p. 152]{tu01_guide} However, almost half of the tests require bigger \emph{bit\textunderscore nb} and will not run otherwise. These tests and their required sizes are in Table \ref{tab:analysis_rabbit_minims}. The minims were found and verified experimentally.
+
+\begin{table}[H]
   \begin{tabularx}{0.4\textwidth}{c|r}
     %\toprule
     Test ID & minimal \emph{bit\textunderscore nb}\\
@@ -974,9 +1022,9 @@ All tests in the Rabbit battery are with configurable size. The size is configur
   \label{tab:analysis_rabbit_minims}
 \end{table}
 
-Tests 6, 7 and 8 read only data with size $2^k, k \in \mathbb{N}$. The possible values of $k$ are different for each test and shown in Table \ref{tab:analysis_rabbit_two_powers}. \cite[p. 124-126]{tu01_guide} If the \emph{bit\textunderscore nb} is not power of two, closest lower applicable power of 2 is used. The \emph{bit\textunderscore nb} still has to be at least 500, even though smaller amount of bits may be used.
+Tests 6, 7 and 8 read only data with size $2^k$($k \in \mathbb{N}$) \emph{bits}. The possible values of $k$ are different for each test and shown in Table \ref{tab:analysis_rabbit_two_powers}. \cite[p. 124-126]{tu01_guide} If the \emph{bit\textunderscore nb} is not power of two, closest lower applicable power of 2 is used. The \emph{bit\textunderscore nb} still has to be at least 500, even though smaller amount of bits may be used.
 
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabularx}{0.33\textwidth}{c|c}
     %\toprule
     Test ID & maximal $k$\\
@@ -990,9 +1038,10 @@ Tests 6, 7 and 8 read only data with size $2^k, k \in \mathbb{N}$. The possible 
   \label{tab:analysis_rabbit_two_powers}
 \end{table}
 
-The only test with \emph{variable} size from Rabbit battery is 20. It uses around TODO \% of data size specified by \emph{bit\textunderscore nb} argument. Test 5 reads only significantly small amount of data. When the \emph{bit\textunderscore nb} arguments specified that the test should use 10MB of data, the tests uses only  3,536 \emph{bytes}. When the test should use 100MB of data, it uses only 8,488 \emph{bytes}.
+The only test with \emph{variable} size from Rabbit battery is 20. It uses around 80 \% of data size specified by \emph{bit\textunderscore nb} argument. Test 5 reads significantly less data than specified. When the \emph{bit\textunderscore nb} argument specifies that the test should use 10MB of data, the test 5 uses only  3,536 \emph{bytes}. When the test should use 100MB of data, it uses only 8,488 \emph{bytes}.
 
-For the following analysis of first-level subseqeunce sizes the \emph{bit\textunderscore nb} argument was fixed to value 52,428,800. This is the lowest value for which all tests from Rabbit, Alphabit and BlockAlphabit will run (all batteries from TestU01 using \emph{bit\textunderscore nb} argument).
+\todo{sizes for rabbit?}
+%For the following analysis of first-level subseqeunce sizes the \emph{bit\textunderscore nb} argument was fixed to value 52,428,800. This is the lowest value for which all tests from Rabbit, Alphabit and BlockAlphabit will run (all batteries from TestU01 using \emph{bit\textunderscore nb} argument).
 
 %TODO: maximal sizes
 
@@ -1007,23 +1056,28 @@ For the following analysis of first-level subseqeunce sizes the \emph{bit\textun
 % Rabbit X
 % Alphabit X
 
-\section{Time Consumption} 
+\section{Time Consumption} \label{chap:analysis-times}
 %again some big tables, choose one test as a reference and the rest will be relative. mention exact parameters, maybe add throughput?
 
-Another used way to analyse tests was to examine they runtimes. This may be used to \emph{exempt} tests that would take \emph{unreasonable} long time to execute or to detect problems with test runs (for example when the test begins to cycle on non-random data).
+Another used way to analyze tests was to examine their runtimes. This may be used to \emph{exempt} tests that would take \emph{unreasonably} long to execute or to detect problems while running the tests (for example when the test begins to cycle on non-random data).
 
-Because the runtimes highly depend on used machine, they are presented in \emph{relative} form compared to runtime of Diehard 3d Sphere (Minimum Distance) Test from Dieharder battery.\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows 10 this test took 0.021 seconds.} The used implementations of batteries are the ones used in RTT and were taken from \cite{rtt-batteries}.
+\todo{Reason why I chose this test?}
+Because the runtimes highly depend on used machine, they are presented in \emph{relative} form compared to the runtime of Diehard 3d Sphere (Minimum Distance) Test from Dieharder battery.\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows 10 this test took 0.021 seconds.} 
 
-The batteries were run directly (i.e. not using RTT) and each individual test was executed in separate. Each individual test was executed at least one hundred times and average runtime over these runs was taken.
+The used implementations of batteries are taken from RTT (available from \cite{rtt-batteries}). The batteries were run directly (i.e. not using RTT) and each individual test was executed in separate at least one hundred times. Mean runtime over these runs is presented in this Section.
+
+The runtimes for Dieharder are in Table \ref{tab:analysis_time_dieharder}. The Dieharder tests were run without the \emph{rate} option and with default values of \emph{tsample} argument. Runtimes for SmallCrush and Crush batteries are in Table \ref{tab:analysis_smallcrush_time} and Table \ref{tab:analysis_crush_times}.
+
+To measure runtimes of test with \emph{configurable} size, I had to fix the first-level subsequence size for each test. For NIST STS battery, I set \emph{stream size} argument to 1,000,000 (the subsequences were 250,000  bytes long). This is the lowest value which satisfies subsequence size recommendations for all the tests. \cite{nist_special} NIST STS runtimes are shown in Table \ref{tab:analysis_nist_time}.
+
+For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\textunderscore nb} argument to value 52,428,800. This is the lowest value for which all tests from the batteries are executed (see Subsection \ref{chap:analysis-data-rabbit}). The runtimes for Rabbit battery are in Table \ref{tab:analysis_rabbit_time}. Alphabit and BlockAlphabit batteries share Table \ref{tab:analysis_alphabit_time}, because both batteries employ the \emph{same} tests and no difference in runtimes was observed.
 
 
 
-\subsection{Dieharder}
-
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabularx}{\textwidth}{lcr}
-    {\begin{tabularx}{0.27\textwidth}{l|r}
-        test  & time\\
+    {\begin{tabularx}{0.33\textwidth}{l|r}
+        test  & runtime\\
         \midrule
 		0 & 0.43 \\
 		1 & 2.93 \\
@@ -1053,9 +1107,8 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
 		200 (5) & 3.02 \\
 		200 (6) & 4.20 \\
     \end{tabularx}} 
-    
-    {\begin{tabularx}{0.27\textwidth}{l|r}
-        ID & time\\
+    {\begin{tabularx}{0.33\textwidth}{l|r}
+        Test & runtime\\
         \midrule
         200 (7) & 5.98 \\
 		200 (8) & 7.07 \\
@@ -1085,8 +1138,8 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
 		203 (11) & 23.44 \\
 		203 (12) & 25.24 \\
     \end{tabularx}} 
-    {\begin{tabularx}{0.27\textwidth}{l|r}
-        ID & time\\
+    {\begin{tabularx}{0.33\textwidth}{l|r}
+        Test & runtime\\
         \midrule
         203 (13) & 27.15 \\
 		203 (14) & 29.19 \\
@@ -1117,16 +1170,15 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
             & \\
     \end{tabularx}} 
   \end{tabularx}
-  \caption{Times for \emph{Dieharder}.}
+  \caption{Runtimes for \emph{Dieharder} battery.}
   \label{tab:analysis_time_dieharder}
 \end{table}
 
-\subsection{NIST STS}
 
-\begin{table}[h]
-  \begin{tabularx}{0.25\textwidth}{c|r}
+\begin{table}[H]
+  \begin{tabularx}{0.33\textwidth}{c|r}
     %\toprule
-    Test ID & time\\
+    Test ID & runtime\\
     \midrule
     1 & 0.16 \\
     2 & 0.17 \\
@@ -1144,12 +1196,12 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
     14 & 0.93 \\
     15 & 1.55 \\
   \end{tabularx}
-  \caption{Runtimes for NIST STS battery.}
+  \caption{Runtimes for NIST STS battery with \emph{stream size} 1,000,000 bits.}
   \label{tab:analysis_nist_time}
 \end{table}
 
-\subsection{TestU01 Smallcrush}
-\begin{table}[h]
+
+\begin{table}[H]
   \begin{tabularx}{0.3\textwidth}{c|r}
     Test ID & Runtime \\
     \midrule
@@ -1168,12 +1220,11 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
   \label{tab:analysis_smallcrush_time}
 \end{table}
 
-\subsection{TestU01 Crush}
 
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabularx}{0.85\textwidth}{lcr}
     {\begin{tabularx}{0.25\textwidth}{c|r}
-        ID & bytes\\
+        ID & runtime\\
         \midrule
         1 & 691.72 \\
         2 & 412.71 \\
@@ -1215,7 +1266,7 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
     \end{tabularx}} 
     
     {\begin{tabularx}{0.25\textwidth}{c|r}
-        ID & bytes\\
+        ID & runtime\\
         \midrule
         33 & 249.16 \\
         34 & 310.39 \\
@@ -1256,7 +1307,7 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
     \end{tabularx}} 
     
     {\begin{tabularx}{0.25\textwidth}{c|r}
-        ID & bytes\\
+        ID & runtime\\
         \midrule
         65 & 843.17 \\
         66 & 207.06 \\
@@ -1291,18 +1342,14 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
         95 & 447.90 \\
         96 & 527.98 \\
  
-
     \end{tabularx}} 
   \end{tabularx}
-  \caption{Runtime for TestU01 \emph{Crush}.}
+  \caption{Runtime for TestU01 \emph{Crush} battery.}
   \label{tab:analysis_crush_times}
 \end{table}
 
 
-
-\subsection{TestU01 Rabbit}
-
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabularx}{0.6\textwidth}{lcr}
     {\begin{tabularx}{0.25\textwidth}{c|r}
         ID & runtime\\
@@ -1343,14 +1390,12 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
         26 & 6.08 \\
     \end{tabularx}} 
   \end{tabularx}
-  \caption{Runtimes for TestU01 Rabbit battery.}
+  \caption{Runtimes for TestU01 Rabbit battery with \emph{bit\textunderscore nb} 52,428,800}
   \label{tab:analysis_rabbit_time}
 \end{table}
 
 
-\subsection{TestU01 Alphabit and BlockAlphabit}
-
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabularx}{0.3\textwidth}{c|r}
   Test ID & Runtime \\
   \midrule
@@ -1364,14 +1409,37 @@ The batteries were run directly (i.e. not using RTT) and each individual test wa
     8 & 10.52 \\
     9 & 8.07 \\
   \end{tabularx}
-  \caption{Runtimes for TestU01 Rabbit battery.}
+  \caption{Runtimes for TestU01 Alphabit and BlockAlphabit batterires with \emph{bit\textunderscore nb} 52,428,800.}
   \label{tab:analysis_alphabit_time}
 \end{table}
 
-
+%%%%%%%%%%%%%%
 % CONFIG CALC
+%%%%%%%%%%%%%%
+
 \section{Configuration Calculator}
-goal of the config calc, description, usage etc...
+\todo{appendix examples, git link (when ready)}
+
+The information collected in Sections \ref{chap:analysis-data} and \ref{chap:analysis-times} were used in the \emph{Configuration Calculator}. I created this tool to automate creation of battery configuration files for \emph{RTT}. Configuration Calculator supports all batteries that are present in \emph{RTT} except the TestU01 BigCrush battery.
+
+\subsection{Batteries configurations}
+
+The configurations are created based on the length of the tested data. The number of first-level tests for each individual test is set so that the test will use as much data as possible without \emph{file rewinds}.
+
+For tests with \emph{configurable} size, the default values were chosen the same as in Section \ref{chap:analysis-times}. For NIST STS the \emph{stream size} is set to 1,000,000 \emph{bits} and for TestU01 Rabbit, Alphabit and BlockAlphabit, the \emph{bit\textunderscore nb} is set to  52,428,800 bits.
+
+For all individual test the number of first-level tests is calculated as $\lfloor data\:size \div first$-$level\:subsequence\:size\rfloor$. For tests with \emph{constant} size, the direct subsequence size is used. For tests with \emph{variable} size the fluctuation of first-level sequence sizes has to be taken into account to prevent \emph{file rewinds}. To achieve this, mean first-level subseqeunce size increased by a buffer is used as the subsequence size. The buffer size was chosen to be 1\% of the subseqeunce size for tests from TestU01 batteries and 0.1\% for tests from Dieharder. Based on analysis from Section \ref{chap:analysis-data}, this should be enough to prevent file rewinds caused by the size fluctuation.
+
+In total 7 tests are always omitted by the Configuration Calculator. Tests 5, 6, 7 and 14 from Dieharder battery are skipped because they are marked as 'Do Not Use' or 'Suspect' by Dieharder. From Crush battery tests 71 and 72 were removed due to their low performance. Running each of the two tests would take 12 times longer than running \emph{all} of the remaining tests. The test 5 from Rabbit was also omitted due to low performance.
+
+
+\subsection{Output Format}
+Format of the configuration files created by the Configuration Calculator is extension of the original format used by \emph{RTT} (described in Subsection \ref{chap:sols-rtt}). It contains no new \emph{functional} fields, only information for the user. First such field are \emph{omitted tests} inside \emph{battery settings} -- tests that will not be run. Either because the tested file is to small for them or because they were removed due to problems with them.
+
+Second new field is \emph{battery defaults}. It contains default argument settings for a given battery and default settings for each individual test, along with the test name and used first-level subsequence sizes. Both \emph{battery settings} and \emph{defaults} contain also comments for some individual tests, which contain information about why the test was omitted or warning that a given test is with \emph{variable} size.
+
+
+
 \section{P-Values}
 Various problems with test p-values distributions, will probably be split into more sections
 
@@ -1398,7 +1466,7 @@ included things: adding first-level p-values,
 \chapter{Batteries output examples} \label{append:dieharder-output}
 \section{Dieharder}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/dieharder.jpg}
   \end{center}
@@ -1408,7 +1476,7 @@ included things: adding first-level p-values,
 
 \pagebreak
 
-\begin{figure}[h]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/pvals.jpg}
   \end{center}
@@ -1419,7 +1487,7 @@ included things: adding first-level p-values,
 \pagebreak
 
 \section{NIST STS output} \label{append:nist-output}
-\begin{figure}[h]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/finalAnalysisReport.jpg}
   \end{center}
