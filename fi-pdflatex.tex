@@ -1099,13 +1099,13 @@ For some tests there is an \emph{upper bound} of data used for testing. The test
 % Rabbit X
 % Alphabit X
 
-\section{Time Consumption} \label{chap:analysis-times}
+\section{Time consumption and performance} \label{chap:analysis-times}
 %again some big tables, choose one test as a reference and the rest will be relative. mention exact parameters, maybe add throughput?
 
 
-Another analysis I performed examining the tests' runtimes . This may be used to \emph{exempt} tests that would take \emph{unreasonably} long to execute or to detect problems while running the tests (for example when the test cycles or gets stuck on non-random data).
+Another analysis I performed is examination of the tests' runtimes and performance. This may be used to \emph{exempt} tests that would take \emph{unreasonably} long to execute or to detect problems while running the tests (for example when the test execution gets stuck on non-random data).
 
-Because the runtimes highly depend on used machine and the idea was to make only comparison between the tests, they are presented in \emph{relative} form compared to the runtime of Diehard 3d Sphere (Minimum Distance) Test from Dieharder battery (later refered to as \emph{time unit} or \emph{TU}).\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows 10 this test took 0.021 seconds.} 
+Because the runtimes highly depend on used machine and the idea was to make relatove comparison between the tests only, they are presented in \emph{relative} form compared to the runtime of Diehard 3d Sphere (Minimum Distance) Test from Dieharder battery (later refered to as \emph{time unit} or \emph{TU}).\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows 10 this test took 0.021 seconds.} 
 
 To compare performance of the tests, \emph{throughput} was calculated and is presented alongside the runtime. The throughput is calculated as kilobytes\footnote{1024 bytes} of data processed per time unit. 
 
@@ -1507,27 +1507,33 @@ The information collected in Sections \ref{chap:analysis-data} and \ref{chap:ana
 
 \subsection{Batteries configurations}
 
-The configurations are created based on the length of the tested data. The number of first-level tests for each individual test is set so that the test will use as much data as possible without \emph{file rewinds}.
+The configurations are created based on the length of the tested data. The number of first-level tests for each individual test is set so that the test will use as much data as possible without \emph{file rewind}.
 
-For tests with \emph{configurable} size, the default values were chosen the same as in Section \ref{chap:analysis-times}. For NIST STS the \emph{stream size} is set to 1,000,000 \emph{bits} and for TestU01 Rabbit, Alphabit and BlockAlphabit, the \emph{bit\textunderscore nb} is set to  52,428,800 bits.
+For tests with \emph{configurable} size, the default values were chosen the same as in Section \ref{chap:analysis-times}. For NIST STS the \emph{stream size} is set to 1,000,000 \emph{bits} and for TestU01 Rabbit, Alphabit and BlockAlphabit, the \emph{bit\textunderscore nb} is set to  52,428,800 bits. The user may choose their own value for these arguments.
 
 For all individual test the number of first-level tests is calculated as $\lfloor data\:size \div first$-$level\:subsequence\:size\rfloor$. For tests with \emph{constant} size, the direct subsequence size is used. For tests with \emph{variable} size the fluctuation of first-level sequence sizes has to be taken into account to prevent \emph{file rewinds}. To achieve this, mean first-level subseqeunce size increased by a buffer is used as the subsequence size. The buffer size was chosen to be 1\% of the subseqeunce size for tests from TestU01 batteries and 0.1\% for tests from Dieharder. Based on analysis from Section \ref{chap:analysis-data}, this should be enough to prevent file rewinds caused by the size fluctuation.
 
-In total 7 tests are always omitted by the Configuration Calculator. Tests 5, 6, 7 and 14 from Dieharder battery are skipped because they are marked as 'Do Not Use' or 'Suspect' by Dieharder. From Crush battery tests 71 and 72 were removed due to their low performance. Running each of the two tests would take 12 times longer than running \emph{all} of the remaining tests. The test 5 from Rabbit was also omitted due to low performance.
+In total 7 tests are always omitted by the Configuration Calculator. Tests 5, 6, 7 and 14 from Dieharder battery are skipped because they are marked as 'Do Not Use' or 'Suspect' by Dieharder. From Crush battery tests 71 and 72 were removed due to their low performance (see Table \ref{tab:analysis_crush_times}). Running each of the two tests would take 12 times longer than running \emph{all} of the remaining tests. The test 5 from Rabbit was also omitted due to low performance (see Table \ref{tab:analysis_rabbit_time}).
 
 
 \subsection{Output Format}
-Format of the configuration files created by the Configuration Calculator is extension of the original format used by \emph{RTT} (described in Subsection \ref{chap:sols-rtt}). It contains no new \emph{functional} fields, only information for the user. First such field are \emph{omitted tests} inside \emph{battery settings} -- tests that will not be run. Either because the tested file is to small for them or because they were removed due to problems with them.
+Format of the configuration files created by the Configuration Calculator is extension of the original format used by \emph{RTT} (described in Subsection \ref{chap:sols-rtt}). It contains no new \emph{functional} fields, only information for the user. First such field are \emph{omitted tests} inside \emph{battery settings} -- tests that will not be run. Either because the tested file is to small for them or because they were removed by default.
 
 Second new field is \emph{battery defaults}. It contains default argument settings for a given battery and default settings for each individual test, along with the test name and used first-level subsequence sizes. Both \emph{battery settings} and \emph{defaults} contain also comments for some individual tests, which contain information about why the test was omitted or warning that a given test is with \emph{variable} size.
 
 
 
 \section{P-values uniformity}
-% intro (correcting dieharder - 2)
+% intro (correcting dieharder - 2, 7)
 % intro - not uniform in reality,  motivation, mention each battery
 % show some really bad examples
-As was mentioned in Section \ref{chap:rand-two_level}, crucial part of two-level testing is examination of observed first-level p-values distribution. The expected distribution is uniform on interval (0,1]. \cite[p.~14]{bad_day}
+As was mentioned in Section \ref{chap:rand-two_level}, crucial part of two-level testing is examination of observed first-level p-values distribution. The expected theoretical distribution is uniform on interval (0,1]. \cite[p.~14]{bad_day} Due to various reaons, the real distribution (under the null-hypothesis) may differ from the uniform distribution. This may lead to flawed results of second-level tests. In this section, reasons why this happens are presented along examples of real observed distributions of first-level p-values. It is not goal of this thesis to fix the problem, only to note it.
+
+The first reason for such situations is that the distributions of first-level p-values are usually only approximated in the calculation. This causes an error which accumulates with high number of first-level sequences. Second possibl cause is that the distribution is in fact discrete, but a continuous distribution is used ot calculate the p-value.\cite[p. 7]{bad_day}
+
+To find tests with such distributions, the tests were run... TODO
+
+Possible outcomes of previous situations are non-uniform distributions of the first-level p-values. The first example are discrete distributions of first-level p-values with \emph{low} number of possible p-values. The most extreme examples are distributions with only \emph{a few} possible p-values (TODO EXAMPLE). The less extreme tests have lower hundreds of possible first-level p-values. TODO EXAMPLE
 
 
 % IMPLEMENTATIONS COMPARISON
