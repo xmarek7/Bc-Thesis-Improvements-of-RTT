@@ -65,10 +65,10 @@
     type        = bc,
     department  = Department of Computer Systems and Communications,
     author      = Tomáš Marek,
-    gender      = f,
+    gender      = m,
     advisor     = {Ing. Milan Brož, Ph.D.},
-    title       = {Improvements of the Randomness Testing Toolkit},
-    TeXtitle    = {Improvements of the Randomness Testing Toolkit},
+    title       = {Improvements to the Randomness Testing Toolkit},
+    TeXtitle    = {Improvements to the Randomness Testing Toolkit},
     keywords    = {keyword1, keyword2, ...},
     TeXkeywords = {keyword1, keyword2, \ldots},
     abstract    = {%
@@ -568,11 +568,6 @@ After the general information is a list of results of individual tests in a unif
   \label{fig:rtt_output_example}
 \end{figure}
 
-%\subsection{Disadvantages}
-%The problems/weak points we want to improve with this thesis. Namely at least non machine-machine readable format, running only one battery at time, maybe re-calculation of results
-
-%There are two most notable disadvantages of the \emph{RTT}. The first one is that each battery has to be run individually by the user. This lowers the convenience of usage for the user. The second one is the output format. While it is easy to read for human users, machine reading requires complicated parsing. 
-
 
 \subsection{Randomness Testing Toolking in Python} \label{chap:sols-rtt-py}
 The Randomness Testing Toolkit in Python (\emph{rtt-py}) was created by Patrik Vaverčák. It is supposed to be an improved version of \emph{RTT} sharing the same concept \cite[p.~24]{vavercak} and it was written in Python.
@@ -617,14 +612,7 @@ In each report file there is a list of reports for each individual test or subte
   \label{fig:rtt_py_html}
 \end{figure}
 
-%\subsection{Disdvantages}
-%One of the problems that need to be addressed is that the \emph{rtt-py } ignores errors and warnings from tests. The most notable example why this is a problem is when the tested file does not contain enough data for current battery configuration.
 
-%In this case, the test will read some parts of the data more than once and inform the user about this situation on the error output. The test will still produce result, which will, however, be biased by repeated parts of the tested file.
-
-%This may lead to incorrect interpretation of the results and to false acceptance or false rejection of the tested data. Since the \emph{rtt-py} ignores this, there is no way for the user to be informed about this situation.
-
-%Compared to the \emph{RTT} the reports created by \emph{rtt-py} contain less information. Namely the first-level P-values are ignored, even though they can be useful for deeper examination of the results and the generator.
 
 
 % TEST ANALYSIS
@@ -1529,27 +1517,59 @@ Second new field is \emph{battery defaults}. It contains default argument settin
 % show some really bad examples
 As was mentioned in Section \ref{chap:rand-two_level}, crucial part of two-level testing is examination of observed first-level p-values distribution. The expected theoretical distribution is uniform on interval (0,1]. \cite[p.~14]{bad_day} Due to various reaons, the real distribution (under the null-hypothesis) may differ from the uniform distribution. This may lead to flawed results of second-level tests. In this section, reasons why this happens are presented along examples of real observed distributions of first-level p-values. It is not goal of this thesis to fix the problem, only to note it.
 
-The first reason for such situations is that the distributions of first-level p-values are usually only approximated in the calculation. This causes an error which accumulates with high number of first-level sequences. Second possibl cause is that the distribution is in fact discrete, but a continuous distribution is used ot calculate the p-value.\cite[p. 7]{bad_day}
+The first reason for such situations is that the distributions of test statistic values in first-level tests are usually only approximated in the calculation. This causes an error which accumulates with high number of first-level sequences. Second possible cause is that the distribution of test statistic values is in fact discrete, but a continuous distribution is used to calculate the p-value.\cite[p. 7]{bad_day}
 
 To find tests with such distributions, the tests were run... TODO
 
-Possible outcomes of previous situations are non-uniform distributions of the first-level p-values. The first example are discrete distributions of first-level p-values with \emph{low} number of possible p-values. The most extreme examples are distributions with only \emph{a few} possible p-values (TODO EXAMPLE). The less extreme tests have lower hundreds of possible first-level p-values. TODO EXAMPLE
+Possible outcomes of previous situations are non-uniform distributions of the first-level p-values. The first situation are distributions with discrete possible first-level p-values with \emph{low} number of possible p-values. The most extreme examples are distributions with only \emph{a few} possible p-values (TODO EXAMPLE). The less extreme tests have lower hundreds of possible first-level p-values. TODO EXAMPLE
 
+Another example are tests with continuous, but non-uniform distribution. The real distributions are usually \emph{close} to the uniform distribution. Usually, these situations have two possible outcomes. The real distributions differ in tails (values in tail are significantly more or less probable). Or the distributions is different. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % IMPLEMENTATIONS COMPARISON
-\chapter{Implementations Comparison}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Implementations comparison}
 
+% COMPARE OUTPUT
+% contents of the output
+% parsing
+%  - rtt - vše v paměti, out of memory error, dlouhé parsonvání
+%format
+% warningy - RTT parsuje slovo WARN/ERROR
 \section{Output}
-Mentioned differences\\
-for both RTT and rtt-py - subset or whole?
 
+% MISSING FEATURES
+% first-level p-values  
+% running Crush family
+% check - alphabit and rabbit
+% detekce errors / warnings
 \section{Missing Features of \emph{rtt-py}}
+One of the problems that need to be addressed is that the \emph{rtt-py } ignores errors and warnings from tests. The most notable example why this is a problem is when the tested file does not contain enough data for current battery configuration.
 
+In this case, the test will read some parts of the data more than once and inform the user about this situation on the error output. The test will still produce result, which will, however, be biased by repeated parts of the tested file.
+
+This may lead to incorrect interpretation of the results and to false acceptance or false rejection of the tested data. Since the \emph{rtt-py} ignores this, there is no way for the user to be informed about this situation.
+
+TODO: first-level pvalues
+Another missing feature of \emph{rtt-py} is the printout of first-level p-values. These maybe be useful for deeper examination of the tests results.
+
+TODO: testu01 batteries - no test specific settings
+Batteries from the \emph{TestU01 Crush} family are not run by the \emph{rtt-py}. However, the program options suggest that the batteries are contained. 
+
+
+%There are two most notable disadvantages of the \emph{RTT}. The first one is that each battery has to be run individually by the user. This lowers the convenience of usage for the user. The second one is the output format. While it is easy to read for human users, machine reading requires complicated parsing. 
+
+
+% rtt-py adding first-level p-values
+% rtt-py adding errors
+% tests setup - config calc
+% our own second-level assessment
 \section{Proposed improvements}
-included things: adding first-level p-values, 
+ 
 
+%%%%%%%%%%%%%%
 % CONCLUSION
-
+%%%%%%%%%%%%%%
 \chapter{Conclusion}
 
 %% Start the appendices.
