@@ -588,6 +588,7 @@ The second part of user settings are the battery configurations. They use the sa
 The \emph{rtt-py} creates output in two formats -- \emph{CSV}\footnote{Comma-separated values} and \emph{HTML}\footnote{Hypertext Markup Language}. \cite[p. 36]{vavercak} Both of these report formats contain overview table. Each row from the table represents results of one individual test or subtest. The first column contains the name of the test and the name of the battery it belongs to. The second column contains \emph{failure rate} - ratio of sequences not passing the first-level test.
 
 Each of the following columns is named after one tested file. The record contains either second-level p-value reported by the test, or number of failed runs -- this depends on the battery. Example of this table can be seen at figure \ref{fig:rtt_py_table}.
+
 \begin{figure}
   \begin{center}
     %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
@@ -1488,7 +1489,7 @@ For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\
 % CONFIG CALC
 %%%%%%%%%%%%%%
 
-\section{Configuration Calculator}
+\section{Configuration Calculator} \label{chap:analysis-config-calc}
 \todo{appendix examples, git link (when ready)}
 
 The information collected in Sections \ref{chap:analysis-data} and \ref{chap:analysis-times} were used in the \emph{Configuration Calculator}. I created this tool to automate creation of battery configuration files for \emph{RTT}. Configuration Calculator supports all batteries that are present in \emph{RTT} except the TestU01 BigCrush battery.
@@ -1537,6 +1538,15 @@ Another example are tests with continuous, but non-uniform distribution. The rea
 %format
 % warningy - RTT parsuje slovo WARN/ERROR
 \section{Output}
+First difference in output between \emph{RTT} and \emph{rtt-py} is the format of the output. \emph{RTT} offers only one report format, which contains all of the reported information (see Subsection \ref{chap:sols-rtt}). The format is human-readable, but requires rather complicated parsing for computer processing.
+
+The \emph{rtt-py} offers an overview table in HTML and CSV formats, which are both human-readable and usefull for quick assessment of the result of the tests. The CSV format is also easily computer-readable. The full HTML format offers more information, usually regarding the test settings. TODO: New info for result assessment In the NIST STS, the proportion of sequences passing the first-level test is added. In the TestU01 batteries, corresponding test statistics values are part of the HTML report as well.
+
+The main difference in output between \emph{RTT} and \emph{rtt-py} are the reported information. Both toolkits report the resulting second-level p-values for Dieharder and NIST STS batteries. However, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values, which could be usefull for deeper assessment of the results.
+
+For the TestU01 batteries, the reported information are the same for both toolkits. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their p-values are printed together. In \emph{rtt-py}, each repetiton is treated as individual test. The p-values are printed, but the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own.
+
+
 
 % MISSING FEATURES
 % first-level p-values  
@@ -1564,7 +1574,9 @@ Batteries from the \emph{TestU01 Crush} family are not run by the \emph{rtt-py}.
 % rtt-py adding errors
 % tests setup - config calc
 % our own second-level assessment
+% computer - readable format
 \section{Proposed improvements}
+First proposed improvement for both \emph{RTT} and \emph{rtt-py} is better way to configure the batteries. While \emph{RTT} offers some prepared configuration files, they are not available for all file sizes. Also, some of the configuration files contained configurations that resulted in \emph{file rewinds} or the tests read less data than was possible, resulting in testing only a small part of the tested file. I implemented this improvement in the form of Configuration Calculator (see Subsection \ref{chap: analysis-config-calc}).
  
 
 %%%%%%%%%%%%%%
@@ -1572,7 +1584,9 @@ Batteries from the \emph{TestU01 Crush} family are not run by the \emph{rtt-py}.
 %%%%%%%%%%%%%%
 \chapter{Conclusion}
 
-%% Start the appendices.
+%%%%%%%%%%%%%%%%%%
+%% APPENDICES
+%%%%%%%%%%%%%%%%%%
 \appendix 
 
 \chapter{Batteries output examples} \label{append:dieharder-output}
