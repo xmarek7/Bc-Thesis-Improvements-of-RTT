@@ -1557,6 +1557,7 @@ The \emph{rtt-py} is supposed to be a newer version of \emph{RTT} and might repl
 %  - rtt - vše v paměti, out of memory error, dlouhé parsonvání
 % X - format
 % warningy - RTT parsuje slovo WARN/ERROR
+% pro oba - jak parsuje výstup (paměť, ...)
 \section{Output}
 \todo{? add info about parsing ?}
 First difference in output between \emph{RTT} and \emph{rtt-py} is the format of the output. \emph{RTT} offers reports only in plaintext format, which contains all of the reported information (see Subsection \ref{chap:sols-rtt}). The format is human-readable, but hard to navigate. Computer processing requires rather complicated parsing.
@@ -1569,13 +1570,44 @@ The main functional difference in output between \emph{RTT} and \emph{rtt-py} ar
 For the TestU01 batteries, which employ only repeated single-level tests, the reported information are the same for both toolkits. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their respective p-values are printed together. In \emph{rtt-py}, each repetition is treated as a separate individual test. The p-values are printed, but the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own. Both toolkits also report additional details regarding the individual test.
 
 
-
 % MISSING FEATURES
 % X - first-level p-values  
 % X - running Crush family
 % check - alphabit and rabbit
 % X - detekce errors / warnings
-\section{Missing Features of \emph{rtt-py}}
+% logs
+% database connection
+% rtt-py NIST folder 
+% readiness to take new battery
+% podívat se na multithreading
+% more batteries at once
+\section{Features comparison}
+
+\begin{table}
+  \begin{tabularx}{0.7\textwidth}{l|l|l}
+    Featire & RTT & rtt-py \\
+    \midrule
+    contained batteries & no FIPS and BSI & no TestU01 Crush family \\
+    nist folder & manually & added argument \\
+    errors and warning & yes & no \\
+    dieharder and nist first-levels & yes & no \\
+    tu01 print & grouped & each test divided \\
+    run logs of batteries & yes & no \\
+    multithreading & yes & no
+    ready for new battery & less & more \\
+    number of batteries in one run & 1 & all \\
+    number of tests in one run & all or single & all \\
+
+
+  \end{tabularx}
+  \caption{Comparing the feature of \emph{RTT} and \emph{rtt-py}.}
+  \label{tab:comparison}
+\end{table}
+
+
+
+
+
 One of the problems that need to be addressed is that the \emph{rtt-py } ignores errors and warnings from tests. The most notable example why this is a problem are the \emph{file rewinds}.
 
 In this case, the test will read some parts of the data more than once and inform the user about this situation on the error output. The test will still produce result, which will, however, be biased by repeated parts of the tested file.
@@ -1597,6 +1629,8 @@ Batteries from the \emph{TestU01 Crush} family are not run by the \emph{rtt-py}.
 % X - tests setup - config calc
 % X - our own second-level assessment
 % X - computer - readable format
+% RTT-Tu01 - co dělá
+% pro tu01 - přidat detekc rewindu
 \section{Proposed improvements}
 First proposed improvement for both \emph{RTT} and \emph{rtt-py} is better way to configure the batteries. While \emph{RTT} offers some prepared configuration files, they are not available for all file sizes. Also, some of the configuration files contained configurations that resulted in \emph{file rewinds} or the tests read less data than was possible, resulting in testing only a part of the file. I implemented this improvement in the form of Configuration Calculator (see Subsection \ref{chap:analysis-config-calc}).
 
