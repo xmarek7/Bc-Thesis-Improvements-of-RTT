@@ -432,6 +432,7 @@ The file rewinds are detected automatically by the battery. In such case, messag
 \subsection{Test U01} \label{chap:sols-testu01}
 %TODO: no second level assessment
 %TODO: output format
+%TODO: single/two level for bit_nb
 
 TestU01 was developed by Pierre L'Ecuyer and his team at Université de Montrél to be a state-of-the-art software library oriented on testing of random number generators \cite{tu01_paper} and is available from \cite{tu01_site}. It contains several batteries, most important are the \emph{SmallCrush, Crush, BigCrush, Rabbit, Alphabit} and \emph{BlockAlphabit}. Because TestU01 is a software library only, custom command-line interface was created by Ľubomír Obrátil available from \cite{rtt-batteries}, which is described in this subsection.
 
@@ -1569,8 +1570,10 @@ The main functional difference in output between \emph{RTT} and \emph{rtt-py} ar
 
 For the TestU01 batteries, which employ only repeated single-level tests, the reported information are the same for both toolkits. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their respective p-values are printed together. In \emph{rtt-py}, each repetition is treated as a separate individual test. The p-values are printed, but the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own. Both toolkits also report additional details regarding the individual test.
 
-
+%%%%%%%%%%%%%%%%%%
 % MISSING FEATURES
+%%%%%%%%%%%%%%%%%%
+
 % X - first-level p-values  
 % X - running Crush family
 % check - alphabit and rabbit
@@ -1584,7 +1587,7 @@ For the TestU01 batteries, which employ only repeated single-level tests, the re
 \section{Features comparison}
 
 \begin{table}
-  \begin{tabularx}{0.7\textwidth}{l|l|l}
+  \begin{tabularx}{\textwidth}{l|l|l}
     Featire & RTT & rtt-py \\
     \midrule
     contained batteries & no FIPS and BSI & no TestU01 Crush family \\
@@ -1593,21 +1596,21 @@ For the TestU01 batteries, which employ only repeated single-level tests, the re
     dieharder and nist first-levels & yes & no \\
     tu01 print & grouped & each test divided \\
     run logs of batteries & yes & no \\
-    multithreading & yes & no
+    paralelism & yes & no \\
     ready for new battery & less & more \\
     number of batteries in one run & 1 & all \\
     number of tests in one run & all or single & all \\
-
-
   \end{tabularx}
   \caption{Comparing the feature of \emph{RTT} and \emph{rtt-py}.}
   \label{tab:comparison}
 \end{table}
 
 
+% batteries difference
+Both \emph{RTT} and \emph{rtt-py} employ different set of batteries. The Dieharder, NIST STS, TestU01 Rabbit, Alphabit and BlockAlphabit batteries are run in both implementations. The FIPS and BSI batteries are only executed in the \emph{rtt-py}. The TestU01 \emph{Crush} family of batteries is only run \emph{RTT}. The program options of \emph{rtt-py} however clearly suggest, that these batteries should also be run. 
 
 
-
+% no errors and warns
 One of the problems that need to be addressed is that the \emph{rtt-py } ignores errors and warnings from tests. The most notable example why this is a problem are the \emph{file rewinds}.
 
 In this case, the test will read some parts of the data more than once and inform the user about this situation on the error output. The test will still produce result, which will, however, be biased by repeated parts of the tested file.
