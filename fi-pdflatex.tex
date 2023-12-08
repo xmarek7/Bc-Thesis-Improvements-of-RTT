@@ -1554,21 +1554,25 @@ The \emph{rtt-py} is supposed to be a newer version of \emph{RTT} and might repl
 
 % COMPARE OUTPUT
 % X - contents of the output
-% parsing
+% X - parsing
 %  - rtt - vše v paměti, out of memory error, dlouhé parsonvání
 % X - format
 % warningy - RTT parsuje slovo WARN/ERROR
 % pro oba - jak parsuje výstup (paměť, ...)
 \section{Output}
-\todo{? add info about parsing ?}
-First difference in output between \emph{RTT} and \emph{rtt-py} is the format of the output. \emph{RTT} offers reports only in plaintext format, which contains all of the reported information (see Subsection \ref{chap:sols-rtt}). The format is human-readable, but hard to navigate. Computer processing requires rather complicated parsing.
+First difference in output between \emph{RTT} and \emph{rtt-py} is the format of the output. \emph{RTT} offers reports in plaintext format, which contains all of the reported information (see Subsection \ref{chap:sols-rtt}). The format is human-readable, but hard to navigate. Computer processing is possible thanks to unified format, but requires rather complicated parsing.
 
-The \emph{rtt-py} offers an overview table in HTML and CSV formats, which are both human-readable and usefull for quick assessment of the result of the tests. The CSV format is also easily computer-readable. The full HTML format offers more information, usually regarding the test settings. TODO: New info for result assessment In the NIST STS, the proportion of sequences passing the first-level test is added. In the TestU01 batteries, corresponding test statistics values are part of the HTML report as well.
+The \emph{rtt-py} offers an overview table in HTML and CSV formats, which are both easily human-readable and useful for quick assessment of the result of the tests. The CSV format is also easily computer-readable. 
+
+The full HTML format offers more information, usually regarding the test settings. For all tests, the p-values is contained.. In the NIST STS, the proportion of sequences passing the first-level test is added. In the TestU01 batteries, corresponding test statistics values are part of the HTML report as well.
 
 The main functional difference in output between \emph{RTT} and \emph{rtt-py} are the reported information. For this comparison, the full HTML report from \emph{rtt-py} is taken. Both toolkits report the resulting second-level p-values for Dieharder and both the second-level p-value and proportion of sequences passing the first-level test for NIST STS batteries. However, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values, which could be useful for deeper assessment of the results. The \emph{RTT} also reports more information regarding the details about individual tests from NIST STS battery.
 
+For the TestU01 batteries (which employ only repeated single-level tests) the reported information are the same for both toolkits -- p-values and details about test settings. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their respective p-values are printed in a group. In \emph{rtt-py}, each repetition is treated as a separate individual test and the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own. The FIPS and BSI batteries are not mentioned in thic comparison, because they are only executed in the \emph{rtt-py}.
 
-For the TestU01 batteries, which employ only repeated single-level tests, the reported information are the same for both toolkits. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their respective p-values are printed together. In \emph{rtt-py}, each repetition is treated as a separate individual test. The p-values are printed, but the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own. Both toolkits also report additional details regarding the individual test.
+Both toolkits also take different approach in parsing the results. In \emph{RTT}, the results are parsed after \emph{all} tests finish their executions using regular expressions. Originally, the regular expressions used for TestU01 batteries sometimes crashed while parsing. This issue has already been fixed. TODO: SOME REF, FOOTNOTE? Furthermore, when parsing large batteries outputs, the \emph{RTT} may crash due to \emph{out of memory} error.
+
+In \emph{rtt-py}, the results are parsed after each individual test is executed and stored in pre-defined objects. After all tests from given battery are executed, corresponding report is generated.
 
 %%%%%%%%%%%%%%%%%%
 % MISSING FEATURES
@@ -1579,61 +1583,83 @@ For the TestU01 batteries, which employ only repeated single-level tests, the re
 % X - Test01 test-specifi
 % X - detekce errors / warnings
 % X - logs
-% database connection
+% X - database connection
 % rtt-py NIST folder 
 % ? readiness to take new battery
 % X - podívat se na paralelismus
-% more batteries at once
-\section{Features comparison}
+% X - more batteries at once
+\section{Implementations differences}
+In this section I focus on finding the functional differences between \emph{RTT} and \emph{rtt-py}. The primary goal is to find features, that are missing in the \emph{rtt-py} and should be implemented to allow the replacement of \emph{RTT} with \emph{rtt-py}. 
 
 \begin{table}
   \begin{tabularx}{\textwidth}{l|l|l}
     Feature & RTT & rtt-py \\
     \midrule
-    contained batteries & no FIPS and BSI & no TestU01 Crush family \\ %
-    nist folder & manually & added argument \\
+    \midrule
+    missing batteries & FIPS, BSI & TestU01 \emph{Crush} family \\ %
+    \midrule
+    %nist folder TODO & manually & added argument \\
+    %\midrule
     errors and warning & yes & no \\ %
-    dieharder and nist first-levels & yes & no \\ %
-    tu01 print & grouped & each test divided \\
-    run logs of batteries & yes & no \\ %
-    paralelism & yes & no \\ %
-    ready for new battery & less & more \\
-    number of batteries in one run & 1 & all \\
-    number of tests in one run & all or single & all \\
+    \midrule
+    Dieharder and  NIST first-level& yes & no \\ %
+    p-values & & \\
+    \midrule
+    TestU01 p-values & grouped & each repetition separate \\
+    \midrule
+    batteries output logs & yes & no \\ %
+    \midrule
+    run logs & yes & yes \\
+    \midrule
+    parallelism & yes & no \\ %
+    \midrule
+    readiness for new battery & less & more \\
+    \midrule
+    batteries in one run & single & all \\
+    \midrule
+    tests in one run & all or single & all \\
   \end{tabularx}
-  \caption{Comparing the feature of \emph{RTT} and \emph{rtt-py}.}
+  \caption{Comparing the features of \emph{RTT} and \emph{rtt-py}.}
   \label{tab:comparison}
 \end{table}
 
 
 % used batteries difference
-Both \emph{RTT} and \emph{rtt-py} employ different set of batteries. The Dieharder, NIST STS, TestU01 Rabbit, Alphabit and BlockAlphabit batteries are run in both implementations. The FIPS and BSI batteries are only executed in the \emph{rtt-py}. The TestU01 \emph{Crush} family of batteries is only run \emph{RTT}. The program options of \emph{rtt-py} however clearly suggest, that these batteries should also be run. There is no explanation why neither in \cite{vavercak} or \cite{rtt-py-size}.
-\todo{My theory why?}
+Both \emph{RTT} and \emph{rtt-py} employ different set of batteries. The Dieharder, NIST STS, TestU01 Rabbit, Alphabit and BlockAlphabit batteries are run in both implementations. The FIPS and BSI batteries are only executed in the \emph{rtt-py}. The TestU01 \emph{Crush} family of batteries is only run by \emph{RTT}. The program options of \emph{rtt-py} however clearly suggest, that these batteries should also be run. There is no explanation why neither in \cite{vavercak} or \cite{rtt-py-site}.
+
+% Running more batteries at once
+Regarding the batteries, the \emph{RTT} runs one user-chosen battery per run. In the \emph{rtt-py}, all batteries are run by default. The user can choose batteries to omit from the run. The \emph{RTT} runs either all tests from the current battery configuration, or only single test chosen by the user, while in \emph{rtt-py} all tests from given configuration are run. Also the \emph{rtt-py} allows the user to test more files with data during one run, while \emph{RTT} allows testing of a single file only.
 
 % test specific settings - requires dieharder and nist, tu01 ignores repetitions
-Another difference between toolkits is handling the \emph{test-specific-settings} field from battery configuration files. In \emph{RTT}, this field is optional for all batteries. However, in \emph{rtt-py} this field is \emph{required} for Dieharder and NIST STS battery and the configuration will not parse. This may cause problems with compatibility of configuration files between \emph{RTT} and \emph{rtt-py}. Another difference with this field is that \emph{rtt-py} ignores \emph{repetitions} field from \emph{test-specific-settings} of TestU01 batteries. This also seems to be the reason why \emph{Crush} family batteries are not run, because this field is needed for \emph{meaningfull} use of the \emph{Crush} batteries, while the remaining TestU01 batteries can be \emph{meaningfully} used without chaning the \emph{repetitions}.
+Another difference between toolkits is handling the \emph{test-specific-settings} field from battery configuration files. In \emph{RTT}, this field is optional for all batteries. However, in \emph{rtt-py} this field is \emph{required} for Dieharder and NIST STS battery and the configuration will not parse otherwise. This may cause problems with compatibility of configuration files between \emph{RTT} and \emph{rtt-py}.
+
+Another difference with this field is that \emph{rtt-py} ignores \emph{repetitions} field from \emph{test-specific-settings} of TestU01 batteries, therefore all test are executed with. This also might to be the reason why \emph{Crush} family batteries are not run, because this field is needed for \emph{meaningful} use of the \emph{Crush} family batteries, while the remaining TestU01 batteries can be \emph{meaningfully} used without changing the \emph{repetitions} argument.
 
 % no errors and warns
-One of the problems that need to be addressed is that the \emph{rtt-py } ignores errors and warnings from tests. The most notable example why this is a problem are the \emph{file rewinds}.
+One of the problems that need to be addressed in \emph{rtt-py} is that the \emph{rtt-py} ignores errors and warnings from test batteries. The most notable example why this is a problem are the \emph{file rewinds}.
 
-In this case, the test will read some parts of the data more than once and inform the user about this situation on the error output. The test will still produce result, which will, however, be biased by repeated parts of the tested file.
+In this case, the test will read some parts of the data more than once and inform the user about this situation. The test will still produce result, which will, however, be biased by repeated parts of the tested file.
 
 This may lead to incorrect interpretation of the results and to Type I or II error. Since the \emph{rtt-py} ignores this, there is no way for the user to be informed about this situation.
 
+The detection of errors and warnings in \emph{RTT} is done by searching for words 'error' or 'warning' in the battery output. If this word is found, the whole line in which the word was found is printed into the report. 
+
 % no logs
-Closely tied with the warnings and errors are the output logs of individual batteries. These are usually used to examine deeper the warnigs and errors raised by the batteries and to decide about the severity of the warning or error. Another usage may be to examine further details of the report that are not reported by the used toolkit. In \emph{RTT}, the output logs for each battery are stored in the \emph{results} folder. In \emph{rtt-py}, not output logs are made. Both \emph{RTT} and \emph{rtt-py} create run logs containing the exact arguments used to run the batteries.
+Closely tied with the warnings and errors are the output logs of the executed batteries. They are usually used to examine the warnings and errors raised by the batteries and to decide about the severity of the warning or error. Another usage may be to examine further details of the report that are not reported by the used toolkit. 
+
+In \emph{RTT}, the output logs for each battery are stored in the \emph{results} folder. In \emph{rtt-py}, no batteries output logs are being stored. Both \emph{RTT} and \emph{rtt-py} create run logs containing the exact arguments used to run the batteries.
 
 % pvals printout
-As was described in previous section, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values from Dieharder and NIST STS. The first-level p-values can be usefull for deeper examination of the tests results. The p-values from TestU01 are grouped by test in \emph{RTT}, but not in \emph{rtt-py}.
+As was described in previous section, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values from Dieharder and NIST STS. The first-level p-values can be usefull for deeper examination of the tests results. In TestU01, the p-values are grouped by test in \emph{RTT}, but not in \emph{rtt-py}.
 
 % paralelism
-The \emph{RTT} allows parallel executuion of several individual tests at once (maximal number of parallel exectuions is set by the user in \emph{rtt-settings.json} file). In \emph{rtt-py}, all individual tests are executed serially. 
+The \emph{RTT} allows parallel execution of several individual tests at once (maximal number of parallel exectuions is set by the user in \emph{rtt-settings.json} file). In \emph{rtt-py}, no parallelism is supported and all individual tests are executed serially. 
 
 % adding new battery
-The \emph{rtt-py} allows for a simple adding of new batteries. The user only has to implement classes for settings parsing, executions and results, which all follow predefined patterns. These classes are then easily integrated into the \emph{rtt-py}. TODO: in \emph{RTT}
+One of the original ides of \emph{RTT} was to provide interface for easy adding of new batteries. The \emph{rtt-py} allows for a simple adding of new batteries. The user only has to implement classes for settings parsing, executions and results, which all follow predefined patterns. These classes are then easily integrated into the \emph{rtt-py}. TODO: in \emph{RTT}
 
 % database
-The \emph{RTT} also offers storing the test results in configured (online?) database, which is not offered by the \emph{rtt-py}. This functionality is, however, often not used. Because the used database connection is not available on sone Unix distributions, the \emph{RTT} may be compiled without it.
+The \emph{RTT} also offers storing the test results in configured, which is not offered by the \emph{rtt-py}. This functionality is, however, often not used. Because the used database connection is not supported on some Unix distributions, the \emph{RTT} may be compiled without it.
 
 
 % rtt-py adding first-level p-values
