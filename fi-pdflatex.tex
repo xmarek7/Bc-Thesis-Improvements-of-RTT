@@ -690,7 +690,7 @@ Based on the second property, the cattegories are called:
 
 \end{markdown*}
 
-The size of the first-level subseqeunce in the tests with variable size is determined by \emph{content} of the sequence. TODO: EXAMPLE FROM DIEHARDER. For an \emph{individual} test from this category and for random content of the sequence, the \emph{real} size of the first-level sequence fluctuates around \emph{some} value. 
+The size of the first-level subseqeunce in the tests with variable size is determined by \emph{content} of the sequence. For example, the Diehard Squeeze Test starts with number $k=2^{31}$ and in each iteration calculates $k=\lceil k\cdot U \rceil $, where U is uniform float from [0, 1) created from the tested data. For an \emph{individual} test from this category and for random content of the sequence, the \emph{real} size of the first-level sequence fluctuates around \emph{some} value. 
 
 To examine how long are the first-level sequences of tests with variable size, I run each test from this category at least 100 times on different \emph{random} data (taken from /dev/random). Tests from this category are presented in their own tables containing mean length of the subsequence and differences between mean and lowest and highest observed length.
 
@@ -1110,7 +1110,7 @@ The used implementations of batteries are taken from RTT (available from \cite{r
 
 The runtimes and throughputs for Dieharder are in Table \ref{tab:analysis_time_dieharder}. The Dieharder tests were run without the \emph{rate} option and with default values of \emph{tsample} argument. Runtimes and throughputs for TestU01 SmallCrush and Crush batteries are in Table \ref{tab:analysis_smallcrush_time} and Table \ref{tab:analysis_crush_times}.
 
-To measure runtimes of test with \emph{configurable} size, I had to fix the first-level subsequence size for each test. For NIST STS battery, I set \emph{stream size} argument to 1,000,000 (the subsequences were 250,000  bytes long). This is the lowest value which satisfies subsequence size recommendations for all the tests. \cite{nist_special} NIST STS runtimes and throughputs are shown in Table \ref{tab:analysis_nist_time}.
+To measure runtimes of test with \emph{configurable} size, I had to fix the first-level subsequence size for each test. For NIST STS battery, I set \emph{stream size} argument to 1,000,000 (the subsequences were 125,000  bytes long). This is the lowest value which satisfies subsequence size recommendations for all the tests. \cite{nist_special} NIST STS runtimes and throughputs are shown in Table \ref{tab:analysis_nist_time}.
 
 For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\textunderscore nb} argument to value 52,428,800 (the subseqeunces should be 6,553,600 bytes long). This is the lowest value for which all tests from the three batteries are executed (see Subsection \ref{chap:analysis-data-rabbit}). The runtimes and throughputs for Rabbit battery are in Table \ref{tab:analysis_rabbit_time}. Alphabit and BlockAlphabit batteries share Table \ref{tab:analysis_alphabit_time}, because both batteries employ the \emph{same} tests and no difference in runtimes was observed.
 
