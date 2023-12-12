@@ -116,11 +116,26 @@
 %% headings and a table of contents entry, we must add them manually:
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
-\todo{To be done, now it is only a collection of ideas.}
 
-%Random number generators are tested by taking an output sample. This 
+% into - rng, random sequence
+Random number generators are tools for generating bit sequences with random contents. The desired properties of such sequence are \emph{uniformity} (for each bit, the probability of both zero and one are exactly $1/2$), \emph{independence} (none of the bits is influenced by any other bit) and \emph{unpredictability} (it is impossible to predict next bit by obtaining any number of previous bits). \cite[p. 1-1]{nist_special} The random number generators are of different quality in regard to fulfilling the desired properties of generated sequences.
 
-The desired properties of random sequence are \emph{uniformity} (for each bit the probability for both zero and one are exactly $1/2$), \emph{independence} (none of the bits is influenced by any other bit) and \emph{unpredictability} (it is impossible to predict next bit by obtaining any number of previous bits). \cite[p. 1-1]{nist_special}
+% rng quality, tu01 guide - 2
+Each application of random number generators has different requirements for quality of the used generator. The quality is assessed either by mathematical analysis of the generator structure or by taking a sample output of the generator and subjecting it to \emph{randomness test}, which is the subject of this thesis. \cite[p.~2]{tu01_guide}
+
+%Randomness testing is a form of statistical testing. It is used in cryptography to test the quality of the output of different cryptographic primitives such as (pseudo-)random number generators or ciphers, where the randomness of output is required. 
+
+% intro to current state
+Currently, there are several available programs for randomness testing. Most notable are NIST STS\footnote{National Institute of Standards and Technology Statistical Test Suite} \cite{nist_site}, TestU01 \cite{tu01_site} and Dieharder \cite{dieharder_orig}. Combining all of the three into one program are the Randomness Testing Toolkit \cite{rtt-site} and its evolution, the Randomness Testing Toolkit in Python \cite{rtt-py-site}.
+
+%TODO
+The first goal of this thesis is to implement improvements into the \emph{rtt-py} so that it can fully replace the \emph{RTT}. These improvements include processing errors and warnings from the test batteries and extensions to the output format. The second goal is to make the randomness testing easier for new users with the explanation of randomness testing principles (Chapter \ref{theory}) and by creating the Configuration Calculator -- a tool that helps with the configurations of tests for both the \emph{RTT} and the \emph{rtt-py}.
+
+
+I analyzed the \emph{rtt-py} and combined the results with the requirements defined by CRoCS\footnote{Center for Research on Cryptography and Security} FI MU. From this analysis (Chapter \ref{analysis}) arose the need to enhance the output format of  the \emph{rtt-py} and to report more information from testing to the user.
+Then I ran all of the batteries on various data and collected information about their data consumption. Based on this information, I created the Configuration Calculator, which is described in Chapter \ref{configcaclc}. 
+
+The results of this thesis are upgrades to the \emph{rtt-py} (Chapter \ref{improvements}), which allow full replacement of the \emph{RTT} with the \emph{rtt-py} in terms of functionality. The enhancements of the \emph{rtt-py} alongside the Configuration  Calculator also lead to improved usability of this program.
 
 % RANDOMNESS TESTING - 'theoretical' chapter
 
@@ -312,7 +327,7 @@ Next, the Kolmogorov-Smirnov test is applied. The eCDF is calculated and then th
 %AVAILABLE SOLUTIONS
 %%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Programms for randomness tesing}
+\chapter{Programms for randomness testing}
 In this chapter, available programms for randomness testing are presented. First section describes \emph{statistical testing batteries} (later often referred to as batteries).  The second section shows \emph{randomness testing toolkits}, which encompass several batteries together. Overview of setup and output is given in both sections.
 
 \section{Statistical testing batteries} \label{chap:sols-batteries}
@@ -603,12 +618,12 @@ Each of the following columns is named after one tested file. The record contain
 
 The output in the HTML format contains than the output in the CSV format. For each battery and for each tested file an HTML file with reports is generated.
 
-In each report file there is a list of reports for each individual test or subtest from the given battery containing the result (either reported p-value, or number of failed runs). It may contain additional information such as settings of the test or other information connected to the result, depending on the battery and on the executed test. Example of the  report can be seen in figure \ref{fig:rtt_py_html}
+In each report file there is a list of reports for each individual test or subtest from the given battery containing the result (either reported p-value, or number of failed runs). The individual test has red background in case the test \emph{rejected} the null-hypothesis, grey background otherwise. It may contain additional information such as settings of the test or other information connected to the result, depending on the battery and on the executed test. Example of the  report can be seen in figure \ref{fig:rtt_py_html}
 \begin{figure}
   \begin{center}
     %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
     %% The optimum is about 250 pixels per 1 centimeter 
-    \includegraphics[width=8cm]{figures/rtt-py.png}
+    \includegraphics[width=12.5cm]{figures/rtt-py.png}
   \end{center}
   \caption{The example of HTML FIPS battery report from the \emph{rtt-py}}
   \label{fig:rtt_py_html}
@@ -1071,13 +1086,13 @@ Tests 6, 7 and 8 read only data with size $2^k$($k \in \mathbb{N}$) \emph{bits}.
 
 The only test with \emph{variable} size from Rabbit battery is 20. It uses around 80 \% of data size specified by \emph{bit\textunderscore nb} argument. Test 5 reads significantly less data than specified. When the \emph{bit\textunderscore nb} argument specifies that the test should use 10MB of data, the test 5 uses only  3,536 \emph{bytes}. When the test should use 100MB of data, it uses only 8,488 \emph{bytes}.
 
-For some tests there is an \emph{upper bound} of data used for testing. The test will not read more data, even with growing \emph{bit\textunderscore nb}. Size of the data that are actually read from the file is not constant in such case and fluctuates around \emph{some} values, even when the test should read more data. Examples of real data size fluctuation is at Figure \ref{fig:analysis-rabbit-max}.
+For some tests with \emph{constant} size there is an \emph{upper bound} of data used for testing. The test will not read more data than this value, even when specified by the  the \emph{bit\textunderscore nb} arguments. Size of the data that are actually read from the file is  different for each value of \emph{bit\textunderscore nb} in such case and fluctuates around \emph{some} values. Examples of real data size fluctuation is at Figure \ref{fig:analysis-rabbit-max}.
 
 \begin{figure}
   \begin{center}
-    \includegraphics[width=12.5cm]{figures/rabbit_3_maxims.png}
+    \includegraphics[width=12.7cm]{figures/rabbit_3_maxims.png}
   \end{center}
-  \caption{Number of bytes actually read from tested file by Rabbit test 3 for increasing \emph{bit\textunderscore nb} > 3.3$\cdot10^{9}$.}
+  \caption{Number of bytes actually read from tested file by Rabbit test with ID 3 for various values of \emph{bit\textunderscore nb} greater than 3.3$\cdot10^{9}$ ($\approx$~393~megabytes).}
   \label{fig:analysis-rabbit-max}
 \end{figure}
 %\todo{moving upper bound}
@@ -1548,6 +1563,14 @@ More common are tests with high number of observed p-values, but non-uniform dis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % IMPLEMENTATIONS COMPARISON
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%kapitola 4.1 + 4.2:
+
+%- na zacatku bych referencoval nejaky priklad vystupu RTT, rtt-py (klidne odkazem do prilohy).
+
+%- "RTT reports more information..." - co presne? Tohle je strasne vagni. mozna odkaz na priklady a slovne popsat (viz predchozi bod)
+
+
 \chapter{Implementations comparison}
 
 The \emph{rtt-py} is supposed to be a newer version of \emph{RTT} and might replace it in the future. Therefore, in this chapter I focus mainly on finding differences between the two. The first section aims at comparing outputs of both testing toolkits. In the second section I am at finding functional differences between them, especially the features the are present in \emph{RTT} and not in \emph{rtt-py}. In the last section I present general suggestions for further improvement of both \emph{RTT} and \emph{rtt-py}. 
@@ -1564,15 +1587,23 @@ First difference in output between \emph{RTT} and \emph{rtt-py} is the format of
 
 The \emph{rtt-py} offers an overview table in HTML and CSV formats, which are both easily human-readable and useful for quick assessment of the result of the tests. The CSV format is also easily computer-readable. 
 
-The full HTML format offers more information, usually regarding the test settings. For all tests, the p-values is contained.. In the NIST STS, the proportion of sequences passing the first-level test is added. In the TestU01 batteries, corresponding test statistics values are part of the HTML report as well.
+The full HTML format offers more information, usually regarding the test settings. For all tests, the p-values is contained. In the NIST STS, the proportion of sequences passing the first-level test is added. In the TestU01 batteries, corresponding test statistics values are part of the HTML report as well.
 
 The main functional difference in output between \emph{RTT} and \emph{rtt-py} are the reported information. For this comparison, the full HTML report from \emph{rtt-py} is taken. Both toolkits report the resulting second-level p-values for Dieharder and both the second-level p-value and proportion of sequences passing the first-level test for NIST STS batteries. However, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values, which could be useful for deeper assessment of the results. The \emph{RTT} also reports more information regarding the details about individual tests from NIST STS battery.
 
-For the TestU01 batteries (which employ only repeated single-level tests) the reported information are the same for both toolkits -- p-values and details about test settings. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their respective p-values are printed in a group. In \emph{rtt-py}, each repetition is treated as a separate individual test and the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own. The FIPS and BSI batteries are not mentioned in thic comparison, because they are only executed in the \emph{rtt-py}.
+For the TestU01 batteries (which employ only repeated single-level tests) the reported information are the same for both toolkits -- p-values and details about test settings. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their respective p-values are printed in a group. In \emph{rtt-py}, each repetition is treated as a separate individual test and the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own. The FIPS and BSI batteries are not mentioned in this comparison, because they are only executed in the \emph{rtt-py}.
 
-Both toolkits also take different approach in parsing the results. In \emph{RTT}, the results are parsed after \emph{all} tests finish their executions using regular expressions. Originally, the regular expressions used for TestU01 batteries sometimes crashed while parsing. This issue has already been fixed. TODO: SOME REF, FOOTNOTE? Furthermore, when parsing large batteries outputs, the \emph{RTT} may crash due to \emph{out of memory} error.
+Both toolkits also take different approach in parsing the results. In \emph{RTT}, the results are parsed after \emph{all} tests finish their executions using regular expressions. Originally, the regular expressions used for TestU01 batteries sometimes crashed while parsing. This issue has already been fixed. \footnote{\url{https://github.com/crocs-muni/randomness-testing-toolkit/commit/7457ba6e820a886f4582f271b2b1377d14152c60}} Furthermore, when parsing large batteries outputs, the \emph{RTT} may crash due to \emph{out of memory} error.
 
 In \emph{rtt-py}, the results are parsed after each individual test is executed and stored in pre-defined objects. After all tests from given battery are executed, corresponding report is generated.
+
+% no errors and warns
+Another part of the output of both toolkits is handling errors and warning from the batteries. The \emph{RTT} informs the user about the number of errors and warnings that occurred on the standard output. The detection of errors and warnings in \emph{RTT} is done by searching for words 'error' or 'warning' in the battery output. At the beginning of the report file, all tests that produced errors or warnings are listed. The whole line containing the warning or error is printed into the corresponding individual test report.
+
+The \emph{rtt-py} ignores errors and warnings from test batteries. The most notable example why this is a problem are the \emph{file rewinds} (as described in Section \ref{chap:sols-batteries}).
+
+In this case, the test will read some parts of the data more than once and inform the user about this situation. The test will still produce result, which will, however, be biased by repeated parts of the tested file. This may lead to incorrect interpretation of the results and to Type I or II error. Since the \emph{rtt-py} ignores this, there is no way for the user to be informed about this situation.
+ 
 
 %%%%%%%%%%%%%%%%%%
 % MISSING FEATURES
@@ -1596,30 +1627,32 @@ In this section I focus on finding the functional differences between \emph{RTT}
     Feature & RTT & rtt-py \\
     \midrule
     \midrule
-    missing batteries & FIPS, BSI & TestU01 \emph{Crush} family \\ %
+    Missing batteries & FIPS, BSI & TestU01 SmallCrush, \\ %
+     & & Crush, BigCrush \\
     \midrule
     %nist folder TODO & manually & added argument \\
     %\midrule
-    errors and warning & yes & no \\ %
+    Dieharder and NIST & yes & no \\ %
+     first-level p-values & & \\
     \midrule
-    Dieharder and  NIST first-level& yes & no \\ %
-    p-values & & \\
+    TestU01 single individual & grouped & each repetition \\
+     test p-value & &  separate \\
     \midrule
-    TestU01 p-values & grouped & each repetition separate \\
+    Battery errors and warning & yes & no \\ %
     \midrule
-    batteries output logs & yes & no \\ %
+    Battery output logs & yes & no \\ %
     \midrule
-    run logs & yes & yes \\
+    Run logs & yes & yes \\
     \midrule
-    parallelism & yes & no \\ %
+    Parallel executions & yes & no \\ %
     \midrule
-    readiness for new battery & less & more \\
+    Readiness for new battery & less & more \\
     \midrule
-    batteries in one run & single & all \\
+    Batteries in one run & single & all \\
     \midrule
-    tests in one run & all or single & all \\
+    Tests in one run & all or single & all \\
   \end{tabularx}
-  \caption{Comparing the features of \emph{RTT} and \emph{rtt-py}.}
+  \caption{Overview table for comparing the features of \emph{RTT} and \emph{rtt-py}.}
   \label{tab:comparison}
 \end{table}
 
@@ -1635,31 +1668,25 @@ Another difference between toolkits is handling the \emph{test-specific-settings
 
 Another difference with this field is that \emph{rtt-py} ignores \emph{repetitions} field from \emph{test-specific-settings} of TestU01 batteries, therefore all test are executed with. This also might to be the reason why \emph{Crush} family batteries are not run, because this field is needed for \emph{meaningful} use of the \emph{Crush} family batteries, while the remaining TestU01 batteries can be \emph{meaningfully} used without changing the \emph{repetitions} argument.
 
-% no errors and warns
-One of the problems that need to be addressed in \emph{rtt-py} is that the \emph{rtt-py} ignores errors and warnings from test batteries. The most notable example why this is a problem are the \emph{file rewinds}.
 
-In this case, the test will read some parts of the data more than once and inform the user about this situation. The test will still produce result, which will, however, be biased by repeated parts of the tested file.
-
-This may lead to incorrect interpretation of the results and to Type I or II error. Since the \emph{rtt-py} ignores this, there is no way for the user to be informed about this situation.
-
-The detection of errors and warnings in \emph{RTT} is done by searching for words 'error' or 'warning' in the battery output. If this word is found, the whole line in which the word was found is printed into the report. 
 
 % no logs
 Closely tied with the warnings and errors are the output logs of the executed batteries. They are usually used to examine the warnings and errors raised by the batteries and to decide about the severity of the warning or error. Another usage may be to examine further details of the report that are not reported by the used toolkit. 
 
 In \emph{RTT}, the output logs for each battery are stored in the \emph{results} folder. In \emph{rtt-py}, no batteries output logs are being stored. Both \emph{RTT} and \emph{rtt-py} create run logs containing the exact arguments used to run the batteries.
 
-% pvals printout
-As was described in previous section, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values from Dieharder and NIST STS. The first-level p-values can be usefull for deeper examination of the tests results. In TestU01, the p-values are grouped by test in \emph{RTT}, but not in \emph{rtt-py}.
+% pvals printout + error
+As was described in previous section, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values from Dieharder and NIST STS. The first-level p-values can be usefull for deeper examination of the tests results. In TestU01, the p-values are grouped by test in \emph{RTT}, but not in \emph{rtt-py}. Furthermore, as opposed to \emph{RTT}, the \emph{rtt-py} ignores the warning from battery outputs.
+
 
 % paralelism
 The \emph{RTT} allows parallel execution of several individual tests at once (maximal number of parallel exectuions is set by the user in \emph{rtt-settings.json} file). In \emph{rtt-py}, no parallelism is supported and all individual tests are executed serially. 
 
 % adding new battery
-One of the original ides of \emph{RTT} was to provide interface for easy adding of new batteries. The \emph{rtt-py} allows for a simple adding of new batteries. The user only has to implement classes for settings parsing, executions and results, which all follow predefined patterns. These classes are then easily integrated into the \emph{rtt-py}. TODO: in \emph{RTT}
+One of the original idea of \emph{RTT} was to provide interface for easy adding of new batteries. The \emph{rtt-py} allows for a simple adding of new batteries. The user only has to implement classes for settings parsing, executions and results parsing, which all follow predefined patterns. These classes are then easily integrated into the \emph{rtt-py}. TODO: in \emph{RTT}
 
 % database
-The \emph{RTT} also offers storing the test results in configured, which is not offered by the \emph{rtt-py}. This functionality is, however, often not used. Because the used database connection is not supported on some Unix distributions, the \emph{RTT} may be compiled without it.
+The \emph{RTT} also offers storing the test results in configured database, which is not offered by the \emph{rtt-py}. This functionality is, however, often not used. Because the used database connection is not supported on some Unix distributions, the \emph{RTT} may be compiled without it.
 
 
 % rtt-py adding first-level p-values
@@ -1682,10 +1709,33 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 %%%%%%%%%%%%%%
 \chapter{Conclusion}
 
+% intro
+%Primary goal of this thesis was to analyse \emph{Randomness Testing Toolkit} and its newer, alternative implementation, the \emph{Randomness Testing Toolkit in Python}. First part of the analysis focused on finding differences between the two, which prevent replacement of \emph{RTT} with \emph{rtt-py}. The second part of the analysis proposed improvements, that might improve performance and usability of both \emph{RTT} and \emph{rtt-py}.
+
+% intro theory + solutions
+This thesis explained the two main approaches to randomness testing (one-level and two-level tests) so that the readers can fully understand it. The explanation is followed by description of available programs for randomness testing.
+
+% intro analysis
+Main goal of this thesis was to analyse the \emph{Randomness Testing Toolkit} and its newer, alternative implementation, the \emph{Randomness Testing Toolkit in Python}. The analysis focused on finding differences between the two implementations in order to allow future replacement of \emph{RTT} with \emph{rtt-py}, and on proposing improvements for both toolkits.
+
+% test analysis 
+\todo{motivation for focus switch}
+
+We also performed analysis of the individual tests present in the randomness testing batteries. During first part of the tests analysis we collected information about \emph{data consumption}, which are used for correct configurations of the tests. In the second part of the tests analysis, the \emph{runtimes} of the tests were measured. Data collected from both analysis were used to find tests with low \emph{performance}.
+
+% techniques
 
 
+% config calc
+We created the \emph{Configuration Calculator} based data from tests analysis -- tool for automated creation of configuration files for both \emph{RTT} and \emph{rtt-py}. This tool has already been used in two projects inside CRoCs and will be published to use with the \emph{RTT}.
 
+% implementations comparison
+We performed the analysis of both \emph{RTT} and \emph{rtt-py} by comparing the features of both implementations. The focus was on output of the toolkits (both format of the reports and the information contained in them) and features, that are missing in the \emph{rtt-py} compared to the \emph{RTT}.
 
+From the implementations analysis arose list of features missing in \emph{rtt-py}, that prevent it from replacing the \emph{RTT}, and a list of proposed improvements for both implementations.
+
+% future work
+In the future, this thesis can be followed by implementing the missing features of the \emph{rtt-py} listed in the implementations comparison, so that it can fully replace the older \emph{RTT}. Furthermore, both \emph{RTT} and \emph{rtt-py} can be improved based on the unimplemented proposements from the last chapter, particularly the improved second-level tests. 
 
 
 %%%%%%%%%%%%%%%%%%
@@ -1696,7 +1746,7 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 \chapter{Batteries output examples} \label{append:dieharder-output}
 \section{Dieharder}
 
-\begin{figure}[H]
+\begin{figure}[h]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/dieharder.jpg}
   \end{center}
@@ -1706,7 +1756,7 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 
 \pagebreak
 
-\begin{figure}[H]
+\begin{figure}[h]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/pvals.jpg}
   \end{center}
@@ -1716,8 +1766,8 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 
 \pagebreak
 
-\section{NIST STS output} \label{append:nist-output}
-\begin{figure}[H]
+\section{NIST STS} \label{append:nist-output}
+\begin{figure}[h]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/finalAnalysisReport.jpg}
   \end{center}
@@ -1727,7 +1777,7 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 
 \pagebreak
 
-\begin{figure}[H]
+\begin{figure}[h]
   \begin{center}
     \includegraphics[width=9cm]{figures/outputs-appendix/stats.jpg}
   \end{center}
@@ -1737,14 +1787,31 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 
 \pagebreak
 
-\section{TestU01 output} \label{append:tu01-output}
+\section{TestU01} \label{append:tu01-output}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=12.5cm]{figures/outputs-appendix/tu01single.jpg}
+  \end{center}
+  \caption{Example of individual test repetition
+   report from \emph{TestU01} SmallCrush battery. }
+  \label{fig:tu01single}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=10cm]{figures/outputs-appendix/testu01pvalues.jpg}
+  \end{center}
+  \caption{Example of p-values printout from \emph{TestU01} battery.}
+  \label{fig:tu01pvalues}
+\end{figure}
 
 \pagebreak
 
-\section{FIPS battery output} \label{append:fips-output}
+\section{FIPS battery} \label{append:fips-output}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[width=10cm]{figures/outputs-appendix/fips.jpg}
   \end{center}
@@ -1752,7 +1819,7 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
   \label{fig:fips_example}
 \end{figure}
 
-\section{BSI battery output} \label{append:bsi-output}
+\section{BSI battery} \label{append:bsi-output}
 
 
 \begin{figure}[H]
@@ -1762,10 +1829,10 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
   \caption{Example of output from \emph{BSI} battery.}
   \label{fig:bsi_example}
 \end{figure}
+\pagebreak
 
 
-
-\chapter{Testing Toolkits} \label{append:rtt}
+\chapter{Examples from testing toolkits} \label{append:rtt}
 
 \section{RTT settings} \label{append:rtt-setting}
 
@@ -1791,8 +1858,41 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 
 
 
-\chapter{RTT output} \label{append:rtt-output}
+\section{Report from \emph{RTT}} \label{append:rtt-output}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=11.5cm]{figures/rtt/rtt-output.jpg}
+  \end{center}
+  \caption{Example of report file from \emph{RTT}.}
+  \label{fig:rtt_output}
+\end{figure}
+
+\pagebreak
+
+\section{Report from \emph{rtt-py}} \label{append:rtt-py-output}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=10cm]{figures/rtt/rtt-py-out.png}
+  \end{center}
+  \caption{Example of HTML report from \emph{rtt-py}.}
+  \label{fig:rtt_py_output}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=12cm]{figures/rtt/rtt-py-table.png}
+  \end{center}
+  \caption{Example of HTML overview table from \emph{rtt-py}.}
+  \label{fig:rtt_py_table_app}
+\end{figure}
 
 
-\chapter{rtt-py out} \label{append:rtt-py-output}
+
+
+
+
+
+
 \end{document}
+
+
