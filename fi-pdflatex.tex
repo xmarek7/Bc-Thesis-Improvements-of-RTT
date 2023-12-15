@@ -55,7 +55,7 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{longtable}
-\def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
+
 %%
 %% The following section sets up the metadata of the thesis.
 \thesissetup{
@@ -117,11 +117,16 @@
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
 
-% into - rng, random sequence
-Random number generators are tools for generating bit sequences with contents, that appear random. The desired properties of such sequence are \emph{uniformity} (for each bit, the probability of both zero and one are exactly $1/2$), \emph{independence} (none of the bits is influenced by any other bit) and \emph{unpredictability} (it is impossible to predict next bit by obtaining any number of previous bits). \cite[p. 1-1]{nist_special} 
+In today's computer communication, cryptography plays vital role in securing the communication. Many cryptographical primitives require to be set up with unique values (e.g. keys or nonces). To acquire unique values, random number generators are used.
+
+
+% into - rng, random sequence 
+Random number generators are tools for generating bit sequences with content, that appears random. The desired properties \cite[p.~1-1]{nist_special} of such sequence are \emph{uniformity} (for each bit, the probability of both zero and one are exactly $1/2$), \emph{independence} (none of the bits is influenced by any other bit) and \emph{unpredictability} (it is impossible to predict next bit by obtaining any number of previous bits). 
 
 % rng quality, tu01 guide - 2
-The random number generators are of different quality in regard to fulfilling the desired properties of generated sequences and each application of random number generators has different requirements for quality of the used generator. The quality is assessed by mathematical analysis of the generator structure or by taking a sample output of the generator and applying a \emph{randomness test}. \cite[p.~2]{tu01_guide}
+The random number generators are of different quality in regard to fulfilling the desired properties of generated sequences. Each application of random number generators has different requirements for quality of the used generator. In cryptography, failure to comply to the requirements may lead compromising the used primitive.
+
+Therefore, there is need to assess the quality of the used random number generator. The assessment is done by mathematical analysis of the generator structure or by taking a sample output of the generator and applying a \emph{randomness test} \cite[p.~2]{tu01_guide}.
 
 %Randomness testing is a form of statistical testing. It is used in cryptography to test the quality of the output of different cryptographic primitives such as (pseudo-)random number generators or ciphers, where the randomness of output is required. 
 
@@ -131,7 +136,7 @@ Currently, there are several available programs for randomness testing. Most not
 %The first goal of this thesis is to implement improvements into the \emph{rtt-py} so that it can fully replace the \emph{RTT}. These improvements include processing errors and warnings from the test batteries and extensions to the output format. The second goal is to make the randomness testing easier for new users with the explanation of randomness testing principles (Chapter \ref{theory}) and by creating the Configuration Calculator -- a tool that helps with the configurations of tests for both the \emph{RTT} and the \emph{rtt-py}.
 
 % principles explanations
-In Chapter \ref{chap:rand}, we explained the principles of randomness testing along with all terms used in the following chapters. This chapter may also be used by users new to randomness testing. The aforementioned programs for randomness testing are presented in Chapter \ref{chap:sols}.
+In Chapter \ref{chap:rand}, I explain the principles of randomness testing along with all terms used in the following chapters. This chapter may also be used by users new to randomness testing. The aforementioned programs for randomness testing are presented in Chapter \ref{chap:sols}.
 
 % thesis goal
 The main goal of this thesis is to analyse \emph{RTT} and \emph{rtt-py} with focus on finding differences between the two implementations (particularly the features missing in \emph{rtt-py}) and on proposing improvements for both of the toolkits. 
@@ -354,7 +359,7 @@ In this chapter, available programs for randomness testing are presented. First 
 
 An \emph{abstract battery} consist of $n$ individual tests, which are distinguished by \emph{test IDs}. Usually, one individual test maps to one two-level test. Some individual tests consist of more \emph{subtests}, which are all executed at once when the individual test is executed.
 
-\emph{rewrite better the example}
+\todo{rewrite better the example}
 Each \emph{subtest} maps to one \emph{two-level test}. The first-level test statistics of subtests are usually related to each other by using the same operation on the tested sequence. For example, the Diehard Craps Test plays 200~000 games of craps. The two calculated first-level test statistics are based on number of wins and GOF test of distribution of throws needed to end the game. \cite{dieharder_orig}
 
 \emph{Variant of the test} is an individual test that is parametrized to search for modified pattern in the data. Only some individual tests allow such parametrization. Usually, all possible \emph{variants} of given individual test are executed.  \cite[p. 2]{vavercak}
@@ -1681,19 +1686,20 @@ In the future, this thesis can be followed by implementing the missing features 
   \label{fig:die_out}
 \end{figure}
 
-\pagebreak
+\newpage
 
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/pvals.jpg}
   \end{center}
-  \caption{Examples of first-level p-values printout from \emph{Dieharder} battery}
+  \caption{Example of first-level p-values printout from \emph{Dieharder} battery}
   \label{fig:die_pvals}
 \end{figure}
 
-\pagebreak
+\newpage
 
 \section{NIST STS} \label{append:nist-output}
+
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/outputs-appendix/finalAnalysisReport.jpg}
@@ -1702,7 +1708,7 @@ In the future, this thesis can be followed by implementing the missing features 
   \label{fig:nist_tab}
 \end{figure}
 
-\pagebreak
+\newpage
 
 \begin{figure}[h]
   \begin{center}
@@ -1712,7 +1718,7 @@ In the future, this thesis can be followed by implementing the missing features 
   \label{fig:nist_stats}
 \end{figure}
 
-\pagebreak
+\newpage
 
 \section{TestU01} \label{append:tu01-output}
 
@@ -1725,6 +1731,8 @@ In the future, this thesis can be followed by implementing the missing features 
   \label{fig:tu01single}
 \end{figure}
 
+\newpage
+
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=10cm]{figures/outputs-appendix/testu01pvalues.jpg}
@@ -1733,12 +1741,10 @@ In the future, this thesis can be followed by implementing the missing features 
   \label{fig:tu01pvalues}
 \end{figure}
 
-\pagebreak
+\newpage
 
 \section{FIPS battery} \label{append:fips-output}
-
-
-\begin{figure}[H]
+\begin{figure}[h]
   \begin{center}
     \includegraphics[width=10cm]{figures/outputs-appendix/fips.jpg}
   \end{center}
@@ -1746,36 +1752,42 @@ In the future, this thesis can be followed by implementing the missing features 
   \label{fig:fips_example}
 \end{figure}
 
+\newpage
+
 \section{BSI battery} \label{append:bsi-output}
 
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \begin{center}
     \includegraphics[width=7.5cm]{figures/outputs-appendix/bsi.jpg}
   \end{center}
   \caption{Example of output from \emph{BSI} battery.}
   \label{fig:bsi_example}
 \end{figure}
-\pagebreak
+
+\newpage
+
+
+
 
 
 \chapter{Examples from testing toolkits} \label{append:rtt}
 
 \section{RTT settings} \label{append:rtt-setting}
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=11cm]{figures/rtt/rtt-settings.jpg}
+    \includegraphics[width=10.9cm]{figures/rtt/rtt-settings.jpg}
   \end{center}
   \caption{General settings for \emph{RTT} stored in \emph{rtt-settings.json} file.}
   \label{fig:rtt_settings}
 \end{figure}
-
+\newpage
 
 
 \section{RTT battery configuration} \label{append:rtt-config}
 
-\begin{figure}[H]
+\begin{figure}[h!]
   \begin{center}
     \includegraphics[width=12.5cm]{figures/rtt/config.jpg}
   \end{center}
@@ -1783,41 +1795,38 @@ In the future, this thesis can be followed by implementing the missing features 
   \label{fig:rtt_config}
 \end{figure}
 
-
+\newpage
 
 \section{Report from \emph{RTT}} \label{append:rtt-output}
-\begin{figure}[H]
+
+\begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=11.5cm]{figures/rtt/rtt-output.jpg}
+    \includegraphics[width=11cm]{figures/rtt/rtt-output.jpg}
   \end{center}
   \caption{Example of report file from \emph{RTT}.}
   \label{fig:rtt_output}
 \end{figure}
 
-\pagebreak
+\newpage
 
 \section{Report from \emph{rtt-py}} \label{append:rtt-py-output}
-\begin{figure}[H]
+\begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=10cm]{figures/rtt/rtt-py-out.png}
+    \includegraphics[width=11cm]{figures/rtt/rtt-py-out.png}
   \end{center}
   \caption{Example of HTML report from \emph{rtt-py}.}
   \label{fig:rtt_py_output}
 \end{figure}
 
-\begin{figure}[H]
+\newpage
+
+\begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=12cm]{figures/rtt/rtt-py-table.png}
+    \includegraphics[width=11.5cm]{figures/rtt/rtt-py-table.png}
   \end{center}
   \caption{Example of HTML overview table from \emph{rtt-py}.}
   \label{fig:rtt_py_table_app}
 \end{figure}
-
-
-
-
-
-
 
 
 \end{document}
