@@ -117,14 +117,14 @@
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Cryptography plays vital role in securing computer communication today. Many cryptographical primitives require to be set up using unique values (e.g. keys or nonces) to provide their functionality correctly. To acquire unique values, random number generators are used in practice..
+Cryptography plays vital role in securing computer communication today. Many cryptographical primitives require to be set up using unique values (e.g. keys or nonces) to provide their functionality correctly. To acquire unique values, random number generators are used in practice.
 
 
 % into - rng, random sequence 
 Random number generators are tools for generating bit sequences with content that appears random. The desired properties \cite[p.~1-1]{nist_special} of such sequence are \emph{uniformity} (for each bit, the probability of both zero and one are exactly $1/2$), \emph{independence} (none of the bits is influenced by any other bit) and \emph{unpredictability} (it is impossible to predict next bit by obtaining any number of previous bits). 
 
 % rng quality, tu01 guide - 2
-The random number generators are of different quality in regard to fulfilling the desired properties of generated sequences. Each application of random number generators has different requirements for quality of the used generator. In cryptography, failure to fulfill to the requirements may lead compromising the security.
+The random number generators are of different quality in regard to fulfilling the desired properties of generated sequences. Each application of random number generators has different requirements for quality of the used generator. In cryptography, failure to fulfill the requirements may lead to compromising the security of the communication.
 
 Therefore, there is need to assess the quality of the used random number generators. The assessment is done by mathematical analysis of the generator structure or by taking a sample output of the generator and applying a \emph{randomness test} \cite[p.~2]{tu01_guide}.
 
@@ -138,13 +138,13 @@ Currently, there are several available programs for randomness testing. Most not
 
 % thesis goal - motivation of analysis
 
-The \emph{RTT} contains flaws in regard to both usability and functionality. It might be replaced by the \emph{rtt-py} in the future, however the two implementations are diffrent. Therefore, the main goal of this thesis is to analyse the \emph{RTT} and the \emph{rtt-py} with focus on finding differences between the two implementations (particularly the features missing in \emph{rtt-py}) and on proposing improvements for both of the toolkits. 
+The \emph{RTT} contains flaws in regard to both usability and functionality. It might be replaced by the \emph{rtt-py} in the future, however, the two implementations are different. Therefore, the main goal of this thesis is to analyse the \emph{RTT} and the \emph{rtt-py} with focus on finding differences between the two implementations (particularly the features missing in \emph{rtt-py}) and on proposing improvements for both of the toolkits. 
 
 % principles explanations
 In Chapter \ref{chap:rand}, we explain the principles of randomness testing along with terms used in the following chapters. The aforementioned programs for randomness testing are presented in Chapter \ref{chap:sols}. In the first part of the analysis (described in Chapter \ref{chap: analysis}), we focus on improving the \emph{RTT} by analyzing the individual tests used by the \emph{RTT}. %This analysis resulted in creation of the Configuration Calculator -- tool for automated configuration of the \emph{RTT} based on the tested file.
 
 %rtts analysis
-Second part of the analysis (presented in Chapter \ref{chap:comparison}) is focused directly on \emph{RTT} and \emph{rtt-py}. In this part, we present and compare the output of \emph{RTT} and \emph{rtt-py}. Then, we analyse the features of both toolkits and list all differences found. Last, we propose several improvements that would extend the functionality of both \emph{RTT} and \emph{rtt-py}.
+The second part of the analysis (presented in Chapter \ref{chap:comparison}) is focused directly on \emph{RTT} and \emph{rtt-py}. In this part, we present and compare the output of \emph{RTT} and \emph{rtt-py}. Then, we analyse the features of both toolkits and list all differences found. Last, we propose several improvements that would extend the functionality of both \emph{RTT} and \emph{rtt-py}.
 
 % RANDOMNESS TESTING - 'theoretical' chapter
 
