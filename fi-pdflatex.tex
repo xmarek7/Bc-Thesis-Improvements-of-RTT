@@ -117,35 +117,34 @@
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
 
-In today's computer communication, cryptography plays vital role in securing the communication. Many cryptographical primitives require to be set up with unique values (e.g. keys or nonces). To acquire unique values, random number generators are used.
+Cryptography plays vital role in securing computer communication today. Many cryptographical primitives require to be set up using unique values (e.g. keys or nonces) to provide their functionality correctly. To acquire unique values, random number generators are used in practice..
 
 
 % into - rng, random sequence 
-Random number generators are tools for generating bit sequences with content, that appears random. The desired properties \cite[p.~1-1]{nist_special} of such sequence are \emph{uniformity} (for each bit, the probability of both zero and one are exactly $1/2$), \emph{independence} (none of the bits is influenced by any other bit) and \emph{unpredictability} (it is impossible to predict next bit by obtaining any number of previous bits). 
+Random number generators are tools for generating bit sequences with content that appears random. The desired properties \cite[p.~1-1]{nist_special} of such sequence are \emph{uniformity} (for each bit, the probability of both zero and one are exactly $1/2$), \emph{independence} (none of the bits is influenced by any other bit) and \emph{unpredictability} (it is impossible to predict next bit by obtaining any number of previous bits). 
 
 % rng quality, tu01 guide - 2
-The random number generators are of different quality in regard to fulfilling the desired properties of generated sequences. Each application of random number generators has different requirements for quality of the used generator. In cryptography, failure to comply to the requirements may lead compromising the used primitive.
+The random number generators are of different quality in regard to fulfilling the desired properties of generated sequences. Each application of random number generators has different requirements for quality of the used generator. In cryptography, failure to fulfill to the requirements may lead compromising the security.
 
-Therefore, there is need to assess the quality of the used random number generator. The assessment is done by mathematical analysis of the generator structure or by taking a sample output of the generator and applying a \emph{randomness test} \cite[p.~2]{tu01_guide}.
+Therefore, there is need to assess the quality of the used random number generators. The assessment is done by mathematical analysis of the generator structure or by taking a sample output of the generator and applying a \emph{randomness test} \cite[p.~2]{tu01_guide}.
 
 %Randomness testing is a form of statistical testing. It is used in cryptography to test the quality of the output of different cryptographic primitives such as (pseudo-)random number generators or ciphers, where the randomness of output is required. 
 
 % intro to current state
-Currently, there are several available programs for randomness testing. Most notable are the NIST STS\footnote{National Institute of Standards and Technology Statistical Test Suite} \cite{nist_site}, TestU01 \cite{tu01_site} and Dieharder \cite{dieharder_orig}. Providing a unified interface to the three are the Randomness Testing Toolkit \cite{rtt-site} and its evolution, the Randomness Testing Toolkit in Python \cite{rtt-py-site}.
+Currently, there are several available programs for randomness testing. Most notable are the NIST STS\footnote{National Institute of Standards and Technology Statistical Test Suite} \cite{nist_site}, TestU01 \cite{tu01_site} and Dieharder \cite{dieharder_orig}. Providing a unified interface to the three are the Randomness Testing Toolkit (\emph{RTT}) \cite{rtt-site} and its evolution, the Randomness Testing Toolkit in Python (\emph{rtt-py})\cite{rtt-py-site}.
 
 %The first goal of this thesis is to implement improvements into the \emph{rtt-py} so that it can fully replace the \emph{RTT}. These improvements include processing errors and warnings from the test batteries and extensions to the output format. The second goal is to make the randomness testing easier for new users with the explanation of randomness testing principles (Chapter \ref{theory}) and by creating the Configuration Calculator -- a tool that helps with the configurations of tests for both the \emph{RTT} and the \emph{rtt-py}.
 
+
+% thesis goal - motivation of analysis
+
+The \emph{RTT} contains flaws in regard to both usability and functionality. It might be replaced by the \emph{rtt-py} in the future, however the two implementations are diffrent. Therefore, the main goal of this thesis is to analyse the \emph{RTT} and the \emph{rtt-py} with focus on finding differences between the two implementations (particularly the features missing in \emph{rtt-py}) and on proposing improvements for both of the toolkits. 
+
 % principles explanations
-In Chapter \ref{chap:rand}, I explain the principles of randomness testing along with all terms used in the following chapters. This chapter may also be used by users new to randomness testing. The aforementioned programs for randomness testing are presented in Chapter \ref{chap:sols}.
-
-% thesis goal
-The main goal of this thesis is to analyse \emph{RTT} and \emph{rtt-py} with focus on finding differences between the two implementations (particularly the features missing in \emph{rtt-py}) and on proposing improvements for both of the toolkits. 
-
-%tests analysis
-In the first part of the analysis (described in Chapter \ref{chap: analysis}), we focused on improving the \emph{RTT} by analyzing the individual tests used by the \emph{RTT}. This analysis resulted in creation of the Configuration Calculator -- tool for automated configuration of the \emph{RTT} based on the tested file.
+In Chapter \ref{chap:rand}, we explain the principles of randomness testing along with terms used in the following chapters. The aforementioned programs for randomness testing are presented in Chapter \ref{chap:sols}. In the first part of the analysis (described in Chapter \ref{chap: analysis}), we focus on improving the \emph{RTT} by analyzing the individual tests used by the \emph{RTT}. %This analysis resulted in creation of the Configuration Calculator -- tool for automated configuration of the \emph{RTT} based on the tested file.
 
 %rtts analysis
-Second part of the analysis (presented in Chapter \ref{chap:comparison}) was focused directly on \emph{RTT} and \emph{rtt-py}. In this part, we presented and compared the output of \emph{RTT} and \emph{rtt-py}. Then, we analysed the features of both toolkits and listed all differences found. Last, we proposed several improvements that would extend the functionality of both \emph{RTT} and \emph{rtt-py}.
+Second part of the analysis (presented in Chapter \ref{chap:comparison}) is focused directly on \emph{RTT} and \emph{rtt-py}. In this part, we present and compare the output of \emph{RTT} and \emph{rtt-py}. Then, we analyse the features of both toolkits and list all differences found. Last, we propose several improvements that would extend the functionality of both \emph{RTT} and \emph{rtt-py}.
 
 % RANDOMNESS TESTING - 'theoretical' chapter
 
@@ -1645,26 +1644,22 @@ Third proposed improvement is to extend the output format of \emph{RTT} to compu
 %Primary goal of this thesis was to analyse \emph{Randomness Testing Toolkit} and its newer, alternative implementation, the \emph{Randomness Testing Toolkit in Python}. First part of the analysis focused on finding differences between the two, which prevent replacement of \emph{RTT} with \emph{rtt-py}. The second part of the analysis proposed improvements, that might improve performance and usability of both \emph{RTT} and \emph{rtt-py}.
 
 % intro theory + solutions
-This thesis explained the two main approaches to randomness testing (one-level and two-level tests) so that the readers can fully understand it. The explanation is followed by description of notable programs for randomness testing.
+%This thesis explained the two main approaches to randomness testing (one-level and two-level tests) so that the readers can fully understand it. The explanation is followed by description of notable programs for randomness testing.
 
 % intro analysis
-Main goal of this thesis was to analyse the \emph{Randomness Testing Toolkit} and its newer, alternative implementation, the \emph{Randomness Testing Toolkit in Python}. The analysis focused on finding differences between the two implementations in order to allow future replacement of \emph{RTT} with \emph{rtt-py}, and on proposing improvements for both toolkits.
+We analysed the \emph{Randomness Testing Toolkit} and its newer, alternative implementation, the \emph{Randomness Testing Toolkit in Python}. The analysis focused on finding differences between the two implementations in order to allow future replacement of \emph{RTT} with \emph{rtt-py}, and on proposing improvements for both toolkits.
 
 % test analysis 
-\todo{motivation for focus switch}
-
-We also performed analysis of the individual tests present in the randomness testing batteries. During first part of the tests analysis we collected information about \emph{data consumption}, which are used for correct configurations of the tests. In the second part of the tests analysis, the \emph{runtimes} of the tests were measured. Data combined from both analysis were used to find tests with low \emph{performance}.
-
-% techniques
-
+First, we analysed the individual tests present in the randomness testing batteries. During the tests analysis we collected information about \emph{data consumption} and \emph{runtimes} of the individual tests. We used the data to detect tests with low performance. As such were marked TestU01 Crush tests with ID 71 and 72, and TestU01 Rabbit test with ID 5. In the future, the data may be used for further analysis in combination with other factors (for example "strength" of the test).
 
 % config calc
-We created the \emph{Configuration Calculator} based on data from the tests analysis -- tool for automated creation of configuration files for both \emph{RTT} and \emph{rtt-py}. This tool has already been used by CRoCs and will be published to use with the \emph{RTT}.
+We created the \emph{Configuration Calculator} based on the data from the tests analysis -- tool for automated creation of battery configuration files for both \emph{RTT} and \emph{rtt-py}. This tool has already been used by CRoCs and will be published to use with the \emph{RTT}.
 
 % implementations comparison
 We performed the analysis of both \emph{RTT} and \emph{rtt-py} by comparing the features of both implementations. The focus was on output of the toolkits (both format of the reports and the information contained in them) and features, that are missing in the \emph{rtt-py} compared to the \emph{RTT}.
 
-From the implementations analysis arose list of features missing in \emph{rtt-py}, that prevent it from replacing the \emph{RTT}, and a list of proposed improvements for both implementations.
+%From the implementations analysis arose list of features missing in \emph{rtt-py}, that prevent it from replacing the \emph{RTT}, and a list of proposed improvements for both implementations.
+ The most notable differences between \emph{RTT} and \emph{rtt-py} are the output format (plaintext in \emph{RTT}, HTML in \emph{rtt-py}) and that, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values for Dieharder and NIST STS battery. Furthermore, the \emph{rtt-py} does not report errors from batteries. In regard to functionality, \emph{rtt-py} does not contain TestU01 \emph{Crush} family of batteries and \emph{RTT} does not contain FIPS and BSI batteries. The proposed improvements for both toolkits are to implement second-level tests which take into account the non-uniform distributions of first-level p-values of the individual tests, and computer-readable format of the ouput. 
 
 % future work
 In the future, this thesis can be followed by implementing the missing features of the \emph{rtt-py} listed in the implementations comparison, so that it can fully replace the older \emph{RTT}. Furthermore, both \emph{RTT} and \emph{rtt-py} can be extended based on the proposed improvements from the last chapter, particularly the improved second-level tests. 
