@@ -609,12 +609,12 @@ The included batteries are Dieharder, NIST STS, FIPS, and BSI. From TestU01, the
 The \emph{rtt-py} is available at GitHub \cite{rtt-py-site} and implementations of all used batteries are in a single GitHub repository \cite{rtt-py-batteries}. Before running, both the \emph{rtt-py} and the batteries have to be installed as described in the project's README.
 
 \subsubsection{Settings of \emph{rtt-py}}
-The settings of \emph{rtt-py} use the same format as the original \emph{RTT} (as described in Subsection \ref{chap:sols-rtt}). The \emph{general settings} from the \emph{RTT} should be compatible with \emph{rtt-py} (although not the other way around) \cite[p. 25]{vavercak}. In reality, there is a problem with settings for the NIST STS's experiments directory. Also, no database connection is implemented in \emph{rtt-py}, therefore the \emph{mysql-db} attribute is ignored \cite{rtt-py-site}.
+The settings of \emph{rtt-py} use the same format as the original \emph{RTT} (described in Section \ref{chap:sols-rtt}). The \emph{general settings} from the \emph{RTT} should be compatible with \emph{rtt-py} (although not the other way around) \cite[p. 25]{vavercak}. In reality, there is a problem with settings for the NIST STS's experiments directory. Also, no database connection is implemented in \emph{rtt-py}, therefore the \emph{mysql-db} attribute is ignored \cite{rtt-py-site}.
 
 The second part of user settings are the battery configurations. They use the same format as in \emph{RTT} (as described in \ref{rtt-settings}) and are interchangeable \cite[p.~25]{vavercak}. The user has to keep in mind that the \emph{rtt-py} uses FIPS and BSI batteries, which are not used in \emph{RTT}. 
 
 \subsubsection{Output \emph{rtt-py}}
-The \emph{rtt-py} creates output in two formats -- \emph{CSV}\footnote{Comma-Separated values} and \emph{HTML}\footnote{HyperText Markup Language} \cite[p.~36]{vavercak}. Both of these report formats contain overview table. Each row from the table represents result of one individual test or subtest. The first column contains the name of the test and the name of the battery it belongs to. The second column contains \emph{failure rate} -- the ratio of tested files not passing the first-level test.
+The \emph{rtt-py} creates output in two formats -- \emph{CSV}\footnote{Comma-Separated values} and \emph{HTML}\footnote{HyperText Markup Language} \cite[p.~36]{vavercak}. Both of these report formats contain an overview table. Each row from the table represents result of one individual test or subtest. The first column contains the name of the test and the name of the battery it belongs to. The second column contains \emph{failure rate} -- the ratio of tested files not passing the first-level test.
 
 Each of the following columns is named after one tested file. The record contains either the second-level p-value reported by the test or the number of failed runs -- this depends on the battery. An example of this table can be seen in Figure \ref{fig:rtt_py_table}.
 
@@ -631,7 +631,7 @@ Each of the following columns is named after one tested file. The record contain
 
 The output in the HTML format reports more information compared to the output in the CSV format. For each battery and for each tested file an HTML file with reports is generated.
 
-In the report file there is a list of reports for each individual test or subtest from the given battery containing the result (either reported p-value, or number of failed runs). The individual test has a red background in case the test \emph{rejected} the null-hypothesis, grey background otherwise. It may contain additional information such as settings of the test or other information connected to the result, depending on the battery and the executed test. An example of the  report can be seen in Figure \ref{fig:rtt_py_html}
+In the report file there is a list of reports for each individual test or subtest from the given battery containing the result (either reported p-value, or number of failed runs). The individual test has a red background in case the test \emph{rejected} the null hypothesis, a grey background otherwise. It may contain additional information such as settings of the test or other information connected to the result, depending on the battery and the executed test. An example of the  report can be seen in Figure \ref{fig:rtt_py_html}.
 \begin{figure}
   \begin{center}
     %% minimus is about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
@@ -643,12 +643,10 @@ In the report file there is a list of reports for each individual test or subtes
 \end{figure}
 
 
-
-
 % TEST ANALYSIS
 
 \chapter{Tests Analysis} \label{chap: analysis}
-This chapter aims to provide more information about the tests from the practical point of view. First, we analysed how much data the tests use to help with configurations of the batteries. Next, we measured how much time each test from the batteries takes to run. Data from both parts were used to create a program for automatic creation of test configurations for \emph{RTT} and \emph{rtt-py} -- the \emph{Configuration Calculator}. In the last section, we present a problem with non-uniform distributions of first-level p-values.
+This chapter aims to provide more information about the tests from statistical testing batteries used by \emph{RTT} from a practical point of view. First, we analysed how much data the tests require to help with the configurations of the batteries. Next, we measured how much time each test from the batteries takes to run. Data from both parts were used to create a program for automatic creation of test configurations for \emph{RTT} and \emph{rtt-py} -- the \emph{Configuration Calculator}. In Section \ref{chap:analysis-uniform}, we present a problem with non-uniform distributions of first-level p-values.
 % is aimed at finding tests with problematic (non-uniform) distributions.
 
 
@@ -668,18 +666,18 @@ This chapter aims to provide more information about the tests from the practical
 
 % configurable x fixed size
 % variable x constant
-As mentioned in Subsection \ref{chap:sols-batteries}, an important part of preventing \emph{file rewinds} is correct configuration of the tests. This is a complicated task because the user has to know the size of test first-level subsequences. To help with this task, I performed an analysis of first-level subsequence sizes for Dieharder, SmallCrush, Crush and Rabbit batteries.  
+As mentioned in Section \ref{chap:sols-batteries}, an important part of preventing \emph{file rewinds} is a correct configuration of the tests. This is a complicated task because the user has to know the size of first-level subsequences for all tests. To help with this task, we performed an analysis of first-level subsequence sizes for Dieharder, SmallCrush, Crush, and Rabbit batteries.  
 
-The NIST STS, Alphabit and BlockAlphabit batteries are not shown because the first-level subsequence size is set by the user. Unlike in the Rabbit battery, the tests from the mentioned batteries were observed to use the amount of data specified by their arguments. The BigCrush battery was skipped because its first-level subsequence sizes are larger than the currently intended use of RTT.
+The NIST STS, Alphabit, and BlockAlphabit batteries are not shown because the first-level subsequence size is chosen by the user. Unlike in the Rabbit battery (where the first-level subsequence size is also chosen by the user), the tests from the mentioned batteries were observed to use the amount of data specified by their arguments. The BigCrush battery was skipped because it requires larger first-level subsequence sizes than the currently intended use of RTT.
 
 
 % INTRODUCTION
 \subsection{Prelude} \label{chap:analysis-data-intro}
-The idea was to run all tests from the batteries and calculate how many bytes were used for each individual test or test variant based on data provided by the batteries. Based on this information, a table for each battery containing this information was created.
+We executed all individual tests from the batteries and calculated how many bytes were used for each individual test or test variant based on information provided by the batteries. Then we created a table for each battery containing the first-level subsequence sizes.
 
-The tests are divided into categories based on two properties. The first property is user's influence on the first-level subseqeunce size. Second property is if \emph{all} runs of the \emph{same} first-level tests use \emph{equal} size of first-level subsequence, or if the first-level subseqeunce size is different for each run. 
+The tests are divided into categories based on two properties. The first property is the user's influence on the first-level subsequence size. The second property is if \emph{all} runs of the \emph{same} first-level tests use \emph{equal} size of first-level subsequence, or if the first-level subsequence size is different for each run. 
 
-In the subsequent text, I use the following terminology. Based on the first property, the tests are called as:
+In the subsequent text, I use the following terminology. Based on the first property, the tests are called:
 \begin{markdown*}{%
   hybrid,
   definitionLists,
@@ -692,7 +690,7 @@ In the subsequent text, I use the following terminology. Based on the first prop
   pipeTables,
   tableCaptions,
 }
-* \emph{Tests with configurable size} are the tests where the size of first-level subsequence can be set by the user.
+* \emph{Test with configurable size} refers to the tests where the size of the first-level subsequence can be set (or has to be set) by the user.
 * \emph{Tests with fixed size} have predefined and unchangeable first-level subsequence size.
 \end{markdown*}
 Based on the second property, the categories are called:
@@ -709,29 +707,27 @@ Based on the second property, the categories are called:
   tableCaptions,
 }
 
-* \emph{Tests with constant size} are the tests where the first-level subsequence is equal for all runs.
-* \emph{Tests with variable size} are the tests where the first-level subsequence size fluctuates.
+* \emph{Tests with constant size} have the first-level subsequence size equal for all runs.
+* \emph{Test with variable size} denotes the tests where the first-level subsequence size fluctuates.
 
 \end{markdown*}
 
-The size of the first-level subsequence in the tests with variable size is determined by \emph{content} of the sequence. 
+The size of the first-level subsequence in the tests with variable size is determined by \emph{content} of the sequence. For an \emph{individual} test from this category and a random content of the sequence, the \emph{real} size of the first-level sequence fluctuates around \emph{some} value. 
+
+\todo{rewrite example}
 For example, the Diehard Squeeze Test starts with number $k=2^{31}$ and finds $j$, the number of iterations needed to reduce $k$ to 1 using the reduction $k=\lceil k\cdot U \rceil $, $U$ is uniform float on $[0,1)$ generated from 4 bytes of the tested data.
 
-For an \emph{individual} test from this category and for random content of the sequence, the \emph{real} size of the first-level sequence fluctuates around \emph{some} value. 
+To examine the first-level subsequence sizes of tests with variable size, we run each test from this category at least 100 times on different data taken from \emph{/dev/random} to mimic the behavior on random data. Tests from this category are presented in separate tables containing the mean first-level subsequence size and differences between the mean and lowest and highest observed size.
 
-To examine how long are the first-level sequences of tests with variable size, we run each test from this category at least 100 times on different \emph{random} data (taken from \emph{/dev/random}). Tests from this category are presented in their own tables containing mean length of the subsequence and differences between mean and lowest and highest observed length.
-
-To verify that tests with constant size are indeed constant, I run them several times with different number of first-level sequences. The table for them contains only length of the subsequence.
-
-
+To verify that tests with constant size are indeed constant, we run them several times with different numbers of first-level sequences. The tables for them contain only the size of the first-level subsequence.
 
 \subsection{Dieharder}
 
 %args
 % "../../../rtt-statistical-batteries-master/dieharder", "-f", input_file, "-S 0 -s 1", "-g 201", "-D 131180","-d {}".format(test_id), "-p 25" if test_id in {13, 16} else "-p 5"
-In Dieharder both tests with configurable and fixed size are present. All tests with configurable size have a default setting for first-level sequence size, which is usually used. Therefore all tests from this battery are in the analysis viewed as tests with fixed size. The subsequence sizes are presented in three tables.
+In Dieharder, both tests with configurable and fixed sizes are present. All tests with configurable size have a default setting for the first-level subsequence size, that is usually used. Therefore, all tests from this battery are in the analysis viewed as tests with fixed size. The subsequence sizes are presented in Tables \ref{tab:analysis_dieharder}, \ref{tab:analysis_dieharder_variants}, and \ref{tab:analysis_dieharder_variable}.
 
-Table \ref{tab:analysis_dieharder_variable} contains tests with \emph{variable sizes}. The tests with \emph{constant} sizes are split in two tables. In Table \ref{tab:analysis_dieharder}, the tests with \emph{no variants} are shown, the tests \emph{with varints} are shown in Table \ref{tab:analysis_dieharder_variants}.
+ The tests with \emph{constant} sizes are split into two tables due to better readability. In Table \ref{tab:analysis_dieharder}, the tests with \emph{no variants} are shown, and the tests \emph{with variants} are shown in Table \ref{tab:analysis_dieharder_variants}. Table \ref{tab:analysis_dieharder_variable} contains tests with \emph{variable sizes}.
 
 
 \begin{table}[H]
@@ -777,25 +773,8 @@ Table \ref{tab:analysis_dieharder_variable} contains tests with \emph{variable s
         
     \end{tabularx}} 
   \end{tabularx}
-  \caption{First-level subseqeunces sizes for Dieharder tests with \emph{constant} sizes and no test variants.}
+  \caption{First-level subsequence sizes processed by Dieharder tests with no variants and constant sizes.}
   \label{tab:analysis_dieharder}
-\end{table}
-
-
-\begin{table}[h]
-  \begin{tabularx}{0.7\textwidth}{c|r|c|c}
-    %\toprule
-    Test ID & mean size & $\Delta$ min size & $\Delta$ max size\\
-     & (bytes) & & \\
-    \midrule
-    13 & 9,225,521 & 0.039\% & 0.038\%\\
-    16 & 5,402,335 & 0.126\% & 0.077\%\\
-    207 & 452,016,414 & 0.019\% & 0.015\%\\
-    208 & 116,881,517 & 0.047\% & 0.014\%\\
- 
-  \end{tabularx}
-  \caption{First-level subseqeunce sizes for Dieharder tests with \emph{variable} sizes.}
-  \label{tab:analysis_dieharder_variable}
 \end{table}
 
 \newpage
@@ -871,29 +850,32 @@ Table \ref{tab:analysis_dieharder_variable} contains tests with \emph{variable s
             &    &
     \end{tabularx}} 
   \end{tabularx}
-  \caption{First-level subseqeunce sizes for Dieharder tests with \emph{constant} sizes and test variants.}
+  \caption{First-level subsequence sizes processed by Dieharder tests with variants and constant sizes.}
   \label{tab:analysis_dieharder_variants}
 \end{table}
 
 \newpage
 
+\begin{table}[h]
+  \begin{tabularx}{0.7\textwidth}{c|r|c|c}
+    %\toprule
+    Test ID & mean size & $\Delta$ min size & $\Delta$ max size\\
+     & (bytes) & & \\
+    \midrule
+    13 & 9,225,521 & 0.039\% & 0.038\%\\
+    16 & 5,402,335 & 0.126\% & 0.077\%\\
+    207 & 452,016,414 & 0.019\% & 0.015\%\\
+    208 & 116,881,517 & 0.047\% & 0.014\%\\
+ 
+  \end{tabularx}
+  \caption{First-level subsequence sizes processed by Dieharder tests with variable sizes.}
+  \label{tab:analysis_dieharder_variable}
+\end{table}
+
+
 
 \subsection{TestU01 SmallCrush and Crush}
-In the SmallCrush and Crush batteries, only tests with \emph{fixed} size are present. Both batteries contain tests with \emph{variable} size, which are shown in Table \ref{tab:analysis_smallcrush_variable} for SmallCrush and in Table \ref{tab:analysis_crush_variable} for Crush. The tests with \emph{constant} sizes from SmallCrush are in Table \ref{tab:analysis_smallcrush}, from Crush in  Table \ref{tab:analysis_crush}.
-
-
-\begin{table}[h]
-  \begin{tabularx}{0.75\textwidth}{c|r|r|r}
-    %\toprule
-   Test ID & mean size & $\Delta$ min size & $\Delta$ max size\\
-     & (bytes) & & \\
-     \midrule
-    3 & 204,733,510 & 0.563\% & 0.725\% \\
-    5 & 98,731,035 & 0.095\% & 0.087\% \\
-  \end{tabularx}
-  \caption{First-level subseqeunce sizes for \emph{SmallCrush} tests with \emph{variable} sizes.}
-  \label{tab:analysis_smallcrush_variable}
-\end{table}
+In the SmallCrush and Crush batteries, only tests with \emph{fixed} size are present. The tests with \emph{constant} sizes from SmallCrush can be found in Table \ref{tab:analysis_smallcrush}, from Crush in Table \ref{tab:analysis_crush}. Both batteries also contain tests with \emph{variable} size, which are shown in Table \ref{tab:analysis_crush_variable} for Crush and in Table \ref{tab:analysis_smallcrush_variable} for SmallCrush. 
 
 \begin{table}[h]
   \begin{tabularx}{0.36\textwidth}{c|r}
@@ -910,38 +892,16 @@ In the SmallCrush and Crush batteries, only tests with \emph{fixed} size are pre
     10 & 20,000,000 \\
 
   \end{tabularx}
-  \caption{First-level subseqeunce sizes for \emph{SmallCrush} tests with \emph{constant} sizes.}
+  \caption{
+  First-level subsequence sizes processed by TestU01 SmallCrush tests with constant sizes.}
   \label{tab:analysis_smallcrush}
 \end{table}
 
-\begin{table}[h]
-  \begin{tabularx}{0.75\textwidth}{c|r|r|r}
-    %\toprule
-   Test ID & mean size & $\Delta$ min size & $\Delta$ max size\\
-     & (bytes) & & \\
-    \midrule
-    27&1,333,326,306&0.0163\%&0.0166\%\\
-    28&1,333,331,101&0.0188\%&0.0170\%\\	
-    29&1,974,653,548&0.0189\%&0.0196\%	\\
-    30&1,974,640,110&0.0164\%&0.0146\%	\\
-    31&3,200,051,704&0.0204\%&0.0306\%	\\
-    32&3,199,995,653&0.0380\%&0.0244\%	\\
-    33&5,120,635,483&0.1408\%&0.1618\%	\\
-    34&5,119,635,549&0.1399\%&0.2516\%	\\
-    55&1,653,334,290&0.0065\%&0.0060\%	\\
-    64&320,000,610&5.31$\cdot10^{-5}$\% &4.43$\cdot10^{-5}$\%\\
-    91&533,332,642&0.0039\%&0.0037\%	\\
-    92&1,599,996,811&0.0049\%&0.0043\%\\
 
-  \end{tabularx}
-  \caption{First-level subseqeunce sizes for \emph{Crush} tests with \emph{variable} sizes.}
-  \label{tab:analysis_crush_variable}
-\end{table}
-
-% LONGTABLE
+% LONG TABLE
 \begin{longtable}[c]{l|rcl|r}
 
-\caption{First-level subseqeunce sizes for \emph{Crush} tests with \emph{constant} sizes. \label{tab:analysis_crush}}\\
+\caption{First-level subsequence sizes processed by TestU01 Crush tests with constant sizes. \label{tab:analysis_crush}}\\
  \hline
  \multicolumn{5}{| c |}{Begin of Table}\\
  \hline
@@ -1013,11 +973,48 @@ In the SmallCrush and Crush batteries, only tests with \emph{fixed} size are pre
  \end{longtable}
 
 
+\begin{table}[h]
+  \begin{tabularx}{0.75\textwidth}{c|r|r|r}
+    %\toprule
+   Test ID & mean size & $\Delta$ min size & $\Delta$ max size\\
+     & (bytes) & & \\
+    \midrule
+    27&1,333,326,306&0.0163\%&0.0166\%\\
+    28&1,333,331,101&0.0188\%&0.0170\%\\	
+    29&1,974,653,548&0.0189\%&0.0196\%	\\
+    30&1,974,640,110&0.0164\%&0.0146\%	\\
+    31&3,200,051,704&0.0204\%&0.0306\%	\\
+    32&3,199,995,653&0.0380\%&0.0244\%	\\
+    33&5,120,635,483&0.1408\%&0.1618\%	\\
+    34&5,119,635,549&0.1399\%&0.2516\%	\\
+    55&1,653,334,290&0.0065\%&0.0060\%	\\
+    64&320,000,610&5.31$\cdot10^{-5}$\% &4.43$\cdot10^{-5}$\%\\
+    91&533,332,642&0.0039\%&0.0037\%	\\
+    92&1,599,996,811&0.0049\%&0.0043\%\\
+
+  \end{tabularx}
+  \caption{First-level subsequence sizes processed by TestU01 Crush tests with variable sizes.}
+  \label{tab:analysis_crush_variable}
+\end{table}
+
+\begin{table}[h]
+  \begin{tabularx}{0.75\textwidth}{c|r|r|r}
+    %\toprule
+   Test ID & mean size & $\Delta$ min size & $\Delta$ max size\\
+     & (bytes) & & \\
+     \midrule
+    3 & 204,733,510 & 0.563\% & 0.725\% \\
+    5 & 98,731,035 & 0.095\% & 0.087\% \\
+  \end{tabularx}
+  \caption{First-level subsequence sizes processed by TestU01 SmallCrush tests with variable sizes.}
+  \label{tab:analysis_smallcrush_variable}
+\end{table}
+
 
 
 % several tables, at least table for minims
 \subsection{TestU01 Rabbit} \label{chap:analysis-data-rabbit}
-All tests in the Rabbit battery are with \emph{configurable} size. The size is configured using the \emph{bit\textunderscore nb} argument, where the desired size is entered in \emph{bits} and for use is rounded down to closest multiple of 32. The \emph{bit\textunderscore nb} has no default value, must be at least 500 and \emph{at most} \emph{bit\textunderscore nb} bits will be read from the file. \cite[p. 152]{tu01_guide} However, almost half of the tests require bigger \emph{bit\textunderscore nb} and will not run otherwise. These tests and their required sizes are in Table \ref{tab:analysis_rabbit_minims}. The minimums were found and verified experimentally.
+All tests in the Rabbit battery are with configurable size. The size is configured using the \emph{bit\textunderscore nb} argument, where the desired size is entered in \emph{bits} and for use is rounded down to the closest multiple of 32. The \emph{bit\textunderscore nb} has no default value, must be at least 500, and at most \emph{bit\textunderscore nb} bits will be read from the file \cite[p. 152]{tu01_guide}. However, almost half of the tests require bigger \emph{bit\textunderscore nb} and will not run otherwise. These tests and their required sizes can be found in Table \ref{tab:analysis_rabbit_minims}. The minimums were found and verified experimentally.
 
 \begin{table}[h]
   \begin{tabularx}{0.4\textwidth}{c|r}
@@ -1037,11 +1034,11 @@ All tests in the Rabbit battery are with \emph{configurable} size. The size is c
     25& 30,720\\
     26& 300,480\\
   \end{tabularx}
-  \caption{Minimal values of \emph{bit\textunderscore nb} argument other than default needed to run tests from \emph{Rabbit} battery.}
+  \caption{Minimal values of \emph{bit\textunderscore nb} argument other than default needed to run tests from the TestU01 Rabbit battery.}
   \label{tab:analysis_rabbit_minims}
 \end{table}
 
-Tests 6, 7 and 8 read only data with size $2^k$($k \in \mathbb{N}$) \emph{bits}. The possible values of $k$ are different for each test and shown in Table \ref{tab:analysis_rabbit_two_powers}. \cite[p.~124-126]{tu01_guide} If the \emph{bit\textunderscore nb} is not power of two, closest lower applicable power of 2 is used. The \emph{bit\textunderscore nb} still has to be at least 500, even though smaller amount of bits may be used.
+Tests with IDs 6, 7, and 8 read only data with size $2^k$($k \in \mathbb{N}$) \emph{bits}. The possible values of $k$ \cite{tu01_guide} (shown in Table \ref{tab:analysis_rabbit_two_powers}) are different for each test. If the \emph{bit\textunderscore nb} is not a power of two, the closest lower applicable power of two is used. The \emph{bit\textunderscore nb} still has to be at least 500 bits, even though a smaller amount of bits may be used by the tests.
 
 \begin{table}[h]
   \begin{tabularx}{0.33\textwidth}{c|c}
@@ -1057,15 +1054,15 @@ Tests 6, 7 and 8 read only data with size $2^k$($k \in \mathbb{N}$) \emph{bits}.
   \label{tab:analysis_rabbit_two_powers}
 \end{table}
 
-The only test with \emph{variable} size from Rabbit battery is the test 20. It uses around 80 \% of the data size specified by \emph{bit\textunderscore nb} argument. Test 5 reads significantly less data than specified. When the \emph{bit\textunderscore nb} argument specifies that the test should use 10MB of data, the test 5 uses only  3,536 \emph{bytes}. When the test should use 100MB of data, it uses only 8,488 \emph{bytes}.
+The only test with \emph{variable} size from Rabbit battery is the test with ID 20. It uses around 80 \% of the data size specified by \emph{bit\textunderscore nb} argument. Test with ID 5 reads significantly less data than specified. When the \emph{bit\textunderscore nb} argument specifies that the test should use 10MB of data, the test with id 5 uses only  3,536 bytes. When the test should use 100MB of data, it uses only 8,488 bytes.
 
-For some tests with \emph{constant} size, there is an \emph{upper bound} of data used for testing. The test will not read more data than this value, even when specified by the \emph{bit\textunderscore nb} argument. The size of data that are actually read from the file is different for each value of \emph{bit\textunderscore nb} greater than the \emph{upper bound} and fluctuates around \emph{some} value. Examples of real data size fluctuation are in the Figure \ref{fig:analysis-rabbit-max}.
+For some tests with \emph{constant} size, there is an \emph{upper bound} of data used for testing. The test will not read more data than this value, even when specified by the \emph{bit\textunderscore nb} argument. The size of data that are actually read from the file is different for each value of \emph{bit\textunderscore nb} greater than the \emph{upper bound} and fluctuates around \emph{some} value. Figure \ref{fig:analysis-rabbit-max} shows an example of real data size fluctuation.
 
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=12.7cm]{figures/rabbit_3_maxims.png}
   \end{center}
-  \caption{Number of bytes actually read from tested file by Rabbit test with ID 3 for various values of \emph{bit\textunderscore nb} greater than 3.3$\cdot10^{9}$ ($\approx$~393~megabytes).}
+  \caption{Number of megabytes actually read from the tested file by Rabbit test with ID 3 for various values of \emph{bit\textunderscore nb} greater than 3.4$\cdot10^{9}$ ($\approx$~405~megabytes).}
   \label{fig:analysis-rabbit-max}
 \end{figure}
 %For the following analysis of first-level subseqeunce sizes the \emph{bit\textunderscore nb} argument was fixed to value 52,428,800. This is the lowest value for which all tests from Rabbit, Alphabit and BlockAlphabit will run (all batteries from TestU01 using \emph{bit\textunderscore nb} argument).
@@ -1087,19 +1084,25 @@ For some tests with \emph{constant} size, there is an \emph{upper bound} of data
 %again some big tables, choose one test as a reference and the rest will be relative. mention exact parameters, maybe add throughput?
 
 
-Another analysis we performed is examination of the tests' runtimes and performance. This may be used to \emph{exempt} tests that would take \emph{unreasonably} long to execute or to detect problems while running the tests (for example when the test execution gets stuck on non-random data).
+We performed another analysis focused on examining the tests' runtimes and performance. This may be used to select and omit tests that would take \emph{unreasonably} long to execute or to detect problems while running the tests (for example when the test execution gets stuck on non-random data).
 
-Because the runtimes highly depend on used machine and the idea is to make relative comparison between the tests only, they are presented in \emph{relative} form compared to the runtime of Diehard 3d Sphere (Minimum Distance) Test from Dieharder battery (later refered to as \emph{time unit} or \emph{TU}).\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows~10 this test took 0.021 seconds.} 
+The purpose of the experiment was to make a relative comparison between the tests only. However, the runtimes highly depend on the used machine. Therefore, they are presented in \emph{relative} form compared to the runtime of Diehard 3d Sphere (Minimum Distance) Test from the Dieharder battery (later referred to as \emph{time unit} or \emph{TU}).\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows~10 this test took 0.021 seconds.}
 
-To compare performance of the tests, \emph{throughput} was chosen as a measure. It is presented alongside the runtime. The throughput is calculated as kilobytes\footnote{1024 bytes} of data processed per time unit. 
+%Because the runtimes highly depend on used machine and the idea is to make relative comparison between the tests only, they are presented in \emph{relative} form compared to the runtime of Diehard 3d Sphere (Minimum Distance) Test from Dieharder battery (later referred to as \emph{time unit} or \emph{TU}).\footnote{Running on Intel Core i7-1065G7 CPU under Ubuntu 22.04.1 WSL on Windows~10 this test took 0.021 seconds.} 
 
-The used implementations of batteries are taken from RTT (available from \cite{rtt-batteries}). The batteries were run directly (i.e. not using RTT) and each individual test was executed in separate at least one hundred times. Mean runtime over these runs is presented in this Section.
+To compare the performance of the tests, \emph{throughput} was chosen as a measure. It is presented alongside the runtime. The throughput is calculated as kilobytes (1024 bytes) of data processed per time unit. 
 
-The runtimes and throughputs for Dieharder are in Table \ref{tab:analysis_time_dieharder}. The Dieharder tests were run without the \emph{rate} option and with default values of \emph{tsample} argument. Runtimes and throughputs for TestU01 SmallCrush and Crush batteries are in Table \ref{tab:analysis_smallcrush_time} and Table \ref{tab:analysis_crush_times}.
+%The implementations of batteries used for the analysis are taken from \emph{RTT} (available from \cite{rtt-batteries}).
+For the analysis, implementations of batteries used by \emph{RTT} \cite{rtt-batteries} were taken. The batteries were run directly (i.e. not using \emph{RTT} or \emph{rtt-py}), hence the data are independent and may be used by users not using the testing toolkits. Each individual test was executed separately at least one hundred times. The mean runtime over these runs is presented in this section.
 
-To measure runtimes of test with \emph{configurable} size, I had to fix the first-level subsequence size for each test. For NIST STS battery, I set \emph{stream size} argument to 1,000,000 (the subsequences were 125,000  bytes long). This is the lowest value which satisfies subsequence size recommendations for all the tests. \cite{nist_special} NIST STS runtimes and throughputs are shown in Table \ref{tab:analysis_nist_time}.
+The runtimes and throughputs for the Dieharder tests with variants can be found in Table \ref{tab:analysis_time_dieharder}, and the tests without variants are shown in Table \ref{tab:analysis_time_dieharder_variants}. The Dieharder tests were run with default values of \emph{tsample} argument and without the \emph{rate} option. The \emph{rate} option of Dieharder turns on precomputations, which are not necessary for the tests, but slow down their executions. Runtimes and throughputs for TestU01 SmallCrush and Crush batteries are shown in Tables \ref{tab:analysis_smallcrush_time} and \ref{tab:analysis_crush_times}.
 
-For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\textunderscore nb} argument to value 52,428,800 (the subseqeunces should be 6,553,600 bytes long). This is the lowest value for which all tests from the three batteries are executed (see Subsection \ref{chap:analysis-data-rabbit}). The runtimes and throughputs for Rabbit battery are in Table \ref{tab:analysis_rabbit_time}. Alphabit and BlockAlphabit batteries share Table \ref{tab:analysis_alphabit_time}, because both batteries employ the \emph{same} tests and no difference in runtimes was observed.
+To measure runtimes of test with \emph{configurable} size, we had to fix the first-level subsequence size for each test. For the NIST STS battery, we set the \emph{stream size} argument to 1,000,000 (the subsequences were 125,000  bytes long). According to \cite{nist_special}, this is the lowest value that satisfies subsequence size recommendations for all the tests. NIST STS runtimes and throughputs are shown in Table \ref{tab:analysis_nist_time}.
+
+For TestU01 Rabbit, Alphabit, and BlockAlphabit batteries, we fixed the \emph{bit\textunderscore nb} argument to value 52,428,800 (the subsequences should be 6,553,600 bytes long). This is the lowest value for which all tests from the three batteries are executed (see Section \ref{chap:analysis-data-rabbit}). Table \ref{tab:analysis_rabbit_time} shows runtimes and throughputs for the Rabbit battery. Alphabit and BlockAlphabit batteries share Table \ref{tab:analysis_alphabit_time} because both batteries employ the \emph{same} tests and no difference in runtimes was observed.
+
+% TODO tests with low performance
+During the analysis, we detected three tests with significantly lower performance than the other tests. They are the TestU01 Rabbit test with ID 5 and the TestU01 Crush tests with IDs 71 and 72. Other possible candidates would be the TestU01 Rabbit test with ID 1 or the NIST STS test with ID 7 (this test however consists of 128 subtests, which compensate for the low performance).
 
 \begin{table}[H]
   \begin{tabularx}{1\textwidth}{lcr}
@@ -1147,7 +1150,7 @@ For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\
 
     \end{tabularx}} 
   \end{tabularx}
-  \caption{Runtimes for and throughputs Dieharder battery tests without variants.}
+  \caption{Runtimes and throughputs for Dieharder battery tests without variants.}
   \label{tab:analysis_time_dieharder}
 \end{table}
 
@@ -1253,7 +1256,7 @@ For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\
     14 & 0.93 & 132 \\
 15 & 1.55 & 79 \\
   \end{tabularx}
-  \caption{Runtimes and throughputs for NIST STS battery with \emph{stream size} 1,000,000 bits.}
+  \caption{Runtimes and throughputs for the NIST STS battery with \emph{stream size} 1,000,000 bits.}
   \label{tab:analysis_nist_time}
 \end{table}
 
@@ -1286,16 +1289,18 @@ For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\
  \hline
  \multicolumn{7}{| c |}{Begin of Table}\\
  \hline
- Test ID & Runtime & Throughput & & Test ID & Runtime & Throughput \\
-  & (TU) & (kB / TU) & & (TU) & (kB / TU)\\ 
+ Test ID & Runtime & Through & & Test ID & Runtime & Through \\
+ & & put & & & & put\\
+  & (TU) & (kB / TU) & & & (TU) & (kB / TU)\\ 
  \cline{1-3} \cline{5-7}
  \endfirsthead
 
  \hline
  \multicolumn{7}{|c|}{Continuation of Table \ref{tab:analysis_crush_times}}\\
  \hline
- Test ID & Runtime & Throughput & & Test ID & Runtime & Throughput \\
-  & (TU) & (kB / TU) & & (TU) & (kB / TU)\\ 
+ Test ID & Runtime & Through & & Test ID & Runtime & Through\\
+  & & put & & & & put\\
+  & (TU) & (kB / TU) & & & (TU) & (kB / TU)\\ 
  \cline{1-3} \cline{5-7}
  \hline
  \endhead
@@ -1381,9 +1386,9 @@ For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\
 
 
 \begin{table}[H]
-  \begin{tabularx}{1\textwidth}{lcr}
-    {\begin{tabularx}{0.43\textwidth}{c|r|r}
-                ID & runtime & throughput\\
+  \begin{tabularx}{\textwidth}{lr}
+    {\begin{tabularx}{0.5\textwidth}{c|r|r}
+       Test ID & Runtime & Throughput\\
          & (TU) &  kb/TU\\
         \midrule
         1 & 448.60 & 14 \\
@@ -1400,12 +1405,10 @@ For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\
         12 & 2.07 & 3091 \\
         13 & 2.04 & 3143 \\
     \end{tabularx}} 
-    {\begin{tabularx}{0.1\textwidth}{cc}
-      & \\
-    \end{tabularx}} 
+    
 
-    {\begin{tabularx}{0.43\textwidth}{c|r|r}
-       ID & runtime & throughput\\
+    {\begin{tabularx}{0.5\textwidth}{c|r|r}
+       Test ID & Runtime & Throughput\\
          & (TU) &  kb/TU\\
         \midrule 
         14 & 2.16 & 2964 \\
@@ -1437,41 +1440,41 @@ For TestU01 Rabbit, Alphabit and BlockAlphabit batteries, I fixed the \emph{bit\
 \section{Configuration Calculator} \label{chap:analysis-config-calc}
 \todo{appendix examples, git link (when ready)}
 
-The information collected in Sections \ref{chap:analysis-data} and \ref{chap:analysis-times} were used in the \emph{Configuration Calculator}. I created this tool to automate creation of battery configuration files for \emph{RTT}. Configuration Calculator supports all batteries that are present in \emph{RTT} except the TestU01 BigCrush battery.
+The information collected in Sections \ref{chap:analysis-data} and \ref{chap:analysis-times} were used in the \emph{Configuration Calculator}. We created this tool to automate the creation of battery configuration files for \emph{RTT}. Configuration Calculator supports all batteries that are present in \emph{RTT} except the TestU01 BigCrush battery.
 
 \subsection{Batteries configurations}
 
-The configurations are created based on the length of the tested data. Number of first-level subsequences for each individual test is set so that the test will use as much data as possible without \emph{file rewind}.
+The configurations are created based on the length of the tested data. The number of first-level subsequences for each individual test is set so that the test will use as much data as possible without \emph{file rewind}.
 
-For tests with \emph{configurable} size, the default values were chosen the same as in Section \ref{chap:analysis-times}. For NIST STS the \emph{stream size} is set to 1,000,000 \emph{bits} and for TestU01 Rabbit, Alphabit and BlockAlphabit, the \emph{bit\textunderscore nb} is set to  52,428,800 \emph{bits}. The user may choose their own value for these arguments.
+For tests with \emph{configurable} size, the default values were chosen the same as in Section \ref{chap:analysis-times}. For NIST STS the \emph{stream size} is set to 1,000,000 \emph{bits} and for TestU01 Rabbit, Alphabit, and BlockAlphabit, the \emph{bit\textunderscore nb} is set to  52,428,800 \emph{bits}. The user may choose their own value for these arguments.
 
-For all individual test the number of first-level tests is calculated as 
-$$\lfloor tested\:file\:size \div first\-level\:subsequence\:size\rfloor$$
-For tests with \emph{constant} size, the direct subsequence size is used. For tests with \emph{variable} size the fluctuation of first-level sequence sizes has to be taken into account to prevent \emph{file rewinds}. To achieve this, mean first-level subseqeunce size increased by a buffer is used as the subsequence size. The buffer size was chosen to be 1\% of the subseqeunce size for tests from TestU01 batteries and 0.1\% for tests from Dieharder. Based on analysis from Section \ref{chap:analysis-data}, this should be enough to prevent file rewinds caused by the size fluctuation.
+For all individual tests, the number of first-level tests is calculated as 
+$\lfloor tested\:file\:size \div first\mbox{-}level\:subsequence\:size\rfloor$
+For tests with \emph{constant} size, the direct subsequence size is used. For tests with \emph{variable} size, the fluctuation of first-level sequence sizes has to be taken into account to prevent \emph{file rewinds}. To achieve this, the mean first-level subsequence size increased by a buffer is used as the subsequence size. The buffer size was chosen to be 1\% of the subsequence size for tests from TestU01 batteries and 0.1\% for tests from Dieharder. Based on analysis from Section \ref{chap:analysis-data}, this should be enough to prevent file rewinds caused by the size fluctuation.
 
-In total 7 tests are always omitted by the Configuration Calculator. Tests 5, 6, 7 and 14 from Dieharder battery are skipped because they are marked as 'Do Not Use' or 'Suspect' by Dieharder. From Crush battery tests 71 and 72 were removed due to their low performance (see Table \ref{tab:analysis_crush_times}). Running each of the two tests would take 12 times longer than running \emph{all} of the remaining tests. The test 5 from Rabbit was also omitted due to low performance (see Table \ref{tab:analysis_rabbit_time}).
+In total 7 tests are always omitted by the Configuration Calculator. Tests with IDs 5, 6, 7, and 14 from Dieharder battery are skipped because they are marked as ``Do Not Use'' or ``Suspect'' by Dieharder. From Crush battery, tests with IDs 71 and 72 are omitted due to their low performance (see Table \ref{tab:analysis_crush_times}). Running each of the two tests would take roughly 12 times longer than running \emph{all} of the remaining tests. The test with ID 5 from Rabbit was also omitted due to low performance (see Table \ref{tab:analysis_rabbit_time}).
 
 
 \subsection{Output Format}
-Format of the configuration files created by the Configuration Calculator is extension of the original format used by \emph{RTT} (described in Subsection \ref{chap:sols-rtt}). It contains no new \emph{functional} fields, only information for the user. First such field is \emph{omitted-tests} inside \emph{battery-settings} -- tests that will not be run. Either because the tested file is to small for them or because they were removed by default.
+The format of the configuration files created by the Configuration Calculator is an extension of the original format used by \emph{RTT} (described in Section \ref{chap:sols-rtt}). It contains no new \emph{functional} fields, only information for the user. The first such field is \emph{omitted-tests} inside \emph{battery-settings} -- tests that will not be run. Either because the tested file is too small for them or because they were removed by default.
 
-Second new field is \emph{battery-defaults}. It contains default argument settings for a given battery and default settings for each individual test, along with the test name and used first-level subsequence sizes. Both \emph{battery-settings} and \emph{battery-defaults} contain also comments for some individual tests with information about why the test was omitted or warning that a given test is with \emph{variable} size.
+The second new field is \emph{battery-defaults}. It contains default argument settings for a given battery and default settings for each individual test from the battery, along with the test name and used first-level subsequence sizes. Both \emph{battery-settings} and \emph{battery-defaults} contain comments for some individual tests with information about why the test was omitted or warning that a given test is with \emph{variable} size.
 
 
 
 \section{P-values uniformity} \label{chap:analysis-uniform}
 % intro (correcting dieharder - 2, 7)
-% intro - not uniform in reality,  motivation, mention each battery
+% intro - not uniform, in reality,  motivation, mention each battery
 % show some really bad examples
-As was mentioned in Section \ref{chap:rand-two_level}, crucial part of two-level testing is examination of observed first-level p-values distribution. The expected theoretical distribution is uniform on interval (0,1]. \cite[p.~14]{bad_day} Due to various reaons, the real distribution (under the null-hypothesis) may differ from the uniform distribution. This may lead to flawed results of second-level tests. In this section, reasons why this happens are presented along examples of real observed distributions of first-level p-values. It is not goal of this thesis to fix the problem, only to note it.
+As was mentioned in Section \ref{chap:rand-two_level}, the crucial part of two-level testing is the examination of observed first-level p-values distribution. The expected theoretical distribution is uniform on the interval (0,1] \cite[p.~14]{bad_day}. Due to various reasons, the real distribution (under the null hypothesis) may differ from the uniform distribution. This may lead to flawed results of second-level tests. In this section, reasons why this happens are presented along with examples of real observed distributions of first-level p-values. It is not a goal of this thesis to fix the problem, only to note it.
 
-In the following text, some examples of tests with non-uniform distributions are presented. The data for real distributions were acquired by repeatedly generating files with 5GB of random data using the AES\footnote{Advanced Encryption Standard} with known key as random number generator. Each file was tested using the \emph{RTT} with battery configuration generated by the Configuration Calculator. \footnote{The dataset is part of yet unpublished manuscript SÝS, Marek; BROŽ, Milan; MAREK, Tomáš. Correcting Dieharder, NIST STS, TestU01 batteries. 2023.}
+In the following text, some examples of tests with non-uniform distributions are presented. The data for real distributions were acquired by repeatedly generating files with 5GB of random data using the AES\footnote{Advanced Encryption Standard} with a known key as a random number generator. Each file was tested using the \emph{RTT} with battery configuration generated by the Configuration Calculator. \footnote{The dataset is part of yet unpublished manuscript SÝS, Marek; BROŽ, Milan; MAREK, Tomáš. Correcting Dieharder, NIST STS, TestU01 batteries. 2023.}
 
-The reason why non-uniform distributions are observed is that the distributions of test statistic values in first-level tests are usually approximated in the calculation. This is usually done because the real distribution is know only asymptotically or because it is more efficient. Also, the distribution of test statistic values (and therefore p-values), for a fixed sequence size, is in fact discrete, but a continuous distribution is often used as approximation to calculate the p-value. This causes error, which accumulates alongside the error caused by limited-precision calculations. \cite[p. 7]{bad_day}
+The reason why non-uniform distributions are observed is that the distributions of test statistic values in the first-level tests are usually approximated during the calculation \cite[p. 7]{bad_day}. That is done because the real distribution is known only asymptotically or because using the approximated distribution is more efficient. Also, the distribution of test statistic values (and therefore p-values) for a fixed sequence size is in fact discrete, but a continuous distribution is often used as an approximation to calculate the p-value. That causes an error, which accumulates alongside the error caused by limited-precision calculations. 
 
-Possible outcomes of previous situations are non-uniform distributions of the first-level p-values. The first situation are discrete distributions with \emph{low} number of possible p-values. In the worst case, the tests produce lower hundreds of possible first-level p-values. For example, the Dieharder test 10 produced 221 different p-values over 10,000,000 runs, while the NIST STS test 7 produced 485 different p-values over 10,000,000 runs. Histograms of first-level p-values of the two tests are in the upper half of Figure \ref{fig:uniforms}.
+Possible outcomes of such situations are non-uniform distributions of the first-level p-values. The first situation are discrete distributions with \emph{low} number of possible p-values. In the worst case, the tests produce lower hundreds of different first-level p-values. For example, the Dieharder test 10 produced 221 different p-values over 10,000,000 runs, and the NIST STS test 7 produced 485 different p-values over 10,000,000 runs. Histograms of first-level p-values of the two tests are in the upper half of Figure \ref{fig:uniforms}.
 
-Second situation are tests with high number of observed p-values, but non-uniform distributions. The real distributions are usually \emph{close} to the uniform distribution, but differ in tails (values in tail are significantly more or less probable). Two example histograms of such situation are in the lower half of Figure \ref{fig:uniforms}.
+The second situation consists of tests with a high number of observed different p-values, but non-uniform distributions. The real distributions are usually \emph{close} to the uniform distribution but differ in tails (values in the tail are significantly more or less probable). Two example histograms of such situations are in the lower half of Figure \ref{fig:uniforms}.
 
 \begin{figure}[h]
   \begin{center}
@@ -1496,9 +1499,7 @@ Second situation are tests with high number of observed p-values, but non-unifor
 
 \chapter{Implementations comparison} \label{chap:comparison}
 
-
-
-The \emph{rtt-py} is supposed to be a newer version of \emph{RTT} and might replace it in the future. Therefore, in this chapter we focus mainly on finding differences between the two. The first section aims at comparing outputs of both testing toolkits. In the second section I am at finding functional differences between them, especially the features the are present in \emph{RTT} and not in \emph{rtt-py}. In the last section I present general suggestions for further improvement of both \emph{RTT} and \emph{rtt-py}. 
+The \emph{rtt-py} is supposed to be a newer version of \emph{RTT} and might replace it in the future. Therefore, in this chapter, we focus mainly on finding differences between the two. The first section aims at comparing the outputs of both testing toolkits. In the second section, we find functional differences between them, especially the features that are present in \emph{RTT} and not in \emph{rtt-py}. In the last section, we present commoon suggestions for further improvements of both \emph{RTT} and \emph{rtt-py}. 
 
 % COMPARE OUTPUT
 % X - contents of the output
@@ -1507,29 +1508,27 @@ The \emph{rtt-py} is supposed to be a newer version of \emph{RTT} and might repl
 % X - format
 % warningy - RTT parsuje slovo WARN/ERROR
 % pro oba - jak parsuje výstup (paměť, ...)
-\section{Output}
-Example of output from \emph{RTT} can be found in Appendix \ref{append:rtt-output} and the output of \emph{rtt-py} can be found in \ref{append:rtt-py-output}. Both reports come from executions over the \emph{same} data file and using the \emph{same} battery configuration file. The output examples are shortened, but the same tests are presented in all examples if possible.
+\section{Output} \label{chap:comparison-output}
+An example of output from \emph{RTT} can be found in Appendix \ref{append:rtt-output} and an example output from the \emph{rtt-py} can be found in \ref{append:rtt-py-output}. Both reports come from executions over the \emph{same} data file and using the \emph{same} battery configuration file. The data file was 100MB long and generated using \emph{/dev/radnom}. The battery configuration file was created by the Configuration Calculator for a data file with a size of 400MB.  The configuration file was intentionally created for a bigger size to demonstrate the difference in handling errors. The output examples are shortened, but the same tests are presented in all examples if possible.
 
-First difference in output between \emph{RTT} and \emph{rtt-py} is the format of the output. \emph{RTT} offers reports in plaintext format, which contains all of the reported information (see Subsection \ref{chap:sols-rtt}). The format is human-readable, but hard to navigate. Computer processing is possible thanks to unified format, but requires rather complicated parsing.
+The first difference in output between \emph{RTT} and \emph{rtt-py} is the format of the output. \emph{RTT} offers reports in plaintext format, which contains all of the reported information (see Section \ref{chap:sols-rtt}). The format is human-readable but hard to navigate. Computer processing is possible thanks to a unified format but requires rather complicated parsing.
 
 The \emph{rtt-py} offers an overview table in HTML and CSV formats, which are both easily human-readable and useful for quick assessment of the tests results. The CSV format is also easily computer-readable. 
 
-The full HTML format offers more information, usually regarding the test settings. For all tests, the p-values is contained. In the NIST STS, the proportion of sequences passing the first-level test is added. In the TestU01 batteries, corresponding test statistics values are part of the HTML report as well.
+The full HTML format offers more information, usually regarding the test settings. For all tests, the p-values are contained. In the NIST STS, the proportion of sequences passing the first-level test is added. In the TestU01 batteries, corresponding test statistics values are part of the HTML report as well.
 
-The main functional difference in output between \emph{RTT} and \emph{rtt-py} are the reported information. For this comparison, the full HTML report from \emph{rtt-py} is taken. Both toolkits report the resulting second-level p-values for Dieharder and both the second-level p-value and proportion of sequences passing the first-level test for NIST STS batteries. However, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values, which could be useful for deeper assessment of the results. Unlike the \emph{RTT}, \emph{rtt-py} also does not report information regarding the individual tests settings (stream size and counts) from NIST STS battery.
+The main functional difference in output between \emph{RTT} and \emph{rtt-py} is the reported information. For this comparison, the full HTML report from \emph{rtt-py} is taken. Both toolkits report the resulting second-level p-values for Dieharder and both the second-level p-value and proportion of sequences passing the first-level test for NIST STS batteries. However, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values, which could be useful for a deeper assessment of the results. Unlike the \emph{RTT}, \emph{rtt-py} also does not report information regarding the individual tests settings (stream size and counts) from the NIST STS battery.
 
-For the TestU01 batteries (which employ only repeated single-level tests) the reported information are the same for both toolkits -- p-values and details about test settings. However, in \emph{RTT} report, repetitions of the same individual test are grouped together and their respective p-values are printed in a group. In \emph{rtt-py}, each repetition is treated as a separate individual test and the user has to manually group the tests by their names. This is important, because the TestU01 does not perform the two-level test and if the user wishes to apply it, they have to do so on their own. The FIPS and BSI batteries are not mentioned in this comparison, because they are only executed in the \emph{rtt-py}.
+For the TestU01 batteries (which employ only repeated single-level tests) the reported information is the same for both toolkits -- p-values and details about tests settings. However, in \emph{RTT} report, repetitions of the same individual test are grouped and their respective p-values are printed together. In \emph{rtt-py}, each repetition is treated as a separate individual test and the user has to manually group the tests by their names. This is important because the TestU01 does not perform a two-level test and if the user wishes to apply it, they have to do so on their own. The FIPS and BSI batteries are not mentioned in this comparison, because they are only executed in the \emph{rtt-py}.
 
-Both toolkits also take different approach in parsing the results. In \emph{RTT}, the results are parsed after \emph{all} tests finish their executions using regular expressions. Originally, the regular expressions used for TestU01 batteries sometimes crashed while parsing. This issue has already been fixed. \footnote{\url{https://github.com/crocs-muni/randomness-testing-toolkit/commit/7457ba6e820a886f4582f271b2b1377d14152c60}} Furthermore, when parsing large batteries outputs, the \emph{RTT} may crash due to \emph{out of memory} error.
+Both toolkits also take different approaches to parsing the results. In \emph{RTT}, the results are parsed after \emph{all} tests finish their executions using regular expressions. Originally, the regular expressions used for TestU01 batteries sometimes crashed while parsing. This issue has already been fixed.\footnote{\url{https://github.com/crocs-muni/randomness-testing-toolkit/commit/7457ba6e820a886f4582f271b2b1377d14152c60}} Furthermore, when parsing large batteries outputs, the \emph{RTT} may crash due to \emph{out of memory} error.
 
-In \emph{rtt-py}, the results are parsed after each individual test is executed and stored in pre-defined objects. After all tests from given battery are executed, corresponding report is generated.
+In \emph{rtt-py}, the results are parsed after each individual test is executed and stored in pre-defined objects. After all tests from the given battery are executed, the corresponding report is generated.
 
 % no errors and warns
-Another part of the output of both toolkits is handling errors and warning from the batteries. The \emph{RTT} informs the user about the number of errors and warnings that occurred on the standard output. The detection of errors and warnings in \emph{RTT} is done by searching for words 'error' or 'warning' in the battery output. At the beginning of the report file, all tests that produced errors or warnings are listed. The whole line containing the warning or error is printed into the corresponding individual test report.
+Another part of the output of both toolkits is handling errors and warnings from the batteries. The \emph{RTT} informs the user about the number of errors and warnings that occurred on the standard output. The detection of errors and warnings in \emph{RTT} is done by searching for the words ``error'' or ``warning'' in the battery output. At the beginning of the report file, all tests that produced errors or warnings are listed. The whole line containing the warning or error is printed into the corresponding individual test report.
 
-The \emph{rtt-py} ignores errors and warnings from test batteries. The most notable example why this is a problem are the \emph{file rewinds} (as described in Section \ref{chap:sols-batteries}).
-
-In this case, the test will read some parts of the data more than once and inform the user about this situation. The test will still produce result, which will, however, be biased by repeated parts of the tested file. This may lead to incorrect interpretation of the results and to Type I or II error. Since the \emph{rtt-py} ignores this, there is no way for the user to be informed about this situation.
+The \emph{rtt-py} ignores errors and warnings from testing batteries. The most notable example of why this is a problem are the \emph{file rewinds} (as described in Section \ref{chap:sols-batteries}). In this case, the test will read some parts of the data more than once and inform the user about this situation. The test will still produce a result, that will, however, be biased by repeated parts of the tested file. This may lead to incorrect interpretation of the results and to Type I or II errors. Since the \emph{rtt-py} ignores this, there is no way for the user to be informed about this situation.
  
 
 %%%%%%%%%%%%%%%%%%
@@ -1547,43 +1546,37 @@ In this case, the test will read some parts of the data more than once and infor
 % X - podívat se na paralelismus
 % X - more batteries at once
 \section{Implementations differences}
-In this section I focus on finding the functional differences between \emph{RTT} and \emph{rtt-py}. The primary goal is to find features, that are missing in the \emph{rtt-py} and should be implemented to allow the replacement of \emph{RTT} with \emph{rtt-py}. 
-
-
-
+In this section, we focus on finding the functional differences between \emph{RTT} and \emph{rtt-py}. The primary goal is to find features, that are missing in the \emph{rtt-py} and should be implemented to allow the replacement of \emph{RTT} with \emph{rtt-py}. 
 
 % used batteries difference
-Both \emph{RTT} and \emph{rtt-py} employ different set of batteries. The Dieharder, NIST STS, TestU01 Rabbit, Alphabit and BlockAlphabit batteries are run in both implementations. The FIPS and BSI batteries are only executed in the \emph{rtt-py}. The TestU01 \emph{Crush} family of batteries is only run by \emph{RTT}. The program options of \emph{rtt-py} however clearly suggest, that these batteries should also be run. There is no explanation why neither in \cite{vavercak} or \cite{rtt-py-site}.
+Both \emph{RTT} and \emph{rtt-py} employ different sets of batteries. The Dieharder, NIST STS, TestU01 Rabbit, Alphabit, and BlockAlphabit batteries are run in both implementations. The FIPS and BSI batteries are only executed in the \emph{rtt-py}, while the TestU01 \emph{Crush} family of batteries is only run by \emph{RTT}. The program options of \emph{rtt-py} however clearly suggest, that the \emph{Crush} family batteries should also be run. There is no explanation why neither in \cite{vavercak} or \cite{rtt-py-site}.
 
 % Running more batteries at once
-Regarding the batteries, the \emph{RTT} runs one user-chosen battery per run. In the \emph{rtt-py}, all batteries are run by default. The user can choose batteries to omit from the run. The \emph{RTT} runs either all tests from the current battery configuration, or only single test chosen by the user, while in \emph{rtt-py} all tests from given configuration are run. Also the \emph{rtt-py} allows the user to test more files with data during one run, while \emph{RTT} allows testing of a single file only.
+Regarding the batteries, the \emph{RTT} runs one user-chosen battery per run. In the \emph{rtt-py}, all batteries are run by default and the user can choose batteries to omit from the run. The \emph{RTT} runs either all tests from the current battery configuration or only a single test chosen by the user, while in \emph{rtt-py} all tests from the given configuration are run. Also, the \emph{rtt-py} allows the user to test more files with data at once, while \emph{RTT} allows testing of a single file only.
 
 % test specific settings - requires dieharder and nist, tu01 ignores repetitions
-Another difference between toolkits is handling the \emph{test-specific-settings} field from battery configuration files. In \emph{RTT}, this field is optional for all batteries. However, in \emph{rtt-py} this field is \emph{required} for Dieharder and NIST STS battery and the configuration will not parse otherwise. This may cause problems with compatibility of configuration files between \emph{RTT} and \emph{rtt-py}.
+Another difference between toolkits includes handling the \emph{test-specific-settings} field from battery configuration files. In \emph{RTT}, this field is optional for all batteries. However, in \emph{rtt-py} this field is \emph{required} for Dieharder and NIST STS battery, and the configuration will not parse otherwise. This may cause problems with compatibility of configuration files between \emph{RTT} and \emph{rtt-py}.
 
-Another difference with this field is that \emph{rtt-py} ignores \emph{repetitions} field from \emph{test-specific-settings} of TestU01 batteries, therefore all test are executed with. This also might to be the reason why \emph{Crush} family batteries are not run, because this field is needed for \emph{meaningful} use of the \emph{Crush} family batteries, while the remaining TestU01 batteries can be \emph{meaningfully} used without changing the \emph{repetitions} argument.
-
+Another difference with this field is that \emph{rtt-py} ignores \emph{repetitions} field from \emph{test-specific-settings} of TestU01 batteries, therefore all tests are executed with the default value of repetitions. This also might be the reason why \emph{Crush} family batteries are not run, because this field is needed for \emph{meaningful} use of the \emph{Crush} family batteries, while the remaining TestU01 batteries can be \emph{meaningfully} used without changing the \emph{repetitions} argument.
 
 
 % no logs
-Closely tied with the warnings and errors are the output logs of the executed batteries. They are usually used to examine the warnings and errors raised by the batteries and to decide about the severity of the warning or error. Another usage may be to examine further details of the report that are not reported by the used toolkit. 
-
-In \emph{RTT}, the output logs for each battery are stored in the \emph{results} folder. In \emph{rtt-py}, no batteries output logs are being stored. Both \emph{RTT} and \emph{rtt-py} create run logs containing the exact arguments used to run the batteries.
+Closely tied with the warnings and errors are the output logs of the executed batteries. They are usually used to examine the warnings and errors raised by the batteries and to decide about the severity of the warning or error. Another usage may be to examine further details of the report that are not reported by the toolkit. The \emph{RTT} stores the output logs for each battery in the \emph{results} folder. In \emph{rtt-py}, no output logs are being stored. Both \emph{RTT} and \emph{rtt-py} create run logs containing the exact arguments used to execute the batteries.
 
 % pvals printout + error
-As was described in previous section, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values from Dieharder and NIST STS. The first-level p-values can be usefull for deeper examination of the tests results. In TestU01, the p-values are grouped by test in \emph{RTT}, but not in \emph{rtt-py}. Furthermore, as opposed to \emph{RTT}, the \emph{rtt-py} ignores the warning from battery outputs.
+As was described in Section \ref{chap:comparison-output}, unlike \emph{RTT}, the \emph{rtt-py} does not report first-level p-values from Dieharder and NIST STS. The first-level p-values can be useful for a deeper examination of the tests results. When running TestU01 batteries, the p-values are grouped by test in \emph{RTT}, but not in \emph{rtt-py}. Furthermore, as opposed to \emph{RTT}, the \emph{rtt-py} ignores the warning from battery outputs.
 
 
-% paralelism
-The \emph{RTT} allows parallel execution of several individual tests at once (maximal number of parallel exectuions is set by the user in \emph{rtt-settings.json} file). In \emph{rtt-py}, no parallelism is supported and all individual tests are executed serially. 
+% parallelism
+The \emph{RTT} allows parallel execution of several individual tests at once (maximal number of parallel executions is set by the user in \emph{rtt-settings.json} file). In \emph{rtt-py}, no parallelism is supported and all individual tests are executed serially. 
 
-% adding new battery
-One of the original ideas of \emph{RTT} was to provide interface for easy addition of new batteries, possibly by the user. In \emph{rtt-py}, the user only has to implement classes for settings parsing, executions and results parsing, which all follow predefined patterns. These classes are then easily integrated into the \emph{rtt-py}.
+% adding a new battery
+One of the original ideas of \emph{RTT} was to provide an interface for easy addition of new batteries, possibly by the user. In \emph{rtt-py}, the user only has to implement classes for settings parsing, executions, and results parsing, which all follow predefined patterns. These classes are then easily integrated into the \emph{rtt-py}.
 
-Compared to this, the source code of \emph{RTT} is much more interconnected. The user has to implement several classes regarding the executions and results parsing as well. For the settings parsing, however, the user has to extend the already existing class. The user also has to extend several another classes responsible for setting up and executing the batteries. That makes adding a new battery into the \emph{RTT} harder than into the \emph{rtt-py}
+Compared to this, the source code of \emph{RTT} is much more interconnected. The user has to implement several classes regarding the executions and results parsing as well. For the settings parsing, however, the user has to extend the already existing class. The user also has to extend several other classes responsible for setting up and executing the batteries. That makes adding a new battery into the \emph{RTT} harder than into the \emph{rtt-py}
 
 % database
-The \emph{RTT} also offers storing the test results in configured database, which is not offered by the \emph{rtt-py}. This functionality is, however, often not used. Because the used database connection is not supported on some Unix distributions, the \emph{RTT} may be compiled without it.
+The \emph{RTT} also offers the possibility to store the tests results in a configured database, which is not offered by the \emph{rtt-py}. This functionality is, however, often not used. Because the used database connection is not supported on some Unix distributions, the \emph{RTT} may be compiled without it.
 
 \begin{table}[t]
   \begin{tabularx}{\textwidth}{l|l|l}
@@ -1599,7 +1592,7 @@ The \emph{RTT} also offers storing the test results in configured database, whic
      first-level p-values & & \\
     \midrule
     TestU01 p-values from  & grouped & each repetition \\
-     single individual test  & &  separate \\
+     a single individual test  & &  separate \\
     \midrule
     Battery errors and warning & yes & no \\ %
     \midrule
@@ -1628,11 +1621,11 @@ The \emph{RTT} also offers storing the test results in configured database, whic
 % RTT-Tu01 - co dělá
 % pro tu01 - přidat detekc rewindu
 \section{Proposed improvements}
-First proposed improvement for both \emph{RTT} and \emph{rtt-py} is better way to configure the batteries. While \emph{RTT} offers some prepared configuration files, they are not available for all file sizes. Also, some of the configuration files contained configurations that resulted in \emph{file rewinds} or the tests read less data than was possible, resulting in testing only a part of the file. I implemented this improvement in the form of Configuration Calculator (see Subsection \ref{chap:analysis-config-calc}).
+The first proposed improvement for both \emph{RTT} and \emph{rtt-py} is a better way to configure the batteries. While \emph{RTT} offers some prepared configuration files, they are not available for all file sizes. Also, some of the configuration files contained configurations that resulted in \emph{file rewinds} or the tests read less data than was possible, resulting in testing only a part of the file. We implemented this improvement in the form of Configuration Calculator (see Section \ref{chap:analysis-config-calc}).
 
-Second proposed improvement are better second level-tests. As is shown in Subsection \ref{chap:analysis-uniform}, p-values of many first-level tests do not follow the uniform distribution. The improved second-level tests should take these non-uniform distributions into account and compare the observed distributions to the real distributions of the tests. The improved second-level tests also should provide second-level assessment of the TestU01 batteries.
+The second proposed improvement are better second-level tests, particularly regarding the non-uniform distributions of some first-level p-values (as is shown in Section \ref{chap:analysis-uniform}). The improved second-level tests should compare the observed distributions to the real distributions of the tests. They should also provide a second-level assessment for the TestU01 batteries.
 
-Third proposed improvement is to extend the output format of \emph{RTT} to computer-readable format, possibly using JSON format as in configurations. This could be used not only for quick computer-made results assessments, but also for the custom second-level tests.
+The third proposed improvement is to extend the output of \emph{RTT} and \emph{rtt-py} with a computer-readable format, possibly using JSON format as in configurations. This could be used not only for quick computer-made assessments of the results but also for the improved custom second-level tests, that could be implemented as a separate application.
 
 
 %%%%%%%%%%%
